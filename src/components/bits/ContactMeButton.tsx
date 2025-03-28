@@ -1,0 +1,90 @@
+import { useState, useEffect } from "react";
+import { Button } from "../ui";
+import { P } from "../layout/typography";
+
+export const ContactMeButton = () => {
+  const [showText, setShowText] = useState(false);
+  const [broken, setBroken] = useState(false);
+  const [hasDropped, setHasDropped] = useState(false);
+  const [hidden, setHidden] = useState(false);
+
+  function toggleDrop() {
+    const contactButton = document.getElementById("contact-button");
+    const buttonWrapper = document.getElementById("button-wrapper");
+
+    if (!contactButton || !buttonWrapper) return;
+
+    if (!broken) {
+      setShowText(true);
+      contactButton.classList.add("break");
+      setTimeout(() => {
+        setBroken(true);
+      }, 500);
+      return;
+    }
+
+    contactButton.classList.add("breakMore");
+    buttonWrapper.classList.add("fall-off-screen");
+    setHasDropped(true);
+    setTimeout(() => {
+      setHidden(true);
+    }, 1000);
+  }
+
+  return (
+    <>
+      <style>
+        {`
+          @keyframes break {
+            0% {
+              transform: rotate(0deg) translateY(0);    
+            }
+            100% {
+              transform: rotate(-20deg) translateY(34px);
+            }
+          }
+          @keyframes breakMore {
+            0% {
+              transform: rotate(-20deg) translateY(34px);    
+            }
+            100% {
+              transform: rotate(-80deg) translateY(34px);
+            }
+          }
+          @keyframes fallOffScreen {
+            from {
+              transform: translateY(32px);
+            }
+            to {
+              transform: translateY(110vh);
+            }
+          }
+
+          .break {
+            animation: break 0.3s ease-in forwards;
+          }
+          .breakMore {
+            animation: breakMore 0.4s ease-in forwards;
+          }
+          .fall-off-screen {
+            animation: fallOffScreen 0.7s ease-in forwards;
+          }
+        `}
+      </style>
+      <div className="relative items-center px-4 hidden lg:flex">
+        {!hidden && (
+          <div id="button-wrapper" className="absolute right-0 z-10">
+            <Button
+              id="contact-button"
+              className="min-w-48 bg-white hover:bg-white"
+              onClick={toggleDrop}
+            >
+              Get in Touch!
+            </Button>
+          </div>
+        )}
+        {showText && <P className="tracking-wide">Gainfully Employed 👍</P>}
+      </div>
+    </>
+  );
+};

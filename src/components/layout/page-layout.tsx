@@ -26,7 +26,7 @@ export function PageHeading({
   return (
     <div
       className={cn(
-        "glass dark:dark-glass flex flex-col gap-2 rounded-lg p-4 pb-6",
+        "glass dark:dark-glass flex flex-col gap-2 rounded-lg pt-4 px-5 pb-6",
         className
       )}
       {...props}
@@ -41,7 +41,7 @@ export function PageHeaderAccordion({
   return (
     <div
       className={cn(
-        "glass dark:dark-glass flex min-w-fit max-w-lg rounded-md px-4 text-black dark:text-white lg:min-w-full",
+        "glass dark:dark-glass flex min-w-fit max-w-lg rounded-md px-5 text-black dark:text-white lg:min-w-full",
         className
       )}
       {...props}
@@ -81,7 +81,7 @@ export function PageSectionHeader({
   return (
     <header
       className={cn(
-        "glass dark:dark-glass flex min-h-10 flex-col justify-between gap-2 rounded-lg p-4 pb-6",
+        "glass dark:dark-glass flex min-h-10 flex-col justify-between gap-2 rounded-lg pt-4 px-5 pb-6",
         className
       )}
       {...props}
@@ -97,7 +97,7 @@ export function PageSectionActions({
   return (
     <header
       className={cn(
-        "glass dark:dark-glass flex min-h-10 flex-col gap-2 rounded-lg px-4 py-2 md:flex-row lg:items-center lg:justify-between ",
+        "glass dark:dark-glass flex min-h-10 flex-col gap-2 rounded-lg px-4 py-2 md:flex-row lg:items-center lg:justify-between",
         className
       )}
       {...props}

@@ -47,7 +47,7 @@ export const AppBackground: React.FC = () => {
       )}
       {/* bg blur */}
       {isOn && (
-        <div className="dark:filter-dark fixed left-0 top-0 -z-30 h-screen min-h-screen w-screen object-cover filter" />
+        <div className="fixed left-0 top-24 -z-30 h-screen min-h-screen w-screen object-cover backdrop-blur-2xl" />
       )}
     </>
   );

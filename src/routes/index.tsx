@@ -12,6 +12,8 @@ import {
   H1Description,
   H2,
   H2Description,
+  P,
+  PL,
 } from "@/components/layout/typography";
 import {
   Button,
@@ -29,15 +31,37 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { IconBrandGithub, IconExternalLink } from "@tabler/icons-react";
-import { createFileRoute } from "@tanstack/react-router";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { PLAYGROUNDS, type Playground } from "@/data/playgrounds";
+import { PROJECTS, type Project } from "@/data/projects";
+import { TECH_TAGS, type TECH_TAG } from "@/data/types";
+import {
+  IconBrandGithub,
+  IconCrane,
+  IconExternalLink,
+  IconLego,
+  IconLink,
+  IconLock,
+  IconNavigation,
+} from "@tabler/icons-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   component: App,
 });
 
 function App() {
-  const tags = [...new Set(projects.flatMap((project) => project.tags))].sort();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<TECH_TAG[]>([]);
+
+  function handleTagClick(tag: TECH_TAG) {
+    if (selectedTags.includes(tag)) {
+      return setSelectedTags((prev) => prev.filter((t) => t !== tag));
+    }
+    setSelectedTags((prev) => [...prev, tag]);
+  }
 
   return (
     <Page>
@@ -45,7 +69,7 @@ function App() {
         <PageHeading>
           <H1>gmac.dev</H1>
           <H1Description>Portfolio | Playground | Scratch Pad</H1Description>
-          <p>Gordon Macintyre | Software Developer | Scotland 🏴󠁧󠁢󠁳󠁣󠁴󠁿</p>
+          <p>Gordon Macintyre | Developer | Scotland 🏴󠁧󠁢󠁳󠁣󠁴󠁿</p>
         </PageHeading>
 
         <PageHeaderAccordion>
@@ -85,45 +109,39 @@ function App() {
 
       <PageSection>
         <PageSectionHeader>
+          <H2>Buzzwords</H2>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {TECH_TAGS.map((tag) => (
+              <Badge
+                key={tag}
+                variant={selectedTags.includes(tag) ? "default" : "outline"}
+                onClick={() => handleTagClick(tag)}
+                className="cursor-pointer"
+              >
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        </PageSectionHeader>
+      </PageSection>
+
+      <PageSection>
+        <PageSectionHeader>
           <H2>Projects</H2>
           <H2Description>
             A collection of projects I've worked on.
           </H2Description>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {tags.map((tag) => (
-              <Badge key={tag}>{tag}</Badge>
-            ))}
-          </div>
         </PageSectionHeader>
 
         <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3 lg:px-16 px-4 lg:gap-4">
-          {projects.map((project) => (
-            <Card key={project.title}>
-              <CardHeader>
-                <CardTitle>{project.title}</CardTitle>
-                <CardDescription>{project.subTitle}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-2">
-                {project.tags?.sort().map((tag) => (
-                  <Badge key={tag} variant="outline">
-                    {tag}
-                  </Badge>
-                ))}
-              </CardContent>
-              <CardContent>
-                <p>{project.description}</p>
-              </CardContent>
-              <CardFooter className="mt-auto">
-                <Button>
-                  <IconExternalLink />
-                  View
-                </Button>
-                <Button>
-                  <IconBrandGithub />
-                  Code
-                </Button>
-              </CardFooter>
-            </Card>
+          {PROJECTS.map((project) => (
+            <ProjectCard
+              key={project.title}
+              project={project}
+              selectedTags={selectedTags}
+              onClick={() => setIsDialogOpen(true)}
+              onTagClick={handleTagClick}
+            />
           ))}
         </div>
       </PageSection>
@@ -137,155 +155,158 @@ function App() {
         </PageSectionHeader>
 
         <div className="grid grid-cols-2 gap-2 md:grid-cols-2 lg:grid-cols-3 lg:px-16 px-4 lg:gap-4">
-          {playgrounds.map((playground) => (
-            <Card key={playground.title}>
-              <CardHeader>
-                <CardTitle>{playground.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>{playground.description}</p>
-              </CardContent>
-              <CardFooter>
-                <Button>View</Button>
-                <Button>Code</Button>
-              </CardFooter>
-            </Card>
+          {PLAYGROUNDS.map((playground) => (
+            <PlaygroundCard
+              key={playground.title}
+              playground={playground}
+              onClick={() => setIsDialogOpen(true)}
+              selectedTags={selectedTags}
+              onTagClick={handleTagClick}
+            />
           ))}
         </div>
       </PageSection>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="p-0">
+          <img
+            src="/src/assets/word.gif"
+            className="w-full h-full object-contain"
+          />
+        </DialogContent>
+      </Dialog>
     </Page>
   );
 }
 
-type TECH_TAGS =
-  | "NextJS"
-  | "React"
-  | "TypeScript"
-  | "TailwindCSS"
-  | "Shadcn/UI"
-  | "NodeJS"
-  | "Express"
-  | "PostgreSQL"
-  | "Hono"
-  | "Vite"
-  | "TanStack Router"
-  | "TanStack Form"
-  | "TanStack Table"
-  | "TanStack Query"
-  | "Zustand";
-
-type Project = {
-  title: string;
-  subTitle: string;
-  tags: TECH_TAGS[];
-  description: string;
-  link: string;
-  code: string;
+const ProjectCard: React.FC<{
+  project: Project;
+  selectedTags: string[];
+  onClick: () => void;
+  onTagClick: (tag: TECH_TAG) => void;
+}> = ({ project, selectedTags, onClick, onTagClick }) => {
+  return (
+    <Card
+      key={project.title}
+      className={`glass dark:dark-glass relative ${project.inProgress ? "group" : ""}`}
+      style={{ "--card-opacity": "1" } as React.CSSProperties}
+    >
+      {project.inProgress && (
+        <div className="absolute inset-0 gap-4 backdrop-blur-2xl backdrop-opacity-100 flex flex-col items-center justify-center z-10 rounded-lg opacity-0 invisible transition-all duration-300 group-hover:opacity-100 group-hover:visible">
+          <PL>Work in Progress</PL>
+          <IconCrane className="size-12" />
+        </div>
+      )}
+      <CardHeader
+        className={`transition-opacity duration-300 ${project.inProgress ? "group-hover:opacity-0" : ""}`}
+      >
+        <CardTitle>{project.title}</CardTitle>
+        {project.inProgress && (
+          <IconCrane className="ml-auto absolute top-4 right-4" />
+        )}
+        <CardDescription>{project.subTitle}</CardDescription>
+      </CardHeader>
+      <CardContent
+        className={`flex flex-wrap gap-2 transition-opacity duration-300 ${project.inProgress ? "group-hover:opacity-0" : ""}`}
+      >
+        {project.tags?.sort().map((tag) => (
+          <Badge
+            key={tag}
+            variant={selectedTags.includes(tag) ? "default" : "outline"}
+            onClick={() => onTagClick(tag)}
+            className="cursor-pointer"
+          >
+            {tag}
+          </Badge>
+        ))}
+      </CardContent>
+      <CardContent
+        className={`transition-opacity duration-300 ${project.inProgress ? "group-hover:opacity-0" : ""}`}
+      >
+        <p>{project.description}</p>
+      </CardContent>
+      <CardFooter
+        className={`mt-auto transition-opacity duration-300 ${project.inProgress ? "group-hover:opacity-0" : ""}`}
+      >
+        <a
+          href={project.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`flex-1 ${project.inProgress ? "pointer-events-none group-hover:pointer-events-none" : ""}`}
+        >
+          <Button variant="outline" className="w-full">
+            <IconExternalLink />
+            View
+          </Button>
+        </a>
+        {project.codeLocked ? (
+          <Button
+            variant="outline"
+            onClick={onClick}
+            className={`flex-1 ${project.inProgress ? "pointer-events-none group-hover:pointer-events-none" : ""}`}
+          >
+            <IconLock />
+            Code
+          </Button>
+        ) : (
+          <a
+            href={project.code}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`flex-1 ${project.inProgress ? "pointer-events-none group-hover:pointer-events-none" : ""}`}
+          >
+            <Button variant="outline" className="w-full">
+              <IconBrandGithub />
+              Code
+            </Button>
+          </a>
+        )}
+      </CardFooter>
+    </Card>
+  );
 };
 
-const projects: Project[] = [
-  {
-    title: "GMAC.DEV",
-    subTitle: "Your looking at it.",
-    tags: [
-      "React",
-      "Vite",
-      "TanStack Router",
-      "TanStack Query",
-      "TypeScript",
-      "TailwindCSS",
-      "Shadcn/UI",
-      "Zustand",
-    ],
-    description: "My portfolio website. Come click around.",
-    link: "/projects/project-2",
-    code: "/projects/project-2",
-  },
-  {
-    title: "BitzOfCoinz - Dashboard",
-    subTitle: "Crypto App: Buy Low, Sell High.",
-    tags: [
-      "NextJS",
-      "React",
-      "TypeScript",
-      "TailwindCSS",
-      "Shadcn/UI",
-      "TanStack Query",
-    ],
-    description:
-      "A NextJS App for tracking the price of Bitcoin and automatically buying / selling on price fluctuations",
-    link: "/projects/project-1",
-    code: "/projects/project-1",
-  },
-  {
-    title: "BitzOfCoinz - API",
-    subTitle: "The API for BitzOfCoinz",
-    tags: ["NodeJS", "Express", "PostgreSQL", "TypeScript"],
-    description:
-      "A NodeJS backend for the BitzOfCoinz Dashboard. Express REST API and Cron job for tracking prices",
-    link: "/projects/project-2",
-    code: "/projects/project-2",
-  },
-  {
-    title: "Auth Starter",
-    subTitle: "A starter project for building a REST API",
-    tags: ["NodeJS", "Hono", "PostgreSQL", "TypeScript"],
-    description:
-      "A starter project bootstrapping a REST API. Includes custom built authentication & authorization, and a CRUD API.",
-    link: "/projects/project-2",
-    code: "/projects/project-2",
-  },
-  {
-    title: "Community Cook",
-    subTitle: "A recipe sharing platform",
-    tags: [
-      "React",
-      "Vite",
-      "TanStack Router",
-      "TanStack Query",
-      "TypeScript",
-      "TailwindCSS",
-      "Shadcn/UI",
-      "Zustand",
-    ],
-    description: "WORK IN PROGRESS",
-    link: "/projects/project-2",
-    code: "/projects/project-2",
-  },
-  {
-    title: "ArtWeek",
-    subTitle: "Work In Progress",
-    tags: [
-      "React",
-      "Vite",
-      "TanStack Router",
-      "TanStack Query",
-      "TypeScript",
-      "TailwindCSS",
-      "Shadcn/UI",
-      "Zustand",
-    ],
-    description: "WORK IN PROGRESS",
-    link: "/projects/project-2",
-    code: "/projects/project-2",
-  },
-];
-
-const playgrounds = [
-  {
-    title: "Maze",
-    description: "Maze description",
-  },
-  {
-    title: "Gallery",
-    description: "Gallery description",
-  },
-  {
-    title: "Metronome",
-    description: "Metronome description",
-  },
-  {
-    title: "Anagram Solver",
-    description: "Anagram Solver description",
-  },
-];
+const PlaygroundCard: React.FC<{
+  playground: Playground;
+  onClick: () => void;
+  selectedTags: string[];
+  onTagClick: (tag: TECH_TAG) => void;
+}> = ({ playground, onClick, selectedTags, onTagClick }) => {
+  return (
+    <Card className="glass dark:dark-glass">
+      <CardHeader>
+        <CardTitle>{playground.title}</CardTitle>
+        <CardDescription>{playground.subTitle}</CardDescription>
+      </CardHeader>
+      <CardContent
+        className={`flex flex-wrap gap-2 transition-opacity duration-300`}
+      >
+        {playground.tags?.sort().map((tag) => (
+          <Badge
+            key={tag}
+            variant={selectedTags.includes(tag) ? "default" : "outline"}
+            onClick={() => onTagClick(tag)}
+            className="cursor-pointer"
+          >
+            {tag}
+          </Badge>
+        ))}
+      </CardContent>
+      <CardContent>
+        <p>{playground.description}</p>
+      </CardContent>
+      <CardFooter>
+        <Link to={playground.link} className="flex-1">
+          <Button variant="outline" className="w-full">
+            <IconLego />
+            View
+          </Button>
+        </Link>
+        <Button variant="outline" className="flex-1">
+          <IconBrandGithub />
+          Code
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+};
