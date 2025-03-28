@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button } from "../ui";
-import { P } from "../layout/typography";
 
 export const ContactMeButton = () => {
   const [showText, setShowText] = useState(false);
