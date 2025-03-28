@@ -18,7 +18,7 @@ export const AppHeader: React.FC = () => {
             <span className="inline md:hidden">🏗️ WIP 🏗️</span>
           </div>
 
-          <div className="ml-auto flex gap-2">
+          <div className="ml-auto flex items-center gap-2">
             <ContactMeButton />
             <ThemeToggle />
             <AppBackgroundToggle />

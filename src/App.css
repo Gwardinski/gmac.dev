@@ -124,17 +124,15 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
-@utility filter {
-  backdrop-filter: blur(32px);
-}
-@utility filter-dark {
-  backdrop-filter: blur(32px);
-}
 @utility glass {
   /* zinc-50 */
   background-color: rgba(250, 245, 255, 0.25);
   backdrop-filter: blur(8px);
   color: black;
+  border-top: 1px solid oklch(0.92 0.004 286.32 / 20%);
+  border-right: 1px solid oklch(0.92 0.004 286.32 / 20%);
+  border-bottom: 1px solid oklch(0.92 0.004 286.32 / 30%);
+  border-left: 1px solid oklch(0.92 0.004 286.32 / 30%);
 }
 /* Dark Mode - Menus / Selects */
 @utility dark-glass {
@@ -142,14 +140,8 @@
   background-color: rgba(9, 9, 11, 0.5);
   backdrop-filter: blur(32px);
   color: white;
-}
-/* Both Light / Dark - Card Overlays  */
-@utility glass-overlay {
-  /* zinc-950 */
-  background-color: rgba(9, 9, 11, 0.1);
-  backdrop-filter: blur(16px);
-  color: white;
-  /* vignetting */
-  -webkit-box-shadow: inset 0px 0px 16px 16px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0px 0px 16px 16px rgba(0, 0, 0, 0.1);
+  border-top: 1px solid oklch(1 0 0 / 10%);
+  border-right: 1px solid oklch(1 0 0 / 10%);
+  border-bottom: 1px solid oklch(1 0 0 / 20%);
+  border-left: 1px solid oklch(1 0 0 / 20%);
 }
