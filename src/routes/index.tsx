@@ -12,7 +12,6 @@ import {
   H1Description,
   H2,
   H2Description,
-  P,
   PL,
 } from "@/components/layout/typography";
 import {
@@ -32,7 +31,6 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { PLAYGROUNDS, type Playground } from "@/data/playgrounds";
 import { PROJECTS, type Project } from "@/data/projects";
 import { TECH_TAGS, type TECH_TAG } from "@/data/types";
@@ -41,9 +39,7 @@ import {
   IconCrane,
   IconExternalLink,
   IconLego,
-  IconLink,
   IconLock,
-  IconNavigation,
 } from "@tabler/icons-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
@@ -110,7 +106,7 @@ function App() {
       <PageSection>
         <PageSectionHeader>
           <H2>Buzzwords</H2>
-          <div className="flex flex-wrap gap-2 mt-2">
+          <div className="mt-2 flex flex-wrap gap-2">
             {TECH_TAGS.map((tag) => (
               <Badge
                 key={tag}
@@ -133,7 +129,7 @@ function App() {
           </H2Description>
         </PageSectionHeader>
 
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3 lg:px-16 px-4 lg:gap-4">
+        <div className="grid grid-cols-1 gap-2 px-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-4 lg:px-16">
           {PROJECTS.map((project) => (
             <ProjectCard
               key={project.title}
@@ -154,7 +150,7 @@ function App() {
           </H2Description>
         </PageSectionHeader>
 
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-2 lg:grid-cols-3 lg:px-16 px-4 lg:gap-4">
+        <div className="grid grid-cols-2 gap-2 px-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-4 lg:px-16">
           {PLAYGROUNDS.map((playground) => (
             <PlaygroundCard
               key={playground.title}
@@ -171,7 +167,7 @@ function App() {
         <DialogContent className="p-0">
           <img
             src="/src/assets/word.gif"
-            className="w-full h-full object-contain"
+            className="h-full w-full object-contain"
           />
         </DialogContent>
       </Dialog>
@@ -188,11 +184,11 @@ const ProjectCard: React.FC<{
   return (
     <Card
       key={project.title}
-      className={`glass dark:dark-glass relative ${project.inProgress ? "group" : ""}`}
+      className={`relative glass dark:dark-glass ${project.inProgress ? "group" : ""}`}
       style={{ "--card-opacity": "1" } as React.CSSProperties}
     >
       {project.inProgress && (
-        <div className="absolute inset-0 gap-4 backdrop-blur-2xl backdrop-opacity-100 flex flex-col items-center justify-center z-10 rounded-lg opacity-0 invisible transition-all duration-300 group-hover:opacity-100 group-hover:visible">
+        <div className="invisible absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 rounded-lg opacity-0 backdrop-blur-2xl backdrop-opacity-100 transition-all duration-300 group-hover:visible group-hover:opacity-100">
           <PL>Work in Progress</PL>
           <IconCrane className="size-12" />
         </div>
@@ -202,7 +198,7 @@ const ProjectCard: React.FC<{
       >
         <CardTitle>{project.title}</CardTitle>
         {project.inProgress && (
-          <IconCrane className="ml-auto absolute top-4 right-4" />
+          <IconCrane className="absolute top-4 right-4 ml-auto" />
         )}
         <CardDescription>{project.subTitle}</CardDescription>
       </CardHeader>
@@ -271,7 +267,7 @@ const PlaygroundCard: React.FC<{
   onClick: () => void;
   selectedTags: string[];
   onTagClick: (tag: TECH_TAG) => void;
-}> = ({ playground, onClick, selectedTags, onTagClick }) => {
+}> = ({ playground, selectedTags, onTagClick }) => {
   return (
     <Card className="glass dark:dark-glass">
       <CardHeader>

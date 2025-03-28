@@ -1,6 +1,6 @@
 export const AppFooter: React.FC = () => {
   return (
-    <footer className="glass dark:dark-glass mt-auto flex flex-col rounded-lg pt-4 px-5 pb-4 text-sm">
+    <footer className="mt-auto flex flex-col rounded-lg glass px-5 pt-4 pb-4 text-sm dark:dark-glass">
       <a
         href="https://github.com/Gwardinski"
         className="text-zinc-700 hover:underline dark:text-zinc-300"

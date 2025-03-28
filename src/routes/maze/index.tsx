@@ -98,12 +98,12 @@ function RouteComponent() {
 
       <PageSection>
         <Tabs defaultValue={tab1} onValueChange={setTab1}>
-          <TabsList className="glass dark:dark-glass mb-4">
+          <TabsList className="mb-4 glass dark:dark-glass">
             <TabsTrigger value="1">Game</TabsTrigger>
             <TabsTrigger value="2">Scoreboard</TabsTrigger>
           </TabsList>
           <TabsContent value="1">
-            <section className="glass dark:dark-glass relative flex flex-col items-center justify-center gap-8 px-8 pb-32 pt-8 rounded-xl">
+            <section className="relative flex flex-col items-center justify-center gap-8 rounded-xl glass px-8 pt-8 pb-32 dark:dark-glass">
               <div className="z-10 flex w-full max-w-5xl items-center justify-center gap-4">
                 <H2 className="mr-auto">Time: {seconds}</H2>
                 <Stat hasCollected={hasButton1}>
@@ -223,7 +223,7 @@ function Switch({ className, hasCollected, ...props }: SwitchProps) {
         `h-16 w-16 rounded-none ${
           hasCollected ? "bg-yellow-500" : "animate-pulse bg-green-500"
         }`,
-        className
+        className,
       )}
       {...props}
     />
@@ -242,7 +242,7 @@ function Stat({ className, hasCollected, ...props }: StatProps) {
             ? "text-green-500 dark:text-green-500"
             : "text-red-500 dark:text-red-500"
         }`,
-        className
+        className,
       )}
       {...props}
     />

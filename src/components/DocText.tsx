@@ -87,14 +87,14 @@ export const TodoText: React.FC<{
   text: string;
 }> = ({ text }) => (
   <div className="flex w-fit items-center justify-center gap-3">
-    <IconChecklist className=" size-6 min-w-6 text-yellow-600 dark:text-yellow-500" />{" "}
+    <IconChecklist className="size-6 min-w-6 text-yellow-600 dark:text-yellow-500" />{" "}
     <b className="-mr-2">TODO:</b>
     {text}
   </div>
 );
 
 export const CodeSnippet: React.FC<HTMLAttributes<HTMLHeadingElement>> = (
-  props
+  props,
 ) => (
   <code
     className="flex rounded-md bg-zinc-300 px-1 py-0.5 dark:bg-zinc-700"

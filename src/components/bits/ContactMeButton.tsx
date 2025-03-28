@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "../ui";
 import { P } from "../layout/typography";
 
 export const ContactMeButton = () => {
   const [showText, setShowText] = useState(false);
   const [broken, setBroken] = useState(false);
-  const [hasDropped, setHasDropped] = useState(false);
   const [hidden, setHidden] = useState(false);
 
   function toggleDrop() {
@@ -25,7 +24,6 @@ export const ContactMeButton = () => {
 
     contactButton.classList.add("breakMore");
     buttonWrapper.classList.add("fall-off-screen");
-    setHasDropped(true);
     setTimeout(() => {
       setHidden(true);
     }, 1000);
@@ -71,7 +69,7 @@ export const ContactMeButton = () => {
           }
         `}
       </style>
-      <div className="relative items-center px-4 hidden lg:flex">
+      <div className="relative hidden items-center px-4 lg:flex">
         {!hidden && (
           <div id="button-wrapper" className="absolute right-0 z-10">
             <Button

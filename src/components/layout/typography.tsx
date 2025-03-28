@@ -7,8 +7,8 @@ export function H1({ className, ...props }: TextProps) {
   return (
     <h1
       className={cn(
-        "bg-gradient-to-b from-zinc-900 to-zinc-600 bg-clip-text text-4xl font-extrabold tracking-wide text-transparent dark:from-zinc-100 dark:to-zinc-400 scroll-m-20 lg:text-5xl pb-1",
-        className
+        "scroll-m-20 bg-gradient-to-b from-zinc-900 to-zinc-600 bg-clip-text pb-1 text-4xl font-extrabold tracking-wide text-transparent lg:text-5xl dark:from-zinc-100 dark:to-zinc-400",
+        className,
       )}
       {...props}
     />
@@ -21,7 +21,7 @@ export function H1Description({ className, ...props }: TextProps) {
     <p
       className={cn(
         "text-xl tracking-wider text-zinc-800 dark:text-zinc-300",
-        className
+        className,
       )}
       {...props}
     />
@@ -33,8 +33,8 @@ export function H2({ className, ...props }: TextProps) {
   return (
     <h2
       className={cn(
-        "bg-gradient-to-b from-zinc-900 to-zinc-600 bg-clip-text text-transparent dark:from-zinc-100 dark:to-zinc-400 scroll-m-20 text-3xl font-semibold first:mt-0",
-        className
+        "scroll-m-20 bg-gradient-to-b from-zinc-900 to-zinc-600 bg-clip-text text-3xl font-semibold text-transparent first:mt-0 dark:from-zinc-100 dark:to-zinc-400",
+        className,
       )}
       {...props}
     />
@@ -56,7 +56,7 @@ export function H3({ className, ...props }: TextProps) {
     <h3
       className={cn(
         "scroll-m-20 text-xl font-semibold tracking-tight",
-        className
+        className,
       )}
       {...props}
     />
@@ -76,8 +76,8 @@ export function PL({ className, ...props }: TextProps) {
   return (
     <p
       className={cn(
-        "tracking-widest font-bold leading-7 [&:not(:first-child)]:mt-6",
-        className
+        "leading-7 font-bold tracking-widest [&:not(:first-child)]:mt-6",
+        className,
       )}
       {...props}
     />

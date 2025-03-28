@@ -21,7 +21,7 @@ export const AppBackground: React.FC = () => {
   return (
     <>
       {/* bg image */}
-      <div className="fixed left-0 top-0 -z-50 h-screen min-h-screen w-screen bg-[url('/src/assets/bg1.jpeg')] bg-cover bg-fixed bg-center blur-lg dark:bg-zinc-950 dark:bg-[url('/src/assets/bg2.jpeg')]" />
+      <div className="fixed top-0 left-0 -z-50 h-screen min-h-screen w-screen bg-[url('/src/assets/bg1.jpeg')] bg-cover bg-fixed bg-center blur-lg dark:bg-zinc-950 dark:bg-[url('/src/assets/bg2.jpeg')]" />
       {/* bg video */}
       {theme === "dark" && isOn && (
         <video
@@ -29,7 +29,7 @@ export const AppBackground: React.FC = () => {
           loop
           autoPlay
           id="myVideo"
-          className="fixed left-0 top-0 -z-40 h-screen min-h-screen w-screen object-cover"
+          className="fixed top-0 left-0 -z-40 h-screen min-h-screen w-screen object-cover"
         >
           <source src={"/src/assets/vbg2.mp4"} type="video/mp4" />
         </video>
@@ -40,14 +40,14 @@ export const AppBackground: React.FC = () => {
           loop
           autoPlay
           id="myVideo"
-          className="fixed left-0 top-0 -z-40 h-screen min-h-screen w-screen object-cover"
+          className="fixed top-0 left-0 -z-40 h-screen min-h-screen w-screen object-cover"
         >
           <source src={"/src/assets/vbg1.mp4"} type="video/mp4" />
         </video>
       )}
       {/* bg blur */}
       {isOn && (
-        <div className="fixed left-0 top-24 -z-30 h-screen min-h-screen w-screen object-cover backdrop-blur-2xl" />
+        <div className="fixed top-24 left-0 -z-30 h-screen min-h-screen w-screen object-cover backdrop-blur-2xl" />
       )}
     </>
   );
