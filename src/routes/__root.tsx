@@ -12,7 +12,7 @@ export const Route = createRootRoute({
     <div className="relative flex min-h-screen flex-col">
       <AppBackground />
       <AppLoader />
-      <main className="mx-auto flex h-full min-h-screen w-full max-w-screen-2xl flex-col gap-4 overflow-y-auto px-2 pt-28 md:px-4">
+      <main className="mx-auto flex h-full min-h-screen w-full max-w-screen-2xl flex-col gap-4 overflow-y-auto px-2 pt-28 pb-4 md:px-4">
         <AppHeader />
         <Outlet />
         <AppFooter />

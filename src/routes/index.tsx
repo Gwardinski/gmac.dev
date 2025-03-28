@@ -1,6 +1,8 @@
 import { GithubLink, DocumentationLink } from "@/components/DocText";
 import {
   Page,
+  PageBanner,
+  PageBannerHeader,
   PageHeader,
   PageHeaderAccordion,
   PageHeading,
@@ -103,23 +105,26 @@ function App() {
         </PageHeaderAccordion>
       </PageHeader>
 
-      <PageSection>
-        <PageSectionHeader>
+      <PageBanner>
+        <PageBannerHeader>
           <H2>Buzzwords</H2>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {TECH_TAGS.map((tag) => (
-              <Badge
+        </PageBannerHeader>
+        <ul className="flex flex-wrap gap-2">
+          {TECH_TAGS.map((tag) => (
+            <li key={tag}>
+              <Button
                 key={tag}
+                size="sm"
                 variant={selectedTags.includes(tag) ? "default" : "outline"}
                 onClick={() => handleTagClick(tag)}
                 className="cursor-pointer"
               >
                 {tag}
-              </Badge>
-            ))}
-          </div>
-        </PageSectionHeader>
-      </PageSection>
+              </Button>
+            </li>
+          ))}
+        </ul>
+      </PageBanner>
 
       <PageSection>
         <PageSectionHeader>

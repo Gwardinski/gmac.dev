@@ -74,14 +74,14 @@ export const ContactMeButton = () => {
           <div id="button-wrapper" className="absolute right-0 z-10">
             <Button
               id="contact-button"
-              className="min-w-48 bg-white hover:bg-white"
+              className="min-w-48"
               onClick={toggleDrop}
             >
               Get in Touch!
             </Button>
           </div>
         )}
-        {showText && <P className="tracking-wide">Gainfully Employed 👍</P>}
+        {showText && <p className="tracking-wide">Gainfully Employed 👍</p>}
       </div>
     </>
   );
