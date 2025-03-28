@@ -150,7 +150,7 @@ function App() {
           </H2Description>
         </PageSectionHeader>
 
-        <div className="grid grid-cols-2 gap-2 px-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-4 lg:px-16">
+        <div className="grid grid-cols-1 gap-2 px-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-4 lg:px-16">
           {PLAYGROUNDS.map((playground) => (
             <PlaygroundCard
               key={playground.title}
