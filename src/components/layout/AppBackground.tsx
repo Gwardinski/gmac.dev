@@ -55,9 +55,8 @@ export const AppBackground: React.FC = () => {
         </video>
       )}
       {/* bg blur */}
-      {isOn && (
-        <div className="fixed top-24 left-0 -z-30 h-screen min-h-screen w-screen object-cover backdrop-blur-2xl" />
-      )}
+
+      <div className="fixed top-0 left-0 -z-30 h-screen min-h-screen w-screen object-cover backdrop-blur-2xl" />
     </>
   );
 };

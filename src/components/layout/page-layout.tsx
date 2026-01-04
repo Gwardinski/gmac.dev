@@ -41,7 +41,7 @@ export function PageHeaderAccordion({
   return (
     <div
       className={cn(
-        "flex min-w-fit rounded-md glass px-5 text-black lg:min-w-full dark:dark-glass dark:text-white",
+        "flex max-w-lg min-w-fit rounded-md glass px-5 text-black lg:min-w-full dark:dark-glass dark:text-white",
         className,
       )}
       {...props}
