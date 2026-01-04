@@ -1,4 +1,3 @@
-www.gmac.dev
+https://gmac.dev/
 
-fallback:
-gmacdev-production.up.railway.app
+https://gmacdev-production.up.railway.app/

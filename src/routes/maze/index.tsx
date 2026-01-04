@@ -218,7 +218,7 @@ interface SwitchProps extends React.HTMLAttributes<HTMLButtonElement> {
 function Switch({ className, hasCollected, ...props }: SwitchProps) {
   return (
     <Button
-      variant="ghost"
+      variant="glass"
       className={cn(
         `h-16 w-16 rounded-none ${
           hasCollected ? "bg-yellow-500" : "animate-pulse bg-green-500"
