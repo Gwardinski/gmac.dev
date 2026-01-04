@@ -14,6 +14,7 @@ import {
   H1Description,
   H2,
   H2Description,
+  P,
   PL,
 } from "@/components/layout/typography";
 import {
@@ -31,7 +32,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { PLAYGROUNDS, type Playground } from "@/data/playgrounds";
 import { PROJECTS, type Project } from "@/data/projects";
@@ -40,6 +40,7 @@ import {
   IconBrandGithub,
   IconCrane,
   IconExternalLink,
+  IconGhost,
   IconLego,
   IconLock,
 } from "@tabler/icons-react";
@@ -66,8 +67,12 @@ function App() {
       <PageHeader>
         <PageHeading>
           <H1>gmac.dev</H1>
-          <H1Description>Portfolio | Playground | Scratch Pad</H1Description>
-          <p>Gordon Macintyre | Developer | Scotland 🏴󠁧󠁢󠁳󠁣󠁴󠁿</p>
+          <H1Description className="font-mono">
+            Portfolio | Playground | Scratch Pad
+          </H1Description>
+          <P className="font-mono">
+            Gordon Macintyre | Developer | Scotland 🏴󠁧󠁢󠁳󠁣󠁴󠁿
+          </P>
         </PageHeading>
 
         <PageHeaderAccordion>
@@ -76,7 +81,7 @@ function App() {
               <AccordionTrigger>Base TechStack</AccordionTrigger>
               <AccordionContent className="flex flex-col gap-2 pb-6">
                 <GithubLink
-                  href="https://github.com/Gwardinski/PDP-Remix"
+                  href="https://github.com/Gwardinski/gmac.dev"
                   text="Source Code"
                 />
                 <DocumentationLink
@@ -110,14 +115,12 @@ function App() {
           <H2>Buzzwords</H2>
         </PageBannerHeader>
         <ul className="flex flex-wrap gap-2">
-          {TECH_TAGS.map((tag) => (
+          {TECH_TAG_SORTED.map((tag) => (
             <li key={tag}>
               <Button
                 key={tag}
-                size="sm"
-                variant={selectedTags.includes(tag) ? "default" : "outline"}
+                variant={selectedTags.includes(tag) ? "default" : "glass"}
                 onClick={() => handleTagClick(tag)}
-                className="cursor-pointer"
               >
                 {tag}
               </Button>
@@ -186,10 +189,11 @@ const ProjectCard: React.FC<{
   onClick: () => void;
   onTagClick: (tag: TECH_TAG) => void;
 }> = ({ project, selectedTags, onClick, onTagClick }) => {
+  const locked = project.inProgress || project.offline;
   return (
     <Card
       key={project.title}
-      className={`relative glass dark:dark-glass ${project.inProgress ? "group" : ""}`}
+      className={`relative glass dark:dark-glass ${project.inProgress || project.offline ? "group" : ""}`}
       style={{ "--card-opacity": "1" } as React.CSSProperties}
     >
       {project.inProgress && (
@@ -198,53 +202,63 @@ const ProjectCard: React.FC<{
           <IconCrane className="size-12" />
         </div>
       )}
+      {project.offline && (
+        <div className="invisible absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 rounded-lg opacity-0 backdrop-blur-2xl backdrop-opacity-100 transition-all duration-300 group-hover:visible group-hover:opacity-100">
+          <PL>Currently Offline</PL>
+          <IconGhost className="size-12" />
+        </div>
+      )}
       <CardHeader
-        className={`transition-opacity duration-300 ${project.inProgress ? "group-hover:opacity-0" : ""}`}
+        className={`transition-opacity duration-300 ${locked ? "group-hover:opacity-0" : ""}`}
       >
         <CardTitle>{project.title}</CardTitle>
         {project.inProgress && (
-          <IconCrane className="absolute top-4 right-4 ml-auto" />
+          <IconCrane className="absolute top-5 right-5 ml-auto size-8" />
+        )}
+        {project.offline && (
+          <IconGhost className="absolute top-5 right-5 ml-auto size-8" />
         )}
         <CardDescription>{project.subTitle}</CardDescription>
       </CardHeader>
       <CardContent
-        className={`flex flex-wrap gap-2 transition-opacity duration-300 ${project.inProgress ? "group-hover:opacity-0" : ""}`}
+        className={`flex flex-wrap gap-2 transition-opacity duration-300 ${locked ? "group-hover:opacity-0" : ""}`}
       >
-        {project.tags?.sort().map((tag) => (
-          <Badge
-            key={tag}
-            variant={selectedTags.includes(tag) ? "default" : "outline"}
-            onClick={() => onTagClick(tag)}
-            className="cursor-pointer"
-          >
-            {tag}
-          </Badge>
-        ))}
+        {project.tags
+          ?.sort((a, b) => a.localeCompare(b))
+          .map((tag) => (
+            <Button
+              key={tag}
+              variant={selectedTags.includes(tag) ? "default" : "glass"}
+              onClick={() => onTagClick(tag)}
+              size="sm"
+            >
+              {tag}
+            </Button>
+          ))}
       </CardContent>
       <CardContent
-        className={`transition-opacity duration-300 ${project.inProgress ? "group-hover:opacity-0" : ""}`}
+        className={`mt-auto transition-opacity duration-300 ${locked ? "group-hover:opacity-0" : ""}`}
       >
-        <p>{project.description}</p>
+        <P className="italic">{project.description}</P>
       </CardContent>
       <CardFooter
-        className={`mt-auto transition-opacity duration-300 ${project.inProgress ? "group-hover:opacity-0" : ""}`}
+        className={`mt-auto transition-opacity duration-300 ${locked ? "group-hover:opacity-0" : ""}`}
       >
         <a
           href={project.link}
           target="_blank"
           rel="noopener noreferrer"
-          className={`flex-1 ${project.inProgress ? "pointer-events-none group-hover:pointer-events-none" : ""}`}
+          className={`flex-1 ${locked ? "pointer-events-none group-hover:pointer-events-none" : ""}`}
         >
-          <Button variant="outline" className="w-full">
+          <Button className="w-full">
             <IconExternalLink />
             View
           </Button>
         </a>
         {project.codeLocked ? (
           <Button
-            variant="outline"
             onClick={onClick}
-            className={`flex-1 ${project.inProgress ? "pointer-events-none group-hover:pointer-events-none" : ""}`}
+            className={`flex-1 ${locked ? "pointer-events-none group-hover:pointer-events-none" : ""}`}
           >
             <IconLock />
             Code
@@ -254,9 +268,9 @@ const ProjectCard: React.FC<{
             href={project.code}
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex-1 ${project.inProgress ? "pointer-events-none group-hover:pointer-events-none" : ""}`}
+            className={`flex-1 ${locked ? "pointer-events-none group-hover:pointer-events-none" : ""}`}
           >
-            <Button variant="outline" className="w-full">
+            <Button className="w-full">
               <IconBrandGithub />
               Code
             </Button>
@@ -282,28 +296,30 @@ const PlaygroundCard: React.FC<{
       <CardContent
         className={`flex flex-wrap gap-2 transition-opacity duration-300`}
       >
-        {playground.tags?.sort().map((tag) => (
-          <Badge
-            key={tag}
-            variant={selectedTags.includes(tag) ? "default" : "outline"}
-            onClick={() => onTagClick(tag)}
-            className="cursor-pointer"
-          >
-            {tag}
-          </Badge>
-        ))}
+        {playground.tags
+          ?.sort((a, b) => a.localeCompare(b))
+          .map((tag) => (
+            <Button
+              key={tag}
+              size="sm"
+              variant={selectedTags.includes(tag) ? "default" : "glass"}
+              onClick={() => onTagClick(tag)}
+            >
+              {tag}
+            </Button>
+          ))}
       </CardContent>
       <CardContent>
         <p>{playground.description}</p>
       </CardContent>
       <CardFooter>
         <Link to={playground.link} className="flex-1">
-          <Button variant="outline" className="w-full">
+          <Button className="w-full">
             <IconLego />
             View
           </Button>
         </Link>
-        <Button variant="outline" className="flex-1">
+        <Button className="flex-1">
           <IconBrandGithub />
           Code
         </Button>
@@ -311,3 +327,5 @@ const PlaygroundCard: React.FC<{
     </Card>
   );
 };
+
+const TECH_TAG_SORTED = [...TECH_TAGS].sort((a, b) => a.localeCompare(b));

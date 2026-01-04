@@ -2,6 +2,10 @@ import { IconPlayerPlay, IconVideoOff } from "@tabler/icons-react";
 import { create } from "zustand";
 import { Button } from "../ui";
 import { useTheme } from "../theme-provider";
+import vbg1 from "../../assets/vbg1.mp4";
+import vbg2 from "../../assets/vbg2.mp4";
+import bg1 from "../../assets/bg1.jpeg";
+import bg2 from "../../assets/bg2.jpeg";
 
 interface VideoBGStore {
   isOn: boolean;
@@ -21,7 +25,12 @@ export const AppBackground: React.FC = () => {
   return (
     <>
       {/* bg image */}
-      <div className="fixed top-0 left-0 -z-50 h-screen min-h-screen w-screen bg-[url('/src/assets/bg1.jpeg')] bg-cover bg-fixed bg-center blur-lg dark:bg-zinc-950 dark:bg-[url('/src/assets/bg2.jpeg')]" />
+      <div
+        className="fixed top-0 left-0 -z-50 h-screen min-h-screen w-screen bg-cover bg-fixed bg-center blur-lg dark:bg-zinc-950"
+        style={{
+          backgroundImage: theme === "dark" ? `url(${bg2})` : `url(${bg1})`,
+        }}
+      />
       {/* bg video */}
       {theme === "dark" && isOn && (
         <video
@@ -31,7 +40,7 @@ export const AppBackground: React.FC = () => {
           id="myVideo"
           className="fixed top-0 left-0 -z-40 h-screen min-h-screen w-screen object-cover"
         >
-          <source src={"/src/assets/vbg2.mp4"} type="video/mp4" />
+          <source src={vbg2} type="video/mp4" />
         </video>
       )}
       {theme === "light" && isOn && (
@@ -42,7 +51,7 @@ export const AppBackground: React.FC = () => {
           id="myVideo"
           className="fixed top-0 left-0 -z-40 h-screen min-h-screen w-screen object-cover"
         >
-          <source src={"/src/assets/vbg1.mp4"} type="video/mp4" />
+          <source src={vbg1} type="video/mp4" />
         </video>
       )}
       {/* bg blur */}
@@ -58,7 +67,7 @@ export const AppBackgroundToggle: React.FC = () => {
   const isOn = useVideoBGStore((state) => state.isOn);
 
   return (
-    <Button size="icon" variant="outline" onClick={toggle}>
+    <Button size="icon" onClick={toggle}>
       {isOn ? <IconVideoOff /> : <IconPlayerPlay />}
     </Button>
   );

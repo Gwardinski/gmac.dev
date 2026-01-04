@@ -10,7 +10,7 @@ export const AppHeader: React.FC = () => {
       <div className="mx-auto flex h-16 w-full max-w-screen-2xl justify-center px-2 md:px-4">
         <div className="flex w-full items-center justify-between rounded-xl glass px-5 pt-4 pb-4 dark:dark-glass">
           <Link to="/">
-            <Button variant="outline">gmac.dev</Button>
+            <Button>gmac.dev</Button>
           </Link>
 
           <div className="align-center ml-8 animate-pulse text-2xl tracking-widest">

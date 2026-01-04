@@ -9,6 +9,7 @@ export type Project = {
   code: string;
   codeLocked?: boolean;
   inProgress?: boolean;
+  offline?: boolean;
 };
 
 export const PROJECTS: Project[] = [
@@ -32,8 +33,26 @@ export const PROJECTS: Project[] = [
     code: "https://github.com/Gwardinski/gmac.dev",
   },
   {
-    title: "BitzOfCoinz - Dashboard",
-    subTitle: "Crypto App: Buy Low, Sell High.",
+    title: "Pantie Packer",
+    subTitle: "Travel with Confidence",
+    tags: [
+      "Vite",
+      "Cloudflare",
+      "React",
+      "TypeScript",
+      "TailwindCSS",
+      "Shadcn/UI",
+      "Railway",
+      "TanStack Router",
+      "TanStack Form",
+    ],
+    description: "The essential travel app for packing enough underwear.",
+    link: "https://www.pantiepacker.com",
+    code: "https://github.com/Gwardinski/pantie-packer",
+  },
+  {
+    title: "BitzOfCoinz - Frontend",
+    subTitle: "Buy High. Sell Low.",
     tags: [
       "NextJS",
       "React",
@@ -49,10 +68,11 @@ export const PROJECTS: Project[] = [
     link: "https://bitzofcoinznext-production.up.railway.app/wave-rider",
     code: "https://github.com/Gwardinski/bitzofcoinz_next",
     codeLocked: true,
+    offline: true,
   },
   {
-    title: "BitzOfCoinz - API",
-    subTitle: "The API for BitzOfCoinz",
+    title: "BitzOfCoinz - Backend",
+    subTitle: "REST API for BitzOfCoinz",
     tags: [
       "NodeJS",
       "Express",
@@ -60,6 +80,7 @@ export const PROJECTS: Project[] = [
       "TypeScript",
       "DrizzleORM",
       "Zod",
+      "Coinbase API",
       "Railway",
     ],
     description:
@@ -67,6 +88,7 @@ export const PROJECTS: Project[] = [
     link: "/projects/project-2",
     code: "https://github.com/Gwardinski/bitzofcoinz_node",
     codeLocked: true,
+    offline: true,
   },
   {
     title: "Pixel Board",
@@ -83,14 +105,7 @@ export const PROJECTS: Project[] = [
       "Bootstrapped this with Supabase. At some point I'll migrate it to self hosted using web sockets.",
     link: "https://pixelboard-production.up.railway.app/",
     code: "https://github.com/Gwardinski/pixelboard",
-  },
-  {
-    title: "Pantie Packer",
-    subTitle: "The Essential Travel App",
-    tags: ["Remix", "TypeScript", "TailwindCSS", "Shadcn/UI", "Railway"],
-    description: "A travel app that helps you pack enough underwear.",
-    link: "https://pantie-packer-production.up.railway.app",
-    code: "https://github.com/Gwardinski/pantie-packer",
+    offline: true,
   },
   {
     title: "Auth Starter",

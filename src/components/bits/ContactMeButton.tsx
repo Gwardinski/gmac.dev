@@ -10,22 +10,20 @@ export const ContactMeButton = () => {
     const contactButton = document.getElementById("contact-button");
     const buttonWrapper = document.getElementById("button-wrapper");
 
-    if (!contactButton || !buttonWrapper) return;
+    if (!contactButton || !buttonWrapper || broken) return;
 
-    if (!broken) {
-      setShowText(true);
-      contactButton.classList.add("break");
-      setTimeout(() => {
-        setBroken(true);
-      }, 500);
-      return;
-    }
+    setShowText(true);
+    contactButton.classList.add("break");
 
-    contactButton.classList.add("breakMore");
-    buttonWrapper.classList.add("fall-off-screen");
+    setTimeout(() => {
+      setBroken(true);
+      contactButton.classList.add("breakMore");
+      buttonWrapper.classList.add("fall-off-screen");
+    }, 400);
+
     setTimeout(() => {
       setHidden(true);
-    }, 1000);
+    }, 1200);
   }
 
   return (

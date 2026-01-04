@@ -4,6 +4,7 @@ export const TECH_TAGS = [
   "C#",
   "Chakra UI",
   "Cloudflare",
+  "Coinbase API",
   "Dart",
   "DrizzleORM",
   "Express",
