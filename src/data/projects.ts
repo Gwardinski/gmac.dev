@@ -45,6 +45,7 @@ export const PROJECTS: Project[] = [
       "Railway",
       "TanStack Router",
       "TanStack Form",
+      "Zod",
     ],
     description: "The essential travel app for packing enough underwear.",
     link: "https://www.pantiepacker.com",

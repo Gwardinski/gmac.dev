@@ -37,6 +37,7 @@ export const AppBackground: React.FC = () => {
           muted
           loop
           autoPlay
+          playsInline
           id="myVideo"
           className="fixed top-0 left-0 -z-40 h-screen min-h-screen w-screen object-cover"
         >
@@ -48,6 +49,7 @@ export const AppBackground: React.FC = () => {
           muted
           loop
           autoPlay
+          playsInline
           id="myVideo"
           className="fixed top-0 left-0 -z-40 h-screen min-h-screen w-screen object-cover"
         >

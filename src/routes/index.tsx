@@ -37,12 +37,20 @@ import { PLAYGROUNDS, type Playground } from "@/data/playgrounds";
 import { PROJECTS, type Project } from "@/data/projects";
 import { TECH_TAGS, type TECH_TAG } from "@/data/types";
 import {
+  IconBrandCloudflare,
   IconBrandGithub,
+  IconBrandReact,
+  IconBrandTailwind,
+  IconBrandVite,
   IconCrane,
   IconExternalLink,
   IconGhost,
   IconLego,
   IconLock,
+  IconPaint,
+  IconPalette,
+  IconRouter,
+  IconTrain,
 } from "@tabler/icons-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
@@ -78,7 +86,7 @@ function App() {
         <PageHeaderAccordion>
           <Accordion type="single" collapsible defaultValue="description">
             <AccordionItem value="description">
-              <AccordionTrigger>Base TechStack</AccordionTrigger>
+              <AccordionTrigger>Site TechStack</AccordionTrigger>
               <AccordionContent className="flex flex-col gap-2 pb-6">
                 <GithubLink
                   href="https://github.com/Gwardinski/gmac.dev"
@@ -86,23 +94,33 @@ function App() {
                 />
                 <DocumentationLink
                   href="https://vitejs.dev/"
-                  text="Framework - Vite"
+                  text="Vite / React"
+                  icon={IconBrandVite}
                 />
                 <DocumentationLink
                   href="https://tanstack.com/router"
-                  text="Framework - Tanstack Router"
+                  text="Tanstack Router"
+                  icon={IconBrandReact}
                 />
                 <DocumentationLink
                   href="https://railway.app/"
-                  text="Deployment - Railway"
+                  text="Railway"
+                  icon={IconTrain}
+                />
+                <DocumentationLink
+                  href="https://www.cloudflare.com/en-gb/"
+                  text="Cloudflare"
+                  icon={IconBrandCloudflare}
                 />
                 <DocumentationLink
                   href="https://tailwindcss.com"
-                  text="Styling - Tailwind"
+                  text="Tailwind"
+                  icon={IconBrandTailwind}
                 />
                 <DocumentationLink
                   href="https://ui.shadcn.com/"
-                  text="Components - shadcn/ui"
+                  text="shadcn/ui"
+                  icon={IconPalette}
                 />
               </AccordionContent>
             </AccordionItem>
