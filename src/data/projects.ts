@@ -4,6 +4,7 @@ export type Project = {
   title: string;
   subTitle: string;
   tags: TECH_TAG[];
+  deprecated_tags?: TECH_TAG[];
   description: string;
   link: string;
   code: string;
@@ -47,9 +48,32 @@ export const PROJECTS: Project[] = [
       "TanStack Form",
       "Zod",
     ],
+    deprecated_tags: ["Remix", "React Hook Form"],
     description: "The essential travel app for packing enough underwear.",
     link: "https://www.pantiepacker.com",
     code: "https://github.com/Gwardinski/pantie-packer",
+  },
+  {
+    title: "Pixel Board",
+    subTitle: "Collaborative Pixel Art",
+    tags: [
+      "NextJS",
+      "Cloudflare",
+      "DrizzleORM",
+      "React",
+      "TypeScript",
+      "TailwindCSS",
+      "Shadcn/UI",
+      "Railway",
+      "WebSocket",
+      "TanStack Query",
+      "Zustand",
+    ],
+    deprecated_tags: ["Remix", "Supabase"],
+    description:
+      "WIP. Bootstrapped with Remix + Supabase, then moved to using websockets via NextJS",
+    link: "https://pixelboard-production-4cea.up.railway.app/",
+    code: "https://github.com/Gwardinski/pixelboard",
   },
   {
     title: "BitzOfCoinz - Frontend",
@@ -89,23 +113,6 @@ export const PROJECTS: Project[] = [
     link: "/projects/project-2",
     code: "https://github.com/Gwardinski/bitzofcoinz_node",
     codeLocked: true,
-    offline: true,
-  },
-  {
-    title: "Pixel Board",
-    subTitle: "Collaborative Pixel Art",
-    tags: [
-      "Remix",
-      "Supabase",
-      "TypeScript",
-      "TailwindCSS",
-      "Shadcn/UI",
-      "Railway",
-    ],
-    description:
-      "Bootstrapped this with Supabase. At some point I'll migrate it to self hosted using web sockets.",
-    link: "https://pixelboard-production.up.railway.app/",
-    code: "https://github.com/Gwardinski/pixelboard",
     offline: true,
   },
   {

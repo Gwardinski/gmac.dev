@@ -16,7 +16,7 @@ import {
   H2Description,
   P,
   PL,
-} from "@/components/layout/typography";
+} from "@/components/ui/typography";
 import {
   Button,
   Card,
@@ -249,6 +249,19 @@ const ProjectCard: React.FC<{
               size="sm"
             >
               {tag}
+            </Button>
+          ))}
+        {project.deprecated_tags
+          ?.sort((a, b) => a.localeCompare(b))
+          .map((tag) => (
+            <Button
+              key={tag}
+              variant={selectedTags.includes(tag) ? "default" : "glass"}
+              onClick={() => onTagClick(tag)}
+              size="sm"
+              disabled
+            >
+              <s>{tag}</s>
             </Button>
           ))}
       </CardContent>

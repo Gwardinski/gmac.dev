@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-import { H3 } from "../layout/typography";
+import { H3 } from "./typography";
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (

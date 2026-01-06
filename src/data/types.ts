@@ -19,6 +19,7 @@ export const TECH_TAGS = [
   "Railway",
   "React Native",
   "React",
+  "React Hook Form",
   "Remix",
   "Shadcn/UI",
   "Supabase",
@@ -30,6 +31,7 @@ export const TECH_TAGS = [
   "TypeScript",
   "Vercel",
   "Vite",
+  "WebSocket",
   "Zod",
   "Zustand",
 ] as const;

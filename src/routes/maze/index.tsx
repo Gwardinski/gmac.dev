@@ -8,7 +8,7 @@ import {
   PageHeading,
   PageSection,
 } from "@/components/layout";
-import { H1, H1Description, H2 } from "@/components/layout/typography";
+import { H1, H1Description, H2 } from "@/components/ui/typography";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui";
