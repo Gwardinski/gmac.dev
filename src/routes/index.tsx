@@ -47,9 +47,7 @@ import {
   IconGhost,
   IconLego,
   IconLock,
-  IconPaint,
   IconPalette,
-  IconRouter,
   IconTrain,
 } from "@tabler/icons-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
