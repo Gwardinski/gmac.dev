@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TestingIndexRouteImport } from './routes/testing/index'
 import { Route as MazeIndexRouteImport } from './routes/maze/index'
 
 const AboutRoute = AboutRouteImport.update({
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TestingIndexRoute = TestingIndexRouteImport.update({
+  id: '/testing/',
+  path: '/testing/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MazeIndexRoute = MazeIndexRouteImport.update({
   id: '/maze/',
   path: '/maze/',
@@ -33,30 +39,34 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/maze': typeof MazeIndexRoute
+  '/testing': typeof TestingIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/maze': typeof MazeIndexRoute
+  '/testing': typeof TestingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/maze/': typeof MazeIndexRoute
+  '/testing/': typeof TestingIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/maze'
+  fullPaths: '/' | '/about' | '/maze' | '/testing'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/maze'
-  id: '__root__' | '/' | '/about' | '/maze/'
+  to: '/' | '/about' | '/maze' | '/testing'
+  id: '__root__' | '/' | '/about' | '/maze/' | '/testing/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   MazeIndexRoute: typeof MazeIndexRoute
+  TestingIndexRoute: typeof TestingIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/testing/': {
+      id: '/testing/'
+      path: '/testing'
+      fullPath: '/testing'
+      preLoaderRoute: typeof TestingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/maze/': {
       id: '/maze/'
       path: '/maze'
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   MazeIndexRoute: MazeIndexRoute,
+  TestingIndexRoute: TestingIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
