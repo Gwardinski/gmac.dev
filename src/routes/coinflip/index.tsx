@@ -6,7 +6,6 @@ import {
   PageSection,
 } from "@/components/layout";
 import { H1, H1Description, H2 } from "@/components/ui/typography";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui";
 import { useState } from "react";
 
