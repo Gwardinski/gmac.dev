@@ -13,7 +13,7 @@ export const Route = createRootRoute({
       <AppBackground />
       <AppLoader />
       <AppHeader />
-      <main className="flex h-full w-full flex-col gap-4 px-4 pt-10">
+      <main className="flex h-full w-full flex-col gap-4 sm:px-4 pt-10">
         <Outlet />
       </main>
       <AppFooter />
