@@ -1,4 +1,4 @@
-import type { TECH_TAG } from "./types";
+import type { TECH_TAG } from './types';
 
 export type Playground = {
   title: string;
@@ -11,14 +11,21 @@ export type Playground = {
 
 export const PLAYGROUNDS: Playground[] = [
   {
-    title: "Maze",
-    subTitle: "Work-in-Progress.",
-    tags: ["React", "TypeScript", "TailwindCSS", "NodeJS", "Express"],
-    description:
-      "Work-in-Progress. A simple mouse dexterity game with scoreboard",
-    link: "/maze",
-    code: "",
+    title: 'Pew',
+    subTitle: 'Work-in-Progress.',
+    tags: ['React', 'TypeScript', 'TailwindCSS', 'Bun', 'WebSocket', 'Elysia', 'Socket.io'],
+    description: 'Work-in-Progress. Fun with web sockets',
+    link: '/pew',
+    code: ''
   },
+  {
+    title: 'Maze',
+    subTitle: 'Work-in-Progress.',
+    tags: ['React', 'TypeScript', 'TailwindCSS', 'Bun', 'WebSocket', 'Elysia', 'Redis'],
+    description: 'Work-in-Progress. A simple mouse dexterity game with scoreboard',
+    link: '/maze',
+    code: ''
+  }
   // {
   //   title: "Gallery",
   //   subTitle: "Gallery description",

@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
-import { io } from "socket.io-client";
-import { GAME_STATE, type Color, type Direction, type GameState } from "./game-state";
+import { useCallback, useEffect, useState } from 'react';
+import { io } from 'socket.io-client';
+import { GAME_STATE, type Color, type Direction, type GameState } from './game-state';
 
-const socket = io("http://localhost:8080");
-
+const socket = io('http://localhost:3002');
 
 export const useGetSocketId = () => {
-  const [socketId, setSocketId] = useState<string>("");
+  const [socketId, setSocketId] = useState<string>('');
 
   useEffect(() => {
     // Socket ID is available after connection
@@ -21,10 +20,10 @@ export const useGetSocketId = () => {
       }
     };
 
-    socket.on("connect", handleConnect);
+    socket.on('connect', handleConnect);
 
     return () => {
-      socket.off("connect", handleConnect);
+      socket.off('connect', handleConnect);
     };
   }, []);
 
@@ -39,10 +38,10 @@ export const useGetGameState = () => {
       setGameState(gameState);
     };
 
-    socket.on("game-state", handleGameState);
+    socket.on('game-state', handleGameState);
 
     return () => {
-      socket.off("game-state", handleGameState);
+      socket.off('game-state', handleGameState);
     };
   }, []);
 
@@ -50,20 +49,24 @@ export const useGetGameState = () => {
 };
 
 export const usePlayerMove = (socketId: string) => {
-  const playerMove = useCallback((direction: Direction) => {
-    socket.emit("update-position", { socketId, direction });
-  }, [socketId]);
+  const playerMove = useCallback(
+    (direction: Direction) => {
+      socket.emit('update-position', { socketId, direction });
+    },
+    [socketId]
+  );
   return { playerMove };
 };
 
 export const usePlayerShoot = (socketId: string) => {
-  const playerShoot = useCallback((direction: Direction) => {
-    socket.emit("fire-weapon", { socketId, direction });
-  }, [socketId]);
+  const playerShoot = useCallback(
+    (direction: Direction) => {
+      socket.emit('fire-weapon', { socketId, direction });
+    },
+    [socketId]
+  );
   return { playerShoot };
 };
-
-
 
 export const useGameChat = () => {
   const [messages, setMessages] = useState<string[]>([]);
@@ -74,10 +77,10 @@ export const useGameChat = () => {
       setMessages(messages);
     };
 
-    socket.on("game-chat", handleGameChat);
+    socket.on('game-chat', handleGameChat);
 
     return () => {
-      socket.off("game-chat", handleGameChat);
+      socket.off('game-chat', handleGameChat);
     };
   }, []);
 
@@ -85,16 +88,16 @@ export const useGameChat = () => {
 };
 
 export function gameJoin(roomCode: string, playerName: string, playerColor: Color) {
-  let sessionId = localStorage.getItem("player-session-id");
+  let sessionId = localStorage.getItem('player-session-id');
   if (!sessionId) {
     sessionId = crypto.randomUUID();
-    localStorage.setItem("player-session-id", sessionId);
+    localStorage.setItem('player-session-id', sessionId);
   }
 
   // Save player preferences to localStorage
-  localStorage.setItem("player-name", playerName);
-  localStorage.setItem("room-code", roomCode);
-  localStorage.setItem("player-color", playerColor);
+  localStorage.setItem('player-name', playerName);
+  localStorage.setItem('room-code', roomCode);
+  localStorage.setItem('player-color', playerColor);
 
-  socket.emit("join-game", { roomCode, playerName, playerColor, sessionId });
-};
+  socket.emit('join-game', { roomCode, playerName, playerColor, sessionId });
+}

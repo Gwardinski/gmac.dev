@@ -1,4 +1,4 @@
-import { initServer } from './api/server.js';
+import { initServer } from "./api/server";
 
 (async () => {
   initServer();

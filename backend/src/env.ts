@@ -1,13 +1,15 @@
-import dotenv from 'dotenv';
-import z from 'zod';
-
-dotenv.config({ path: '.env.local' });
+import z from "zod";
 
 const envSchema = z.object({
   NOTE_TITLE: z.string(),
   NOTE_CONTENT: z.string(),
   CODE: z.string(),
+  CORS_ORIGINS: z
+    .string()
+    .default("http://localhost:3000")
+    .transform((val) => val.split(",")),
 });
+
 type EnvSchema = z.infer<typeof envSchema>;
 
 function initEnv(): EnvSchema {
@@ -19,10 +21,10 @@ function initEnv(): EnvSchema {
 
   if (!validation.success) {
     const missing = validation.error.issues.map((issue) => issue.path[0]);
-    throw new Error(`❌ Missing environment variables: ${missing.join(', ')}`);
+    throw new Error(`❌ Missing environment variables: ${missing.join(", ")}`);
   }
 
-  return env as EnvSchema;
+  return validation.data;
 }
 
-export const { NOTE_TITLE, NOTE_CONTENT, CODE } = initEnv();
+export const { NOTE_TITLE, NOTE_CONTENT, CODE, CORS_ORIGINS } = initEnv();

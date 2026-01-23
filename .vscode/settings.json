@@ -16,8 +16,9 @@
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"
   },
-    "editor.codeActionsOnSave": {
+  "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "explicit"
   },
+  "cSpell.words": ["Elysia"]
 }

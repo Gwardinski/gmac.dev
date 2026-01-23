@@ -1,35 +1,59 @@
-/* eslint-disable no-console */
-import http from 'http';
-import compression from 'compression';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
-import express from 'express';
-import { initGameServer } from './game/game-server.js';
-import { noteRouter } from './note/router.note.js';
+import { cors } from "@elysiajs/cors";
+import { Elysia } from "elysia";
+import figlet from "figlet";
+import { Server as SocketIOServer } from "socket.io";
+import { CORS_ORIGINS } from "../env.js";
+import { noteRouter } from "./_note/router.note.js";
+import { pewRouter } from "./pew/router.pew.js";
+import { initPewGame } from "./pew/service.pew.js";
 
-const app = express();
-// Boilerplate
-app.use(cors({ credentials: true }));
-app.use(compression());
-app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+const ELYSIA_PORT = 3001;
+const SOCKET_IO_PORT = 3002;
 
-// Routes
-app.get('/', (req, res) => {
-  res.send('hello world');
-});
+export function initServer() {
+  console.log(`bun bun bun, it rhymes with fun!`);
 
-// Routers
-app.use('/api', noteRouter);
+  // Elysia REST API
+  const app = initAPI();
 
-const server = http.createServer(app);
+  // Socket.IO Websockets
+  const io = initWebsockets();
 
-// Initialize game server with Socket.IO
-initGameServer(server);
+  console.log(
+    `gmac.api (REST) running: ${app.server?.hostname}:${app.server?.port}`
+  );
+  console.log(`Socket.IO running on port ${SOCKET_IO_PORT}`);
 
-export async function initServer() {
-  server.listen(8080, () => {
-    console.log(`Server is running on port ${8080}`);
+  return { app, io };
+}
+
+function initAPI() {
+  // Elysia REST API
+  const app = new Elysia()
+    .use(
+      cors({
+        origin: CORS_ORIGINS,
+        credentials: true,
+      })
+    )
+    .get("/", () => {
+      const body = figlet.textSync("gmac.api");
+      return body;
+    })
+    .use(noteRouter)
+    .use(pewRouter)
+    .listen(ELYSIA_PORT);
+
+  return app;
+}
+
+function initWebsockets() {
+  const io = new SocketIOServer(SOCKET_IO_PORT, {
+    cors: {
+      origin: CORS_ORIGINS,
+      credentials: true,
+    },
   });
+  initPewGame(io);
+  return io;
 }
