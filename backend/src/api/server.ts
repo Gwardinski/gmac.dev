@@ -1,11 +1,9 @@
 import { cors } from "@elysiajs/cors";
 import { Elysia } from "elysia";
 import figlet from "figlet";
-import { Server as SocketIOServer } from "socket.io";
 import { CORS_ORIGINS } from "../env.js";
 import { noteRouter } from "./_note/router.note.js";
 import { pewRouter } from "./pew/router.pew.js";
-import { initPewGame } from "./pew/socketio.pew.js";
 
 const ELYSIA_PORT = 3001;
 
@@ -15,14 +13,11 @@ export function initServer() {
   // Elysia REST API
   const app = initAPI();
 
-  // Socket.IO Websockets - attach to the same server
-  const io = initWebsockets(app.server);
-
   console.log(
-    `gmac.api (REST) and Socket.IO running: ${app.server?.hostname}:${app.server?.port}`
+    `gmac.api running on ${app.server?.hostname}:${app.server?.port}`
   );
 
-  return { app, io };
+  return { app };
 }
 
 function initAPI() {
@@ -43,19 +38,4 @@ function initAPI() {
     .listen(ELYSIA_PORT);
 
   return app;
-}
-
-function initWebsockets(server: any) {
-  const io = new SocketIOServer({
-    cors: {
-      origin: CORS_ORIGINS,
-      credentials: true,
-    },
-  });
-
-  // Attach Socket.IO to the existing Bun server
-  io.attach(server);
-
-  initPewGame(io);
-  return io;
 }
