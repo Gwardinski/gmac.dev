@@ -5,5 +5,9 @@
   "scripts": {
     "front": "cd frontend && pnpm dev",
     "back": "cd backend && pnpm dev"
+  },
+  "dependencies": {
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-separator": "^1.1.8"
   }
-  }
+}

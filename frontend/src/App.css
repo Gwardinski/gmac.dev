@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -10,8 +10,9 @@
   body {
     @apply bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50;
   }
-  button {
-    font-family: "Roboto", monospace;
+  button,
+  table {
+    font-family: 'Roboto', monospace;
     /* move to utility? */
   }
 }

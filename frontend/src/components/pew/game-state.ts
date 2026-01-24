@@ -1,3 +1,4 @@
+// Types synced with backend models
 export type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
 
 export const COLORS = [
@@ -8,22 +9,20 @@ export const COLORS = [
     'PURPLE',
     'ORANGE',
     'BROWN',
-];
+] as const;
 export type Color = typeof COLORS[number];
 
+// Player type matching backend Player model
 export type Player = {
-    socketId: string;
-    sessionId: string;
-    name: string;
-    color: Color;
+    playerId: string;
+    playerName: string;
+    playerColour: Color;
     x: number;
     y: number;
 };
 
+// Game state matching backend Game model
 export type GameState = {
+    roomId?: string;
     players: Player[];
-};
-
-export const GAME_STATE: GameState = {
-    players: [],
 };

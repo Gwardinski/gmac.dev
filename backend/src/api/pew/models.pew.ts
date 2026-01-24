@@ -1,9 +1,28 @@
 import z from "zod";
 
-export const directionSchema = z.enum(["UP", "DOWN", "LEFT", "RIGHT"]);
-export type Direction = z.infer<typeof directionSchema>;
+// ROOMS
 
-export const colorSchema = z.enum([
+export type ROOM_ID = string;
+
+const roomSchema = z.object({
+  roomId: z.string() as z.ZodType<ROOM_ID>,
+  roomName: z.string(),
+  roomCode: z.string(),
+  playerCount: z.number().optional(),
+});
+export type Room = z.infer<typeof roomSchema>;
+export type RoomListModel = Omit<Room, "roomCode" | "roomId">;
+
+export const roomJoinSchema = z.object({
+  roomName: z.string(),
+  roomCode: z.string(),
+});
+export type RoomJoinRequestModel = z.infer<typeof roomJoinSchema>;
+export type RoomJoinResponseModel = Pick<Room, "roomId">;
+
+// PLAYER
+
+const playerColourSchema = z.enum([
   "RED",
   "BLUE",
   "GREEN",
@@ -12,42 +31,36 @@ export const colorSchema = z.enum([
   "ORANGE",
   "BROWN",
 ] as const);
-export type Color = z.infer<typeof colorSchema>;
+export type PlayerColour = z.infer<typeof playerColourSchema>;
 
-export const joinGameSchema = z.object({
+const playerSchema = z.object({
+  playerId: z.string(),
   playerName: z.string(),
-  playerColor: colorSchema,
-  sessionId: z.string(),
-  roomCode: z.string(),
+  playerColour: playerColourSchema,
+  x: z.number(),
+  y: z.number(),
 });
-export type JoinGameRequest = z.infer<typeof joinGameSchema>;
+export type Player = z.infer<typeof playerSchema>;
 
-export const updatePositionSchema = z.object({
-  socketId: z.string(),
-  direction: directionSchema,
+// GAME
+
+const gameSchema = z.object({
+  roomId: z.string(),
+  players: z.array(playerSchema),
 });
-export type UpdatePositionRequest = z.infer<typeof updatePositionSchema>;
+export type Game = z.infer<typeof gameSchema>;
 
-export type Player = {
-  socketId: string;
-  sessionId: string; // Unique ID that persists across refreshes
-  name: string;
-  color: Color;
-  x: number;
-  y: number;
-  // health: number;
-  // shield: boolean;
-  // energy: number;
-  // killCount: number;
-  // deathCount: number;
-};
+// CHAT
 
-export type GameState = {
-  id: string;
-  roomCode: string;
-  players: Player[];
-};
+// type GameChat = {
+//   messages: Message[];
+// };
 
-export type GameChat = {
-  messages: string[];
-};
+// // Possibly too many fields here. Want to keep simple, but can delete later.
+// type Message = {
+//   messageId: string;
+//   playerId: string; // might not need this since we have playerColor
+//   playerColor: Color;
+//   content: string;
+//   timestamp: number;
+// };

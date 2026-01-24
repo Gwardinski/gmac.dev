@@ -1,38 +1,52 @@
-import { StrictMode } from "react";
-import ReactDOM from "react-dom/client";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
-import { routeTree } from "./routeTree.gen";
-import "./App.css";
-import reportWebVitals from "./reportWebVitals.ts";
-import { ThemeProvider } from "./components/theme-provider.tsx";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RouterProvider, createRouter } from '@tanstack/react-router';
+import { StrictMode } from 'react';
+import ReactDOM from 'react-dom/client';
+import './App.css';
+import { ThemeProvider } from './components/theme-provider.tsx';
+import reportWebVitals from './reportWebVitals.ts';
+import { routeTree } from './routeTree.gen';
 
-// Create a new router instance
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60, // 1 minute
+      retry: 1,
+      refetchOnWindowFocus: true,
+      refetchOnMount: true,
+      refetchOnReconnect: true
+    }
+  }
+});
+
 const router = createRouter({
   routeTree,
   context: {},
-  defaultPreload: "intent",
+  defaultPreload: 'intent',
   scrollRestoration: true,
   defaultStructuralSharing: true,
-  defaultPreloadStaleTime: 0,
+  defaultPreloadStaleTime: 0
 });
 
 // Register the router instance for type safety
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router;
   }
 }
 
 // Render the app
-const rootElement = document.getElementById("app");
+const rootElement = document.getElementById('app');
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <RouterProvider router={router} />
-      </ThemeProvider>
-    </StrictMode>,
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </StrictMode>
   );
 }
 

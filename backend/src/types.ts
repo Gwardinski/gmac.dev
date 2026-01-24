@@ -1,26 +1,27 @@
-import type { ZodIssue } from "zod";
+// Final data model for all endpoints. Returned from controllers / router.
+export interface APIResponse<T> {
+  status: number;
+  value?: T;
+  error?: ErrorCode;
+  validationErrors?: any[]; // todo: replace with zod4 validation error model
+}
+
+// returned from services.
+export type ServiceResponse<T> = [T, undefined] | [undefined, ErrorCode];
+
+// Returned from validation / lookup functions.
+export type GuardResponse = [true, undefined] | [false, ErrorCode];
 
 export type ErrorCode =
+  // Pew-specific errors:
+  | "INVALID_ROOM_CODE"
+  // Generic errors:
   | "UNKNOWN"
   | "BAD_REQUEST"
   | "INVALID_CODE"
   | "NOT_FOUND"
   | "UNAUTHORIZED"
   | "FORBIDDEN";
-
-export interface APIResponse<T> {
-  status: number;
-  value: T;
-}
-
-export interface APIError {
-  status: number;
-  error: ErrorCode;
-  validationErrors?: ZodIssue[];
-}
-
-export type ServiceResponse<T> = [T, undefined] | [undefined, ErrorCode];
-export type GuardResponse = [true, undefined] | [false, ErrorCode];
 
 export function getStatusByErrorCode(error: ErrorCode): number {
   switch (error) {
@@ -33,6 +34,8 @@ export function getStatusByErrorCode(error: ErrorCode): number {
     case "NOT_FOUND":
       return 404;
     case "INVALID_CODE":
+      return 400;
+    case "ROOM_NAME_ALREADY_EXISTS":
       return 400;
     case "UNKNOWN":
     default:
