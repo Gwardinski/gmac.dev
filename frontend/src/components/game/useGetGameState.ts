@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { GAME_STATE, type Color, type Direction, type GameState } from './game-state';
 
-const socket = io('http://localhost:3002');
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
+const socket = io(SOCKET_URL);
 
 export const useGetSocketId = () => {
   const [socketId, setSocketId] = useState<string>('');

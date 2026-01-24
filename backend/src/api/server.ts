@@ -5,10 +5,9 @@ import { Server as SocketIOServer } from "socket.io";
 import { CORS_ORIGINS } from "../env.js";
 import { noteRouter } from "./_note/router.note.js";
 import { pewRouter } from "./pew/router.pew.js";
-import { initPewGame } from "./pew/service.pew.js";
+import { initPewGame } from "./pew/socketio.pew.js";
 
 const ELYSIA_PORT = 3001;
-const SOCKET_IO_PORT = 3002;
 
 export function initServer() {
   console.log(`bun bun bun, it rhymes with fun!`);
@@ -16,13 +15,12 @@ export function initServer() {
   // Elysia REST API
   const app = initAPI();
 
-  // Socket.IO Websockets
-  const io = initWebsockets();
+  // Socket.IO Websockets - attach to the same server
+  const io = initWebsockets(app.server);
 
   console.log(
-    `gmac.api (REST) running: ${app.server?.hostname}:${app.server?.port}`
+    `gmac.api (REST) and Socket.IO running: ${app.server?.hostname}:${app.server?.port}`
   );
-  console.log(`Socket.IO running on port ${SOCKET_IO_PORT}`);
 
   return { app, io };
 }
@@ -47,13 +45,17 @@ function initAPI() {
   return app;
 }
 
-function initWebsockets() {
-  const io = new SocketIOServer(SOCKET_IO_PORT, {
+function initWebsockets(server: any) {
+  const io = new SocketIOServer({
     cors: {
       origin: CORS_ORIGINS,
       credentials: true,
     },
   });
+
+  // Attach Socket.IO to the existing Bun server
+  io.attach(server);
+
   initPewGame(io);
   return io;
 }
