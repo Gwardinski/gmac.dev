@@ -15,6 +15,7 @@ export type GuardResponse = [true, undefined] | [false, ErrorCode];
 export type ErrorCode =
   // Pew-specific errors:
   | "INVALID_ROOM_CODE"
+  | "INVALID_PLAYER_ID"
   // Generic errors:
   | "UNKNOWN"
   | "BAD_REQUEST"
@@ -34,8 +35,6 @@ export function getStatusByErrorCode(error: ErrorCode): number {
     case "NOT_FOUND":
       return 404;
     case "INVALID_CODE":
-      return 400;
-    case "ROOM_NAME_ALREADY_EXISTS":
       return 400;
     case "UNKNOWN":
     default:

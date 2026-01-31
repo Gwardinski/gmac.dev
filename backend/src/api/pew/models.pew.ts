@@ -50,6 +50,57 @@ const gameSchema = z.object({
 });
 export type Game = z.infer<typeof gameSchema>;
 
+// WEBSOCKET
+
+// WebSocket query parameters
+export const wsQuerySchema = z.object({
+  roomId: z.string(),
+  playerId: z.string(),
+  playerName: z.string(),
+  playerColour: z.string(),
+});
+export type WSQuery = z.infer<typeof wsQuerySchema>;
+
+// WEBSOCKET MESSAGES
+
+// Direction enum for movement and firing
+export const DIRECTIONS = ["UP", "DOWN", "LEFT", "RIGHT"] as const;
+const directionSchema = z.enum(DIRECTIONS);
+export type Direction = z.infer<typeof directionSchema>;
+
+// Message data schemas
+const updateMovementDataSchema = z.object({
+  direction: directionSchema,
+});
+export type UpdateMovementData = z.infer<typeof updateMovementDataSchema>;
+
+// WebSocket message wrapper schemas
+const updateMovementMessageSchema = z.object({
+  type: z.literal("update-movement"),
+  data: updateMovementDataSchema,
+});
+export type UpdateMovementMessage = z.infer<typeof updateMovementMessageSchema>;
+
+const fireDataSchema = z.object({
+  direction: directionSchema,
+});
+export type FireData = z.infer<typeof fireDataSchema>;
+
+const fireMessageSchema = z.object({
+  type: z.literal("fire"),
+  data: fireDataSchema,
+});
+export type FireMessage = z.infer<typeof fireMessageSchema>;
+
+// Union of all possible WebSocket messages
+export const wsMessageSchema = z.discriminatedUnion("type", [
+  updateMovementMessageSchema,
+  fireMessageSchema,
+]);
+export type WSMessage = z.infer<typeof wsMessageSchema>;
+
+export type WSSendMessageType = "game-state";
+
 // CHAT
 
 // type GameChat = {

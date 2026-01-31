@@ -1,7 +1,19 @@
-import { Elysia, t } from "elysia";
+import { Elysia } from "elysia";
+import { returnWSResponse } from "../../responses.js";
 import { joinRoomController, listRoomsController } from "./controllers.pew.js";
-import { roomJoinSchema } from "./models.pew.js";
-import { getGameState } from "./service.pew.js";
+import {
+  roomJoinSchema,
+  wsMessageSchema,
+  wsQuerySchema,
+  type Game,
+  type WSSendMessageType,
+} from "./models.pew.js";
+import {
+  connectPlayerToGame,
+  playerFire,
+  removePlayerFromGame,
+  updatePlayerPosition,
+} from "./service.pew.js";
 
 export const pewRouter = new Elysia({ prefix: "/pew" })
   .get("/", () => ({
@@ -15,23 +27,26 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
   .post("/join-room", ({ body }) => joinRoomController(body), {
     body: roomJoinSchema,
   })
-  // WebSocket route for game state - requires roomId query parameter
   // Usage: ws://localhost:3001/pew/game?roomId=room-123
   .ws("/game", {
-    // Validate that roomId is provided as a query parameter
-    query: t.Object({
-      roomId: t.String(),
-    }),
-
-    // Called when a player connects to the game WebSocket
+    query: wsQuerySchema,
+    body: wsMessageSchema,
     open(ws) {
-      const { roomId } = ws.data.query;
-      console.log(`Player connected to room: ${roomId}`);
+      const { roomId, playerId, playerName, playerColour } = ws.data.query;
 
-      // Get and send the current game state
-      const [gameState, error] = getGameState(roomId);
+      console.log(
+        `Player ${playerName}-${playerId} connected to room: ${roomId}`
+      );
+
+      const [gameState, error] = connectPlayerToGame(
+        roomId,
+        playerId,
+        playerName,
+        playerColour
+      );
 
       if (error || !gameState) {
+        console.log("Room not found");
         ws.send(
           JSON.stringify({
             error: error || "Room not found",
@@ -41,7 +56,6 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
         return;
       }
 
-      // Send the current game state to the newly connected player
       ws.send(
         JSON.stringify({
           type: "game-state",
@@ -50,23 +64,55 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
       );
     },
 
-    // Called when the server receives a message from the client
     message(ws, message) {
-      const { roomId } = ws.data.query;
-      console.log(`Message from room ${roomId}:`, message);
+      const { roomId, playerId, playerName } = ws.data.query;
 
-      // For now, just echo back - later this will handle player movements
-      ws.send(
-        JSON.stringify({
-          type: "echo",
-          data: message,
-        })
+      console.log(
+        `Message from room ${roomId}, player ${playerName}-${playerId}:`,
+        message.type
       );
+
+      switch (message.type) {
+        case "update-movement": {
+          const { direction } = message.data;
+          console.log(`Player ${playerName}-${playerId} moving: ${direction}`);
+
+          const [gameState] = updatePlayerPosition(roomId, playerId, direction);
+
+          if (gameState) {
+            ws.send(
+              returnWSResponse<WSSendMessageType, Game>("game-state", gameState)
+            );
+          }
+          break;
+        }
+
+        case "fire": {
+          const { direction } = message.data;
+          console.log(`Player ${playerName}-${playerId} firing: ${direction}`);
+
+          const [gameState] = playerFire(roomId, playerId, direction);
+
+          if (gameState) {
+            ws.send(
+              returnWSResponse<WSSendMessageType, Game>("game-state", gameState)
+            );
+          }
+          break;
+        }
+      }
     },
 
-    // Called when the player disconnects
     close(ws) {
-      const { roomId } = ws.data.query;
-      console.log(`Player disconnected from room: ${roomId}`);
+      const { roomId, playerId } = ws.data.query;
+      console.log(`Player ${playerId} disconnected from room: ${roomId}`);
+
+      const [gameState] = removePlayerFromGame(roomId, playerId);
+
+      if (gameState) {
+        ws.send(
+          returnWSResponse<WSSendMessageType, Game>("game-state", gameState)
+        );
+      }
     },
   });

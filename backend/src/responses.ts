@@ -50,3 +50,11 @@ export function returnAPIError<T>(
   };
   return response;
 }
+
+// Websocket Responses
+export function returnWSResponse<T, D>(type: T, data: D): string {
+  return JSON.stringify({
+    type,
+    data,
+  });
+}
