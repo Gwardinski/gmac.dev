@@ -1,3 +1,5 @@
+// Old Socket.IO implementation, keep for reference...
+
 // import { Server as SocketIOServer } from "socket.io";
 // import type {
 //   Color,

@@ -1,4 +1,5 @@
 import {
+  ERROR_CODES_SET,
   getStatusByErrorCode,
   type APIResponse,
   type ErrorCode,
@@ -24,6 +25,12 @@ export function returnServiceResponse<T>(
   if (error) {
     return [undefined, error];
   }
+
+  // Check if the value is actually an ErrorCode (when called with single arg)
+  if (typeof value === "string" && ERROR_CODES_SET.has(value as ErrorCode)) {
+    return [undefined, value as ErrorCode];
+  }
+
   return [value as T, undefined];
 }
 
@@ -49,4 +56,12 @@ export function returnAPIError<T>(
     validationErrors,
   };
   return response;
+}
+
+// Websocket Responses
+export function returnWSResponse<T, D>(type: T, data: D): string {
+  return JSON.stringify({
+    type,
+    data,
+  });
 }
