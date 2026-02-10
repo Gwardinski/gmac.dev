@@ -4,6 +4,7 @@ import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@radix-ui/react-radio-group';
 import { useForm } from '@tanstack/react-form';
+import { mapAPIErrorsToForm } from './form-utils';
 import { COLORS, type Color } from './game-state';
 import { joinGameSchema, useJoinRoom } from './useJoinRoom';
 
@@ -12,8 +13,13 @@ const savedPlayerColor = (localStorage.getItem('player-color') as Color) || 'RED
 const savedRoomCode = localStorage.getItem('room-code') || '';
 const savedRoomName = localStorage.getItem('room-name') || '';
 
+type joinSuccessResponse = {
+  roomId: string;
+  playerId: string;
+};
+
 interface GameJoinFormProps {
-  onJoinSuccess: (roomId: string) => void;
+  onJoinSuccess: (response: joinSuccessResponse) => void;
 }
 
 export function GameJoinForm({ onJoinSuccess }: GameJoinFormProps) {
@@ -24,20 +30,31 @@ export function GameJoinForm({ onJoinSuccess }: GameJoinFormProps) {
       playerName: savedPlayerName,
       roomCode: savedRoomCode,
       roomName: savedRoomName,
-      playerColor: savedPlayerColor
+      playerColour: savedPlayerColor
     },
     validators: {
       onSubmit: joinGameSchema
     },
-    onSubmit: async ({ value }) => {
+    onSubmit: async ({ value, formApi }) => {
       localStorage.setItem('player-name', value.playerName);
-      localStorage.setItem('player-color', value.playerColor);
+      localStorage.setItem('player-color', value.playerColour);
       localStorage.setItem('room-code', value.roomCode);
       localStorage.setItem('room-name', value.roomName);
       mutate(value, {
-        onSuccess: ({ value }) => {
-          localStorage.setItem('room-id', value.roomId);
-          onJoinSuccess?.(value.roomId);
+        onSuccess: ({ validationErrors, value }) => {
+          // Map backend validation errors to form fields
+          if (mapAPIErrorsToForm(validationErrors, formApi)) {
+            return;
+          }
+          // Success - no validation errors
+          if (value?.roomId) {
+            localStorage.setItem('room-id', value.roomId);
+            localStorage.setItem('player-id', value.playerId);
+            onJoinSuccess?.({ roomId: value.roomId, playerId: value.playerId });
+          }
+        },
+        onError: (error) => {
+          console.error('Error joining room', error);
         }
       });
     }
@@ -70,12 +87,12 @@ export function GameJoinForm({ onJoinSuccess }: GameJoinFormProps) {
                       placeholder="Player Name"
                       autoComplete="off"
                     />
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    <FieldError errors={field.state.meta.errors} />
                   </Field>
                 );
               }}
             />
-            <form.Field name="playerColor">
+            <form.Field name="playerColour">
               {(field) => (
                 <RadioGroup value={field.state.value} onValueChange={(value) => field.handleChange(value as Color)} className="flex flex-wrap justify-center gap-2">
                   {COLORS.map((color) => (
@@ -89,6 +106,7 @@ export function GameJoinForm({ onJoinSuccess }: GameJoinFormProps) {
                       />
                     </label>
                   ))}
+                  <FieldError errors={field.state.meta.errors} />
                 </RadioGroup>
               )}
             </form.Field>
@@ -110,7 +128,7 @@ export function GameJoinForm({ onJoinSuccess }: GameJoinFormProps) {
                       placeholder="Room Name"
                       autoComplete="off"
                     />
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    <FieldError errors={field.state.meta.errors} />
                   </Field>
                 );
               }}
@@ -133,7 +151,7 @@ export function GameJoinForm({ onJoinSuccess }: GameJoinFormProps) {
                       placeholder="Room Code"
                       autoComplete="off"
                     />
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    <FieldError errors={field.state.meta.errors} />
                   </Field>
                 );
               }}

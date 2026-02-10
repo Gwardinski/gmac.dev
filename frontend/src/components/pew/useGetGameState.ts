@@ -10,12 +10,7 @@ type WSMessage = { type: 'game-state'; data: GameState } | { type: 'echo'; data:
 // WebSocket connection states
 type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
 
-/**
- * Hook to manage WebSocket connection and game state
- * @param roomId - The room ID to connect to
- * @returns Game state, connection status, error, and sendMessage function
- */
-export function useGetGameState(roomId: string | null) {
+export function useGetGameState(roomId: string | null, playerId: string | null) {
   const [gameState, setGameState] = useState<GameState>({ players: [] });
   const [status, setStatus] = useState<ConnectionStatus>('disconnected');
   const [error, setError] = useState<string | null>(null);
@@ -34,17 +29,16 @@ export function useGetGameState(roomId: string | null) {
   }, []);
 
   useEffect(() => {
-    // Don't connect if no roomId
-    if (!roomId) {
+    if (!roomId || !playerId) {
       setStatus('disconnected');
       return;
     }
 
-    console.log(`Connecting to WebSocket: ${WS_URL}/pew/game?roomId=${roomId}`);
+    console.log(`Connecting to WebSocket: ${WS_URL}/pew/game?roomId=${roomId}&playerId=${playerId}`);
     setStatus('connecting');
 
     // Create WebSocket connection
-    const ws = new WebSocket(`${WS_URL}/pew/game?roomId=${roomId}`);
+    const ws = new WebSocket(`${WS_URL}/pew/game?roomId=${roomId}&playerId=${playerId}`);
     wsRef.current = ws;
 
     // Connection opened
@@ -102,7 +96,7 @@ export function useGetGameState(roomId: string | null) {
       }
       wsRef.current = null;
     };
-  }, [roomId]);
+  }, [roomId, playerId]);
 
   return {
     gameState,

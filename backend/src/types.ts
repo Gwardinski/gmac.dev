@@ -1,9 +1,18 @@
+// Elysia validation error format
+export interface ValidationError {
+  path: string;
+  message: string;
+  summary?: string;
+  value?: any;
+  schema?: any;
+}
+
 // Final data model for all endpoints. Returned from controllers / router.
 export interface APIResponse<T> {
   status: number;
   value?: T;
   error?: ErrorCode;
-  validationErrors?: any[]; // todo: replace with zod4 validation error model
+  validationErrors?: ValidationError[];
 }
 
 // returned from services.

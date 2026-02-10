@@ -1,5 +1,5 @@
 import { Elysia } from "elysia";
-import { returnWSResponse } from "../../responses.js";
+import { returnAPIError, returnWSResponse } from "../../responses.js";
 import {
   joinRoomController,
   listRoomsController,
@@ -20,6 +20,19 @@ import {
 } from "./service.player.pew.js";
 
 export const pewRouter = new Elysia({ prefix: "/pew" })
+  .onError(({ code, error, set }) => {
+    if (code === "VALIDATION") {
+      const validationErrors = "all" in error ? error.all : [];
+      const response = returnAPIError("BAD_REQUEST", 400, validationErrors);
+      set.status = response.status;
+      return response;
+    }
+
+    // TODO: Handle other errors
+    const response = returnAPIError("UNKNOWN", 500);
+    set.status = response.status;
+    return response;
+  })
   .get("/", () => ({
     message: "Pew game server - connect via WebSocket on port 3001",
   }))
@@ -68,16 +81,28 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
     message(ws, message) {
       const { roomId, playerId } = ws.data.query;
 
-      sendMessage(
-        `Message from room ${roomId}, player ${playerId}: ${message.type}`
-      );
+      const [gameState, gameErr] = getGameState(roomId);
+      if (!gameState || gameErr) {
+        ws.send(gameErr);
+        ws.close(); // should close?
+        return;
+      }
 
       switch (message.type) {
         case "update-movement": {
           const { direction } = message.data;
           sendMessage(`Player ${playerId} moving: ${direction}`);
 
-          const [gameState] = updatePlayerPosition(roomId, playerId, direction);
+          const [gameState, gameStateErr] = updatePlayerPosition(
+            roomId,
+            playerId,
+            direction
+          );
+
+          if (gameStateErr) {
+            ws.send(gameStateErr);
+            return;
+          }
 
           if (gameState) {
             ws.send(
@@ -91,7 +116,16 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
           const { direction } = message.data;
           sendMessage(`Player ${playerId} firing: ${direction}`);
 
-          const [gameState] = playerFire(roomId, playerId, direction);
+          const [gameState, gameStateErr] = playerFire(
+            roomId,
+            playerId,
+            direction
+          );
+
+          if (gameStateErr) {
+            ws.send(gameStateErr);
+            return;
+          }
 
           if (gameState) {
             ws.send(

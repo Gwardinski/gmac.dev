@@ -13,6 +13,7 @@ export const Route = createFileRoute('/pew/')({
 
 function RouteComponent() {
   const [roomId, setRoomId] = useState<string | null>();
+  const [playerId, setPlayerId] = useState<string | null>();
 
   return (
     <Page>
@@ -25,8 +26,15 @@ function RouteComponent() {
 
       <PageSection className="flex flex-col items-center justify-center gap-4 font-mono">
         <GameControls />
-        {!roomId && <GameJoinForm onJoinSuccess={setRoomId} />}
-        {roomId && <GameBoard roomId={roomId} />}
+        {!roomId && (
+          <GameJoinForm
+            onJoinSuccess={({ roomId, playerId }) => {
+              setRoomId(roomId);
+              setPlayerId(playerId);
+            }}
+          />
+        )}
+        {roomId && playerId && <GameBoard roomId={roomId} playerId={playerId} />}
 
         <GameRoomsActive />
       </PageSection>
@@ -34,8 +42,8 @@ function RouteComponent() {
   );
 }
 
-const GameBoard = ({ roomId }: { roomId: string }) => {
-  const { gameState } = useGetGameState(roomId);
+const GameBoard = ({ roomId, playerId }: { roomId: string; playerId: string }) => {
+  const { gameState } = useGetGameState(roomId, playerId);
   const { players } = gameState;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);

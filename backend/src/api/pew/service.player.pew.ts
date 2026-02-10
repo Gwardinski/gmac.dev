@@ -2,6 +2,7 @@ import { returnServiceResponse } from "../../responses";
 import type { ServiceResponse } from "../../types";
 import { GAMES_DB } from "./db.pew";
 import type { Color, Direction, Game, Player, ROOM_ID } from "./models.pew";
+import { updateGamePlayerState } from "./service.game.pew";
 import { generatePlayerId } from "./util.pew";
 
 // REST Services
@@ -44,42 +45,37 @@ export function updatePlayerPosition(
   playerId: string,
   direction: Direction
 ): ServiceResponse<Game> {
-  const game = GAMES_DB.get(roomId);
-  if (!game) {
-    return returnServiceResponse<Game>("INVALID_ROOM_CODE");
-  }
+  let xMod = 0;
+  let yMod = 0;
 
-  const player = game.players.find((p) => p.playerId === playerId);
-  if (!player) {
-    return returnServiceResponse<Game>("INVALID_PLAYER_ID");
-  }
-
-  // Update position based on direction
   switch (direction) {
     case "UP":
-      player.y -= 4;
+      yMod = -4;
       break;
     case "DOWN":
-      player.y += 4;
+      yMod = 4;
       break;
     case "LEFT":
-      player.x -= 4;
+      xMod = -4;
       break;
     case "RIGHT":
-      player.x += 4;
+      xMod = 4;
       break;
   }
 
-  const updatedGame = {
-    ...game,
-    players: game.players.map((p) =>
-      p.playerId === playerId ? { ...p, ...player } : p
-    ),
-  };
+  const [updatedGame, updatedGameErr] = updateGamePlayerState(
+    roomId,
+    playerId,
+    {
+      y: yMod,
+      x: xMod,
+    }
+  );
 
-  GAMES_DB.set(roomId, updatedGame);
-
-  return returnServiceResponse(game);
+  if (updatedGameErr) {
+    return returnServiceResponse<Game>(updatedGameErr);
+  }
+  return returnServiceResponse(updatedGame);
 }
 
 export function playerFire(

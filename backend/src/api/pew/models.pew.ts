@@ -27,9 +27,18 @@ export type RoomListModel = Omit<Room, "roomCode" | "roomId">;
 
 // join room
 export const roomJoinSchema = z.object({
-  roomName: z.string(),
-  roomCode: z.string(),
-  playerName: z.string(),
+  roomName: z
+    .string()
+    .min(3, "Room name must be at least 3 characters.")
+    .max(20, "Room name must be at most 20 characters."),
+  roomCode: z
+    .string()
+    .min(4, "Room code must be at least 4 characters.")
+    .max(4, "Room code must be at most 4 characters."),
+  playerName: z
+    .string()
+    .min(3, "Player name must be at least 3 characters.")
+    .max(12, "Player name must be at most 12 characters."),
   playerColour: COLORS_SCHEMA,
 });
 export type RoomJoinRequestModel = z.infer<typeof roomJoinSchema>;

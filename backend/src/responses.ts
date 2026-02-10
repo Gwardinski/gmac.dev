@@ -5,6 +5,7 @@ import {
   type ErrorCode,
   type GuardResponse,
   type ServiceResponse,
+  type ValidationError,
 } from "./types";
 
 // Validation / Lookup Responses
@@ -46,7 +47,7 @@ export function returnAPIResponse<T>(
 export function returnAPIError<T>(
   error: ErrorCode = "UNKNOWN",
   statusCode?: number,
-  validationErrors?: any[]
+  validationErrors?: ValidationError[]
 ): APIResponse<T> {
   const status = statusCode || getStatusByErrorCode(error);
   const response: APIResponse<T> = {

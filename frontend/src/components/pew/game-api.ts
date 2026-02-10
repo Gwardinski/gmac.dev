@@ -3,11 +3,20 @@ import type { Color } from './game-state';
 
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
 
+// Elysia validation error format
+export interface ValidationError {
+  path: string;
+  message: string;
+  summary?: string;
+  value?: any;
+  schema?: any;
+}
+
 export interface APIResponse<T> {
   status: number;
-  value: T;
+  value?: T;
   error?: string;
-  validationErrors?: any[]; // todo: replace with zod4 validation error model
+  validationErrors?: ValidationError[];
 }
 
 type RoomListItem = {
