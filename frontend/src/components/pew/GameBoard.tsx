@@ -43,6 +43,46 @@ export const GameBoard = ({ roomId, playerId, level }: JoinRoomResponse) => {
             sendMessage({ type: 'update-movement', data: { direction: 'RIGHT' } });
           }
         }
+      },
+      {
+        key: 'ArrowUp',
+        callback: () => {
+          if (roomId && playerId) {
+            sendMessage({ type: 'fire', data: { direction: 'UP' } });
+          }
+        }
+      },
+      {
+        key: 'ArrowLeft',
+        callback: () => {
+          if (roomId && playerId) {
+            sendMessage({ type: 'fire', data: { direction: 'LEFT' } });
+          }
+        }
+      },
+      {
+        key: 'ArrowDown',
+        callback: () => {
+          if (roomId && playerId) {
+            sendMessage({ type: 'fire', data: { direction: 'DOWN' } });
+          }
+        }
+      },
+      {
+        key: 'ArrowRight',
+        callback: () => {
+          if (roomId && playerId) {
+            sendMessage({ type: 'fire', data: { direction: 'RIGHT' } });
+          }
+        }
+      },
+      {
+        key: 'Space',
+        callback: () => {
+          if (roomId && playerId) {
+            sendMessage({ type: 'shield' });
+          }
+        }
       }
     ],
     canvasRef

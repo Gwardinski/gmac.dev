@@ -61,53 +61,52 @@ export function updateGamePlayerState(
       break;
   }
 
-  // collision detect
+  // new position
   let newX = currentPlayer.x + xMod;
   let newY = currentPlayer.y + yMod;
 
-  // Determine which edge of the player to check based on direction
-  const checkX =
-    direction === "LEFT"
-      ? newX // Check left edge
-      : direction === "RIGHT"
-      ? newX + playerWidth // Check right edge
-      : newX; // Check current x for horizontal movement
+  // new 4 corners of the player
+  const topLeft = { x: newX, y: newY };
+  const topRight = { x: newX + playerWidth, y: newY };
+  const bottomLeft = { x: newX, y: newY + playerHeight };
+  const bottomRight = {
+    x: newX + playerWidth,
+    y: newY + playerHeight,
+  };
 
-  const checkY =
-    direction === "UP"
-      ? newY // Check top edge
-      : direction === "DOWN"
-      ? newY + playerHeight // Check bottom edge
-      : newY; // Check current y for vertical movement
+  // grid coordinates of the new 4 corners of the player
+  const topLeftGrid = {
+    x: Math.floor(topLeft.x / 16),
+    y: Math.floor(topLeft.y / 16),
+  };
+  const topRightGrid = {
+    x: Math.floor(topRight.x / 16),
+    y: Math.floor(topRight.y / 16),
+  };
+  const bottomLeftGrid = {
+    x: Math.floor(bottomLeft.x / 16),
+    y: Math.floor(bottomLeft.y / 16),
+  };
+  const bottomRightGrid = {
+    x: Math.floor(bottomRight.x / 16),
+    y: Math.floor(bottomRight.y / 16),
+  };
 
-  // Convert pixel coordinates to grid coordinates
-  const gridX = Math.floor(checkX / 16);
-  const gridY = Math.floor(checkY / 16);
-
-  // Check if the position is in a wall
-  const isInWall = level1[gridY]?.[gridX] === 2;
+  // Check grid coordinates, is new position in a wall?
+  const isInWall =
+    level1[topLeftGrid.y]?.[topLeftGrid.x] === 2 ||
+    level1[topRightGrid.y]?.[topRightGrid.x] === 2 ||
+    level1[bottomLeftGrid.y]?.[bottomLeftGrid.x] === 2 ||
+    level1[bottomRightGrid.y]?.[bottomRightGrid.x] === 2;
 
   if (isInWall) {
     console.log("collision detected");
-    // Move as close to the wall as possible
-    switch (direction) {
-      case "UP":
-        // Align to the bottom edge of the wall tile above
-        newY = (gridY + 1) * 16;
-        break;
-      case "DOWN":
-        // Align to the top edge of the wall tile below (minus player height)
-        newY = gridY * 16 - playerHeight;
-        break;
-      case "LEFT":
-        // Align to the right edge of the wall tile to the left
-        newX = (gridX + 1) * 16;
-        break;
-      case "RIGHT":
-        // Align to the left edge of the wall tile to the right (minus player width)
-        newX = gridX * 16 - playerWidth;
-        break;
-    }
+    // todo: current position + pixels to move = inside wall
+    // so check pixels to move - 1, 2, 3, etc while less than pixels to move
+    // once found value to not be in wall, snap player that position to hug wall
+
+    newX = currentPlayer.x;
+    newY = currentPlayer.y;
   }
 
   const updatedPlayer = {

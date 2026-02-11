@@ -45,6 +45,12 @@ export function useGameKeyPress<T>(keyEvents: KeyEvent[], focusElement: RefObjec
     const onKeyDown = (e: KeyboardEvent) => {
       // Check focus dynamically on each keydown
       if (!pressedKeys.current.has(e.key) && isGameFocused(focusElementRef.current)) {
+        // Prevent default behavior for game keys (especially arrow keys)
+        const isGameKey = keyEventsRef.current.some((ke) => ke.key === e.key);
+        if (isGameKey) {
+          e.preventDefault();
+        }
+
         pressedKeys.current.add(e.key);
         // Start animation loop if not already running
         if (!isAnimating.current) {
@@ -67,7 +73,7 @@ export function useGameKeyPress<T>(keyEvents: KeyEvent[], focusElement: RefObjec
 
     window.addEventListener('keydown', onKeyDown, { signal: abortController.signal });
     window.addEventListener('keyup', onKeyUp, { signal: abortController.signal });
-    
+
     // Listen for blur events on the focus element
     const element = focusElementRef.current?.current;
     if (element && element instanceof EventTarget) {
