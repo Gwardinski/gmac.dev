@@ -1,19 +1,29 @@
 import { Page, PageHeader, PageHeading, PageSection } from '@/components/layout';
+import { GameBoard } from '@/components/pew/GameBoard';
 import { GameControls } from '@/components/pew/GameControls';
 import { GameJoinForm } from '@/components/pew/GameJoinForm';
 import { GameRoomsActive } from '@/components/pew/GameRoomsActive';
-import { useGetGameState } from '@/components/pew/useGetGameState';
+import type { JoinRoomResponse } from '@/components/pew/useJoinRoom';
 import { H1, H1Description } from '@/components/ui/typography';
 import { createFileRoute } from '@tanstack/react-router';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/pew/')({
   component: RouteComponent
 });
 
 function RouteComponent() {
-  const [roomId, setRoomId] = useState<string | null>();
-  const [playerId, setPlayerId] = useState<string | null>();
+  const [roomId, setRoomId] = useState<string | null>(localStorage.getItem('room-id') || null);
+  const [playerId, setPlayerId] = useState<string | null>(localStorage.getItem('player-id') || null);
+  const [level, setLevel] = useState<number[][] | null>(null);
+
+  const showLoginForm = !roomId || !playerId;
+
+  function onJoinSuccess({ roomId, playerId, level }: JoinRoomResponse) {
+    setRoomId(roomId);
+    setPlayerId(playerId);
+    setLevel(level);
+  }
 
   return (
     <Page>
@@ -26,50 +36,10 @@ function RouteComponent() {
 
       <PageSection className="flex flex-col items-center justify-center gap-4 font-mono">
         <GameControls />
-        {!roomId && (
-          <GameJoinForm
-            onJoinSuccess={({ roomId, playerId }) => {
-              setRoomId(roomId);
-              setPlayerId(playerId);
-            }}
-          />
-        )}
-        {roomId && playerId && <GameBoard roomId={roomId} playerId={playerId} />}
-
+        {showLoginForm && <GameJoinForm onJoinSuccess={onJoinSuccess} />}
+        <GameBoard roomId={roomId ?? ''} playerId={playerId ?? ''} level={level ?? []} />
         <GameRoomsActive />
       </PageSection>
     </Page>
   );
 }
-
-const GameBoard = ({ roomId, playerId }: { roomId: string; playerId: string }) => {
-  const { gameState } = useGetGameState(roomId, playerId);
-  const { players } = gameState;
-
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) {
-      return;
-    }
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      return;
-    }
-
-    // Clear the entire canvas before redrawing
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw all players
-    players?.forEach((player) => {
-      ctx.fillStyle = player.playerColour.toLowerCase();
-      ctx.fillRect(player.x, player.y, 40, 40);
-      ctx.fillStyle = 'white';
-      ctx.fillText(player.playerName, player.x, player.y + 64);
-    });
-  }); // No dependencies - run on every render to ensure canvas is always up to date
-
-  return <canvas ref={canvasRef} id="game-canvas" width={800} height={600} className="mx-auto w-full max-w-2xl bg-black" />;
-};

@@ -4,33 +4,36 @@ import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@radix-ui/react-radio-group';
 import { useForm } from '@tanstack/react-form';
+import { useState } from 'react';
 import { mapAPIErrorsToForm } from './form-utils';
 import { COLORS, type Color } from './game-state';
-import { joinGameSchema, useJoinRoom } from './useJoinRoom';
+import { joinGameSchema, useJoinRoom, type JoinRoomResponse } from './useJoinRoom';
 
 const savedPlayerName = localStorage.getItem('player-name') || '';
 const savedPlayerColor = (localStorage.getItem('player-color') as Color) || 'RED';
 const savedRoomCode = localStorage.getItem('room-code') || '';
 const savedRoomName = localStorage.getItem('room-name') || '';
 
-type joinSuccessResponse = {
-  roomId: string;
-  playerId: string;
-};
-
 interface GameJoinFormProps {
-  onJoinSuccess: (response: joinSuccessResponse) => void;
+  onJoinSuccess: (response: JoinRoomResponse) => void;
+}
+
+function createNewPlayerDeviceId() {
+  return `device-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 }
 
 export function GameJoinForm({ onJoinSuccess }: GameJoinFormProps) {
   const { mutate, isPending } = useJoinRoom();
+  const [globalError, setGlobalError] = useState<string>('');
 
   const form = useForm({
     defaultValues: {
       playerName: savedPlayerName,
       roomCode: savedRoomCode,
       roomName: savedRoomName,
-      playerColour: savedPlayerColor
+      playerColour: savedPlayerColor,
+      playerId: localStorage.getItem('player-id') || null,
+      playerDeviceId: localStorage.getItem('player-device-id') || createNewPlayerDeviceId()
     },
     validators: {
       onSubmit: joinGameSchema
@@ -40,21 +43,26 @@ export function GameJoinForm({ onJoinSuccess }: GameJoinFormProps) {
       localStorage.setItem('player-color', value.playerColour);
       localStorage.setItem('room-code', value.roomCode);
       localStorage.setItem('room-name', value.roomName);
+      localStorage.setItem('player-device-id', value.playerDeviceId);
       mutate(value, {
-        onSuccess: ({ validationErrors, value }) => {
-          // Map backend validation errors to form fields
+        onSuccess: ({ validationErrors, error, value }) => {
           if (mapAPIErrorsToForm(validationErrors, formApi)) {
             return;
           }
-          // Success - no validation errors
-          if (value?.roomId) {
-            localStorage.setItem('room-id', value.roomId);
-            localStorage.setItem('player-id', value.playerId);
-            onJoinSuccess?.({ roomId: value.roomId, playerId: value.playerId });
+          if (error) {
+            console.error(error);
+            setGlobalError(error);
+            return;
           }
+          if (!value?.playerId || !value?.roomId) {
+            setGlobalError('Failed to join room. Please refresh the page and try again.');
+            return;
+          }
+          localStorage.setItem('player-id', value.playerId);
+          onJoinSuccess?.({ roomId: value.roomId, playerId: value.playerId, level: value.level });
         },
         onError: (error) => {
-          console.error('Error joining room', error);
+          setGlobalError(error.message);
         }
       });
     }
@@ -160,10 +168,11 @@ export function GameJoinForm({ onJoinSuccess }: GameJoinFormProps) {
         </form>
       </CardContent>
       <CardFooter>
-        <Field orientation="horizontal" className="flex w-full justify-evenly">
-          <Button className="flex-1" type="submit" form="game-join-form" disabled={isPending}>
+        <Field>
+          <Button type="submit" form="game-join-form" disabled={isPending}>
             Join Game
           </Button>
+          <FieldError className="text-center" errors={[{ message: globalError }]} />
         </Field>
       </CardFooter>
     </Card>

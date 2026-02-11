@@ -46,3 +46,17 @@ export function roomServiceCreate(
   GAMES_DB.set(roomId, game);
   return returnServiceResponse({ roomId, roomName, roomCode });
 }
+
+export function roomServiceDelete(roomId: ROOM_ID): ServiceResponse<void> {
+  ROOMS_DB.delete(roomId);
+  GAMES_DB.delete(roomId);
+  return returnServiceResponse(undefined);
+}
+
+export function roomServiceDeleteEmpty() {
+  GAMES_DB.forEach((game) => {
+    if (game.players.length === 0) {
+      roomServiceDelete(game.roomId);
+    }
+  });
+}

@@ -7,7 +7,7 @@ import { generatePlayerId } from "./util.pew";
 
 // REST Services
 
-export function playerServiceGet(
+export function playerServiceGetById(
   roomId: ROOM_ID,
   playerId: string
 ): ServiceResponse<Player> {
@@ -22,17 +22,37 @@ export function playerServiceGet(
   return returnServiceResponse(player);
 }
 
+export function playerServiceGetByDeviceId(
+  roomId: ROOM_ID,
+  playerDeviceId: string
+): ServiceResponse<Player> {
+  const game = GAMES_DB.get(roomId);
+  if (!game) {
+    return returnServiceResponse<Player>("ROOM_NOT_FOUND");
+  }
+  const player = game.players.find((p) => p.playerDeviceId === playerDeviceId);
+  console.log("playerDeviceId", playerDeviceId);
+  console.log("game.players", game.players);
+  console.log("player", player);
+  if (!player) {
+    return returnServiceResponse<Player>("INVALID_PLAYER_ID");
+  }
+  return returnServiceResponse(player);
+}
+
 export function playerServiceCreate(
   roomId: ROOM_ID,
   playerName: string,
-  playerColour: Color
+  playerColour: Color,
+  playerDeviceId: string
 ): ServiceResponse<Player> {
   const player = {
     playerId: generatePlayerId(),
     playerName,
     playerColour,
-    x: 0,
-    y: 0,
+    playerDeviceId,
+    x: 64,
+    y: 64,
   };
   GAMES_DB.get(roomId)?.players.push(player);
   return returnServiceResponse<Player>(player);
@@ -40,36 +60,16 @@ export function playerServiceCreate(
 
 // WebSocket Services
 
+// todo provide level as parameter
 export function updatePlayerPosition(
   roomId: ROOM_ID,
   playerId: string,
   direction: Direction
 ): ServiceResponse<Game> {
-  let xMod = 0;
-  let yMod = 0;
-
-  switch (direction) {
-    case "UP":
-      yMod = -4;
-      break;
-    case "DOWN":
-      yMod = 4;
-      break;
-    case "LEFT":
-      xMod = -4;
-      break;
-    case "RIGHT":
-      xMod = 4;
-      break;
-  }
-
   const [updatedGame, updatedGameErr] = updateGamePlayerState(
     roomId,
     playerId,
-    {
-      y: yMod,
-      x: xMod,
-    }
+    direction
   );
 
   if (updatedGameErr) {
@@ -111,82 +111,5 @@ export function removePlayerFromGame(
 
   GAMES_DB.set(roomId, updatedGame);
 
-  if (updatedGame.players.length === 0) {
-    GAMES_DB.delete(roomId);
-  }
-
   return returnServiceResponse(updatedGame);
 }
-
-// Existing Player logic, re-add later
-
-// const game = GAMES_DB.get(roomId);
-// if (!game) {
-//   return returnServiceResponse<Game>("INVALID_ROOM_CODE");
-// }
-
-// // check player is new or existing
-// const existingPlayer = game.players.find(
-//   (player) => player.playerId === playerId
-// );
-
-// const existingPlayerName = existingPlayer?.playerName === playerName;
-
-// // player has reconnected to their previous session
-// if (existingPlayer && existingPlayerName) {
-//   console.log(
-//     `Existing Player ${existingPlayer.playerName}|${existingPlayer.playerId} has reconnected.`
-//   );
-//   // return existing game state
-//   return returnServiceResponse(game);
-// }
-
-// // player has reconnected to their previous session but has a new name
-// if (existingPlayer && !existingPlayerName) {
-//   console.log(
-//     `Existing Player ${existingPlayer.playerName}|${existingPlayer.playerId} has reconnected as: ${playerName}`
-//   );
-//   // delete their old player from session and create new player for them
-//   // For now, just update their name
-//   existingPlayer.playerName = playerName;
-//   existingPlayer.playerColour = playerColour as any;
-
-//   // update existing player in game state
-//   const updatedGame = {
-//     ...game,
-//     players: game.players.map((p) =>
-//       p.playerId === playerId ? { ...p, ...existingPlayer } : p
-//     ),
-//   };
-//   // set new game state
-//   GAMES_DB.set(roomId, updatedGame);
-
-//   return returnServiceResponse(updatedGame);
-// }
-
-// // new player joining the session
-// if (!existingPlayer) {
-//   console.log(`New Player ${playerName}|${playerId} has joined the session.`);
-//   // create new player for them
-//   const updatedGame = {
-//     ...game,
-//     players: [
-//       ...game.players,
-//       {
-//         playerId,
-//         playerName,
-//         playerColour: playerColour as any,
-//         x: 0,
-//         y: 0,
-//       },
-//     ],
-//   };
-//   // set new game state
-//   GAMES_DB.set(roomId, updatedGame);
-
-//   return returnServiceResponse(updatedGame);
-// }
-
-// // edge case?
-// console.error(`this probably shouldn't log?`);
-// return returnServiceResponse(game);

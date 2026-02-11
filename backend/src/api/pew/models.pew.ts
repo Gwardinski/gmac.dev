@@ -40,13 +40,16 @@ export const roomJoinSchema = z.object({
     .min(3, "Player name must be at least 3 characters.")
     .max(12, "Player name must be at most 12 characters."),
   playerColour: COLORS_SCHEMA,
+  playerId: z.string().nullable().optional(),
+  playerDeviceId: z.string(),
 });
 export type RoomJoinRequestModel = z.infer<typeof roomJoinSchema>;
-export type RoomJoinResponseModel = Pick<Room, "roomId">;
+export type RoomJoinResponseModel = Pick<Room, "roomId"> & { playerId: string };
 
 // PLAYER
 const playerSchema = z.object({
   playerId: z.string(),
+  playerDeviceId: z.string(),
   playerName: z.string(),
   playerColour: COLORS_SCHEMA,
   x: z.number(),

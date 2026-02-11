@@ -57,8 +57,6 @@ async function fetchRooms(): Promise<RoomListItem[]> {
     }
   });
 
-  console.log('response', response);
-
   if (!response.ok) {
     throw new Error('Failed to fetch rooms');
   }
@@ -76,7 +74,12 @@ export const useFetchRooms = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['rooms'],
     queryFn: fetchRooms,
-    staleTime: 1000 * 5 // 5 seconds
+    staleTime: 1000 * 5, // 5 seconds,
+    refetchInterval: 1000 * 3, // 3 seconds,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    refetchIntervalInBackground: true
   });
 
   return { data, isLoading, error };

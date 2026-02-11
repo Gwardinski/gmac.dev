@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { GameState } from './game-state';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
@@ -19,14 +19,15 @@ export function useGetGameState(roomId: string | null, playerId: string | null) 
   const wsRef = useRef<WebSocket | null>(null);
 
   // Function to send messages to the server
-  const sendMessage = useCallback((message: unknown) => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify(message));
+  const sendMessage = (message: unknown) => {
+    const ws = wsRef.current;
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify(message));
       return true;
     }
-    console.warn('WebSocket is not connected. Cannot send message.');
+    // Silently fail if not connected (normal during React Strict Mode)
     return false;
-  }, []);
+  };
 
   useEffect(() => {
     if (!roomId || !playerId) {
@@ -34,7 +35,6 @@ export function useGetGameState(roomId: string | null, playerId: string | null) 
       return;
     }
 
-    console.log(`Connecting to WebSocket: ${WS_URL}/pew/game?roomId=${roomId}&playerId=${playerId}`);
     setStatus('connecting');
 
     // Create WebSocket connection
@@ -43,7 +43,6 @@ export function useGetGameState(roomId: string | null, playerId: string | null) 
 
     // Connection opened
     ws.onopen = () => {
-      console.log('WebSocket connected');
       setStatus('connected');
       setError(null);
     };
@@ -77,9 +76,15 @@ export function useGetGameState(roomId: string | null, playerId: string | null) 
 
     // Connection closed
     ws.onclose = (event) => {
-      console.log('WebSocket disconnected', event.code, event.reason);
-      setStatus('disconnected');
-      wsRef.current = null;
+      console.log('[onclose] WebSocket disconnected', event.code, event.reason);
+      // Only clear the ref if THIS WebSocket is the current one
+      if (wsRef.current === ws) {
+        console.log('[onclose] Clearing ref because this is the current WebSocket');
+        wsRef.current = null;
+        setStatus('disconnected');
+      } else {
+        console.log('[onclose] NOT clearing ref - this is an old WebSocket');
+      }
     };
 
     // Connection error
@@ -91,10 +96,12 @@ export function useGetGameState(roomId: string | null, playerId: string | null) 
 
     // Cleanup on unmount or roomId change
     return () => {
+      console.log('[Cleanup] Running cleanup, closing WebSocket and clearing ref');
       if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
         ws.close(1000, 'Component unmounted');
       }
       wsRef.current = null;
+      // Don't set status here - it causes state updates during cleanup
     };
   }, [roomId, playerId]);
 

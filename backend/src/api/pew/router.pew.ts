@@ -14,10 +14,13 @@ import {
 import { getGameState } from "./service.game.pew.js";
 import {
   playerFire,
-  playerServiceGet,
-  removePlayerFromGame,
+  playerServiceGetById,
   updatePlayerPosition,
 } from "./service.player.pew.js";
+import { sendMessage } from "./util.pew.js";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const roomConnections = new Map<string, Set<any>>();
 
 export const pewRouter = new Elysia({ prefix: "/pew" })
   .onError(({ code, error, set }) => {
@@ -32,6 +35,9 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
     const response = returnAPIError("UNKNOWN", 500);
     set.status = response.status;
     return response;
+  })
+  .onAfterResponse(() => {
+    // roomServiceDeleteEmpty();
   })
   .get("/", () => ({
     message: "Pew game server - connect via WebSocket on port 3001",
@@ -53,18 +59,24 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
       // check game exists
       const [gameState, gameErr] = getGameState(roomId);
       if (!gameState || gameErr) {
-        ws.send(gameErr);
+        ws.send(JSON.stringify({ error: gameErr || "Game not found" }));
         ws.close();
         return;
       }
 
       // check player exists
-      const [player, playerErr] = playerServiceGet(roomId, playerId);
+      const [player, playerErr] = playerServiceGetById(roomId, playerId);
       if (!player || playerErr) {
-        ws.send(playerErr);
+        ws.send(JSON.stringify({ error: playerErr || "Player not found" }));
         ws.close();
         return;
       }
+
+      // Add connection to room
+      if (!roomConnections.has(roomId)) {
+        roomConnections.set(roomId, new Set());
+      }
+      roomConnections.get(roomId)!.add(ws);
 
       // send welcome message
       sendMessage(
@@ -72,8 +84,9 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
         true
       );
 
-      // send game state
-      ws.send(
+      // send game state to all players in room
+      broadcastToRoom(
+        roomId,
         returnWSResponse<WSSendMessageType, Game>("game-state", gameState)
       );
     },
@@ -93,20 +106,25 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
           const { direction } = message.data;
           sendMessage(`Player ${playerId} moving: ${direction}`);
 
-          const [gameState, gameStateErr] = updatePlayerPosition(
+          const [updatedGameState, gameStateErr] = updatePlayerPosition(
             roomId,
             playerId,
             direction
           );
 
           if (gameStateErr) {
-            ws.send(gameStateErr);
+            ws.send(JSON.stringify({ error: gameStateErr }));
             return;
           }
 
-          if (gameState) {
-            ws.send(
-              returnWSResponse<WSSendMessageType, Game>("game-state", gameState)
+          if (updatedGameState) {
+            // Broadcast to all players in the room
+            broadcastToRoom(
+              roomId,
+              returnWSResponse<WSSendMessageType, Game>(
+                "game-state",
+                updatedGameState
+              )
             );
           }
           break;
@@ -116,20 +134,25 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
           const { direction } = message.data;
           sendMessage(`Player ${playerId} firing: ${direction}`);
 
-          const [gameState, gameStateErr] = playerFire(
+          const [updatedGameState, gameStateErr] = playerFire(
             roomId,
             playerId,
             direction
           );
 
           if (gameStateErr) {
-            ws.send(gameStateErr);
+            ws.send(JSON.stringify({ error: gameStateErr }));
             return;
           }
 
-          if (gameState) {
-            ws.send(
-              returnWSResponse<WSSendMessageType, Game>("game-state", gameState)
+          if (updatedGameState) {
+            // Broadcast to all players in the room
+            broadcastToRoom(
+              roomId,
+              returnWSResponse<WSSendMessageType, Game>(
+                "game-state",
+                updatedGameState
+              )
             );
           }
           break;
@@ -137,23 +160,39 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
       }
     },
 
-    close(ws) {
+    close(ws, code, reason) {
       const { roomId, playerId } = ws.data.query;
-      sendMessage(`Player ${playerId} disconnected from room: ${roomId}`);
 
-      const [gameState] = removePlayerFromGame(roomId, playerId);
-
-      if (gameState) {
-        ws.send(
-          returnWSResponse<WSSendMessageType, Game>("game-state", gameState)
-        );
+      // Remove connection from room
+      const connections = roomConnections.get(roomId);
+      if (connections) {
+        connections.delete(ws);
+        if (connections.size === 0) {
+          roomConnections.delete(roomId);
+        }
       }
+
+      sendMessage(
+        `Player ${playerId} disconnected from room: ${roomId} (code: ${code}, reason: ${reason})`
+      );
+
+      // Don't remove player immediately - allows for React Strict Mode reconnections
+      // and quick page refreshes. Players will be cleaned up when rooms are cleaned up.
+      // TODO: Consider adding a timeout to remove players after extended disconnection
     },
   });
 
-function sendMessage(message: string, external: boolean = false) {
-  console.log(message);
-  if (external) {
-    // send to messages
+function broadcastToRoom(roomId: string, message: string) {
+  const connections = roomConnections.get(roomId);
+  if (!connections) {
+    return;
   }
+
+  connections.forEach((ws) => {
+    try {
+      ws.send(message);
+    } catch (error) {
+      console.error("Error broadcasting to WebSocket:", error);
+    }
+  });
 }
