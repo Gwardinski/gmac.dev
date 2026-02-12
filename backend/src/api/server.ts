@@ -8,7 +8,8 @@ import { pewRouter } from "./pew/router.pew.js";
 const ELYSIA_PORT = 3001;
 
 export function initServer() {
-  console.log(`bun bun bun, it rhymes with fun!`);
+  console.log(`BUN BUN BUN`);
+  console.log(`IT RHYMES WITH FUN!`);
 
   // Elysia REST API
   const app = initAPI();
