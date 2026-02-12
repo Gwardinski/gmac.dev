@@ -17,8 +17,18 @@ export type Player = {
   y: number;
 };
 
+// Bullet type matching backend Bullet model
+export type Bullet = {
+  bulletId: string;
+  playerId: string;
+  x: number;
+  y: number;
+  direction: Direction;
+};
+
 // Game state matching backend Game model
 export type GameState = {
   roomId?: string;
   players: Player[];
+  bullets: Bullet[];
 };

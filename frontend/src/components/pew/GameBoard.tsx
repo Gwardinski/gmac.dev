@@ -5,9 +5,11 @@ import type { JoinRoomResponse } from './useJoinRoom';
 
 export const GameBoard = ({ roomId, playerId, level }: JoinRoomResponse) => {
   const { gameState, sendMessage } = useGetGameState(roomId, playerId);
-  const { players } = gameState;
+  const { players, bullets } = gameState;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  console.log('bullets', bullets);
 
   // Set up fluid keyboard controls using useKeyPress
   useGameKeyPress(
@@ -75,14 +77,6 @@ export const GameBoard = ({ roomId, playerId, level }: JoinRoomResponse) => {
             sendMessage({ type: 'fire', data: { direction: 'RIGHT' } });
           }
         }
-      },
-      {
-        key: 'Space',
-        callback: () => {
-          if (roomId && playerId) {
-            sendMessage({ type: 'shield' });
-          }
-        }
       }
     ],
     canvasRef
@@ -129,6 +123,12 @@ export const GameBoard = ({ roomId, playerId, level }: JoinRoomResponse) => {
       ctx.fillStyle = 'white';
       ctx.fillText(player.playerName, player.x, player.y + 32);
     });
+
+    // Draw all bullets
+    bullets?.forEach((bullet) => {
+      ctx.fillStyle = 'white';
+      ctx.fillRect(bullet.x, bullet.y, 2, 2);
+    });
   }); // No dependencies - run on every render to ensure canvas is always up to date
 
   if (!roomId || !playerId) {
@@ -136,13 +136,32 @@ export const GameBoard = ({ roomId, playerId, level }: JoinRoomResponse) => {
   }
 
   return (
-    <canvas
-      ref={canvasRef}
-      id="game-canvas"
-      tabIndex={0}
-      width={level[0].length * 16}
-      height={level.length * 16}
-      className="mx-auto w-full bg-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
-    />
+    <div>
+      <canvas
+        ref={canvasRef}
+        id="game-canvas"
+        tabIndex={0}
+        width={level[0].length * 16}
+        height={level.length * 16}
+        className="mx-auto w-full bg-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      />
+      <div className="text-sm text-white">
+        {gameState?.players?.map((player) => (
+          <div key={player.playerId}>
+            <p>{player.playerName}</p>
+            <p>{player.playerColour}</p>
+            <p>{player.x}</p>
+            <p>{player.y}</p>
+          </div>
+        ))}
+        {gameState?.bullets?.map((bullet) => (
+          <div key={bullet.bulletId}>
+            <p>{bullet.x}</p>
+            <p>{bullet.y}</p>
+            <p>{bullet.direction}</p>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };

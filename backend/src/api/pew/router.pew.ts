@@ -11,6 +11,11 @@ import {
   type Game,
   type WSSendMessageType,
 } from "./models.pew.js";
+import {
+  isGameEngineRunning,
+  startGameEngine,
+  stopGameEngine,
+} from "./service.engine.pew.js";
 import { getGameState } from "./service.game.pew.js";
 import {
   playerFire,
@@ -78,7 +83,12 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
       }
       roomConnections.get(roomId)!.add(ws);
 
-      // send welcome message
+      // Start Game Engine
+      if (!isGameEngineRunning(roomId)) {
+        startGameEngine(roomId, broadcastToRoom);
+      }
+
+      // Publish welcome message
       sendMessage(
         `Player ${player.playerName}-${playerId} connected to room: ${roomId}`,
         true
@@ -97,7 +107,7 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
       const [gameState, gameErr] = getGameState(roomId);
       if (!gameState || gameErr) {
         ws.send(gameErr);
-        ws.close(); // should close?
+        ws.close(); // todo: keep close or ignore?
         return;
       }
 
@@ -118,7 +128,7 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
           }
 
           if (updatedGameState) {
-            // Broadcast to all players in the room
+            // Broadcasts to all players in the room
             broadcastToRoom(
               roomId,
               returnWSResponse<WSSendMessageType, Game>(
@@ -145,8 +155,10 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
             return;
           }
 
+          console.log("updatedGameState", updatedGameState);
+
           if (updatedGameState) {
-            // Broadcast to all players in the room
+            // Broadcasts to all players in the room
             broadcastToRoom(
               roomId,
               returnWSResponse<WSSendMessageType, Game>(
@@ -169,6 +181,7 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
         connections.delete(ws);
         if (connections.size === 0) {
           roomConnections.delete(roomId);
+          stopGameEngine(roomId);
         }
       }
 

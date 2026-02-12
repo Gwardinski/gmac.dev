@@ -1,5 +1,15 @@
 import z from "zod";
 
+export const PLAYER_WIDTH = 16;
+export const PLAYER_HEIGHT = 16;
+export const PLAYER_SPEED = 1;
+export const PLAYER_FIRE_DELAY = 250;
+
+export const BULLET_WIDTH = 1;
+export const BULLET_HEIGHT = 1;
+export const BULLET_SPEED = 8;
+export const BULLET_DECAY_TIME = 4000;
+
 // COLORS
 export const COLORS = [
   "RED",
@@ -12,6 +22,11 @@ export const COLORS = [
 ] as const;
 export type Color = (typeof COLORS)[number];
 export const COLORS_SCHEMA = z.enum(COLORS);
+
+// Direction enum for movement and firing
+export const DIRECTIONS = ["UP", "DOWN", "LEFT", "RIGHT"] as const;
+const directionSchema = z.enum(DIRECTIONS);
+export type Direction = z.infer<typeof directionSchema>;
 
 // ROOMS
 // list rooms
@@ -52,15 +67,31 @@ const playerSchema = z.object({
   playerDeviceId: z.string(),
   playerName: z.string(),
   playerColour: COLORS_SCHEMA,
+  lastFireTime: z.number().default(0), // Timestamp of last fire (ms)
+  // playerScore: z.number().default(0),
+  // playerLives: z.number().default(3),
+  // playerHealth: z.number().default(100),
+  // playerShield: z.boolean().default(false),
   x: z.number(),
   y: z.number(),
 });
 export type Player = z.infer<typeof playerSchema>;
 
+// BULLET
+const bulletSchema = z.object({
+  bulletId: z.string(),
+  playerId: z.string(),
+  x: z.number(),
+  y: z.number(),
+  direction: directionSchema,
+});
+export type Bullet = z.infer<typeof bulletSchema>;
+
 // GAME
 const gameSchema = z.object({
   roomId: z.string(),
   players: z.array(playerSchema),
+  bullets: z.array(bulletSchema),
 });
 export type Game = z.infer<typeof gameSchema>;
 
@@ -74,11 +105,6 @@ export const wsQuerySchema = z.object({
 export type WSQuery = z.infer<typeof wsQuerySchema>;
 
 // WEBSOCKET MESSAGES
-
-// Direction enum for movement and firing
-export const DIRECTIONS = ["UP", "DOWN", "LEFT", "RIGHT"] as const;
-const directionSchema = z.enum(DIRECTIONS);
-export type Direction = z.infer<typeof directionSchema>;
 
 // Message data schemas
 const updateMovementDataSchema = z.object({

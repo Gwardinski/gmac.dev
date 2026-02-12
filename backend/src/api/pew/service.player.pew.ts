@@ -2,7 +2,10 @@ import { returnServiceResponse } from "../../responses";
 import type { ServiceResponse } from "../../types";
 import { GAMES_DB } from "./db.pew";
 import type { Color, Direction, Game, Player, ROOM_ID } from "./models.pew";
-import { updateGamePlayerState } from "./service.game.pew";
+import {
+  updateGamePlayerFire,
+  updateGamePlayerPosition,
+} from "./service.game.pew";
 import { generatePlayerId } from "./util.pew";
 
 // REST Services
@@ -31,9 +34,7 @@ export function playerServiceGetByDeviceId(
     return returnServiceResponse<Player>("ROOM_NOT_FOUND");
   }
   const player = game.players.find((p) => p.playerDeviceId === playerDeviceId);
-  console.log("playerDeviceId", playerDeviceId);
-  console.log("game.players", game.players);
-  console.log("player", player);
+
   if (!player) {
     return returnServiceResponse<Player>("INVALID_PLAYER_ID");
   }
@@ -46,13 +47,14 @@ export function playerServiceCreate(
   playerColour: Color,
   playerDeviceId: string
 ): ServiceResponse<Player> {
-  const player = {
+  const player: Player = {
     playerId: generatePlayerId(),
     playerName,
     playerColour,
     playerDeviceId,
     x: 64,
     y: 64,
+    lastFireTime: 0,
   };
   GAMES_DB.get(roomId)?.players.push(player);
   return returnServiceResponse<Player>(player);
@@ -66,12 +68,11 @@ export function updatePlayerPosition(
   playerId: string,
   direction: Direction
 ): ServiceResponse<Game> {
-  const [updatedGame, updatedGameErr] = updateGamePlayerState(
+  const [updatedGame, updatedGameErr] = updateGamePlayerPosition(
     roomId,
     playerId,
     direction
   );
-
   if (updatedGameErr) {
     return returnServiceResponse<Game>(updatedGameErr);
   }
@@ -83,11 +84,15 @@ export function playerFire(
   playerId: string,
   direction: Direction
 ): ServiceResponse<Game> {
-  const game = GAMES_DB.get(roomId);
-  if (!game) {
-    return returnServiceResponse<Game>("INVALID_ROOM_CODE");
+  const [updatedGame, updatedGameErr] = updateGamePlayerFire(
+    roomId,
+    playerId,
+    direction
+  );
+  if (updatedGameErr) {
+    return returnServiceResponse<Game>(updatedGameErr);
   }
-  return returnServiceResponse(game);
+  return returnServiceResponse(updatedGame);
 }
 
 export function removePlayerFromGame(

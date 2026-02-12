@@ -41,6 +41,7 @@ export function roomServiceCreate(
   const game: Game = {
     roomId,
     players: [],
+    bullets: [],
   };
   ROOMS_DB.set(roomId, room);
   GAMES_DB.set(roomId, game);

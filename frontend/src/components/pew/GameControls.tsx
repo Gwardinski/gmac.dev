@@ -1,10 +1,10 @@
-import { Kbd } from "../ui/kbd";
+import { Kbd } from '../ui/kbd';
 
 export const GameControls = () => {
   return (
-    <section className="flex gap-8 glass dark:dark-glass p-4 rounded-md text-sm">
-      <div className="flex flex-col gap-2 justify-center items-center">
-        <span className="flex gap-1 flex-wrap">
+    <section className="flex gap-8 rounded-md glass p-4 text-sm dark:dark-glass">
+      <div className="flex flex-col items-center justify-center gap-2">
+        <span className="flex flex-wrap gap-1">
           <Kbd>W</Kbd>
           <Kbd>A</Kbd>
           <Kbd>S</Kbd>
@@ -12,20 +12,14 @@ export const GameControls = () => {
         </span>
         MOVE
       </div>
-      <div className="flex flex-col gap-2 justify-center items-center">
-        <span className="flex gap-1 flex-wrap">
+      <div className="flex flex-col items-center justify-center gap-2">
+        <span className="flex flex-wrap gap-1">
           <Kbd>↑</Kbd>
           <Kbd>↓</Kbd>
           <Kbd>←</Kbd>
           <Kbd>→</Kbd>
         </span>
         SHOOT
-      </div>
-      <div className="flex flex-col gap-2 justify-center items-center">
-        <span className="flex gap-1 flex-wrap">
-          <Kbd>Space</Kbd>
-        </span>
-        SHIELD
       </div>
     </section>
   );

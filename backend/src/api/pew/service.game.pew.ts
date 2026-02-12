@@ -2,7 +2,17 @@ import { returnServiceResponse } from "../../responses";
 import type { ServiceResponse } from "../../types";
 import { GAMES_DB } from "./db.pew";
 import { level1 } from "./levels.pew";
-import type { Direction, Game, Player, ROOM_ID } from "./models.pew";
+import {
+  PLAYER_FIRE_DELAY,
+  PLAYER_HEIGHT,
+  PLAYER_WIDTH,
+  type Bullet,
+  type Direction,
+  type Game,
+  type Player,
+  type ROOM_ID,
+} from "./models.pew";
+import { generateBulletId } from "./util.pew";
 
 export function getGameState(roomId: ROOM_ID): ServiceResponse<Game> {
   const game = GAMES_DB.get(roomId);
@@ -25,9 +35,7 @@ export function updateGameState(
   return returnServiceResponse(updatedGame);
 }
 
-const playerHeight = 16;
-const playerWidth = 16;
-export function updateGamePlayerState(
+export function updateGamePlayerPosition(
   roomId: ROOM_ID,
   playerId: string,
   direction: Direction
@@ -67,11 +75,11 @@ export function updateGamePlayerState(
 
   // new 4 corners of the player
   const topLeft = { x: newX, y: newY };
-  const topRight = { x: newX + playerWidth, y: newY };
-  const bottomLeft = { x: newX, y: newY + playerHeight };
+  const topRight = { x: newX + PLAYER_WIDTH, y: newY };
+  const bottomLeft = { x: newX, y: newY + PLAYER_HEIGHT };
   const bottomRight = {
-    x: newX + playerWidth,
-    y: newY + playerHeight,
+    x: newX + PLAYER_WIDTH,
+    y: newY + PLAYER_HEIGHT,
   };
 
   // grid coordinates of the new 4 corners of the player
@@ -126,4 +134,69 @@ export function updateGamePlayerState(
 
   // Return the updated game, not the old one
   return returnServiceResponse(updatedGame);
+}
+
+export function updateGamePlayerFire(
+  roomId: ROOM_ID,
+  playerId: string,
+  direction: Direction
+): ServiceResponse<Game> {
+  const currentGame = GAMES_DB.get(roomId);
+  if (!currentGame) {
+    return returnServiceResponse<Game>("INVALID_ROOM_CODE");
+  }
+  const currentPlayer = currentGame.players.find(
+    (p) => p.playerId === playerId
+  );
+  if (!currentPlayer) {
+    return returnServiceResponse<Game>("INVALID_PLAYER_ID");
+  }
+
+  // Check if enough time has passed since last fire
+  const currentTime = Date.now();
+  const timeSinceLastFire = currentTime - currentPlayer.lastFireTime;
+
+  if (timeSinceLastFire < PLAYER_FIRE_DELAY) {
+    return returnServiceResponse(currentGame);
+  }
+
+  const { x, y } = getBulletSpawnPoint(currentPlayer, direction);
+
+  const newBullet: Bullet = {
+    bulletId: generateBulletId(),
+    playerId,
+    x,
+    y,
+    direction,
+  };
+
+  const updatedGame = {
+    ...currentGame,
+    players: currentGame.players.map((p) =>
+      p.playerId === playerId ? { ...p, lastFireTime: currentTime } : p
+    ) as Player[],
+    bullets: [...currentGame.bullets, newBullet],
+  };
+
+  GAMES_DB.set(roomId, updatedGame);
+
+  // Return the updated game, not the old one
+  return returnServiceResponse(updatedGame);
+}
+
+// spawn point mid point on any 4 sides of the player based on direction
+function getBulletSpawnPoint(player: Player, direction: Direction) {
+  switch (direction) {
+    case "UP":
+      return { x: player.x + PLAYER_WIDTH / 2, y: player.y };
+    case "DOWN":
+      return { x: player.x + PLAYER_WIDTH / 2, y: player.y + PLAYER_HEIGHT };
+    case "LEFT":
+      return { x: player.x, y: player.y + PLAYER_HEIGHT / 2 };
+    case "RIGHT":
+      return { x: player.x + PLAYER_WIDTH, y: player.y + PLAYER_HEIGHT / 2 };
+    default:
+      // Fallback to right direction if invalid direction provided
+      return { x: player.x + PLAYER_WIDTH, y: player.y + PLAYER_HEIGHT / 2 };
+  }
 }
