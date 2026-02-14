@@ -11,7 +11,8 @@ const buttonVariants = cva(
       variant: {
         default: 'bg-zinc-900 text-white shadow-xs hover:bg-zinc-900/90 border border-transparent dark:bg-zinc-200 dark:text-zinc-900 dark:hover:bg-zinc-200/90',
         link: 'text-zinc-900 underline-offset-4 hover:underline dark:text-zinc-200',
-        glass: 'glass-border dark:dark-glass-border bg-zinc-50/30 dark:bg-zinc-800/30 hover:bg-zinc-50/70 hover:dark:bg-zinc-800/70'
+        glass: 'glass-border dark:dark-glass-border bg-zinc-50/30 dark:bg-zinc-800/30 hover:bg-zinc-50/70 hover:dark:bg-zinc-800/70',
+        'glass-danger': 'glass-border dark:dark-glass-border bg-red-50/30 dark:bg-red-800/30 hover:bg-red-50/70 hover:dark:bg-red-800/70'
       },
       size: {
         sm: 'text-xs px-2 min-h-5',

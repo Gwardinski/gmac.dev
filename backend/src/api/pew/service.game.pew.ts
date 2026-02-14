@@ -1,10 +1,10 @@
 import { returnServiceResponse } from "../../responses";
 import type { ServiceResponse } from "../../types";
 import { GAMES_DB } from "./db.pew";
-import { LEVEL_1 } from "./levels.pew";
 import { type Direction, type ROOM_ID } from "./models/base.models.pew";
 import { BulletClass, getBulletSpawnPoint } from "./models/bullet.model.pew";
 import type { GameSerialized } from "./models/game.model.pew";
+import { LEVEL_1 } from "./models/level.model.pew";
 
 export function getGameSerialisedState(
   roomId: ROOM_ID
@@ -13,6 +13,24 @@ export function getGameSerialisedState(
   if (!game) {
     return returnServiceResponse<GameSerialized>("INVALID_ROOM_CODE");
   }
+  return returnServiceResponse<GameSerialized>(game.toJSON());
+}
+
+export function removeGamePlayer(
+  roomId: ROOM_ID,
+  playerId: string
+): ServiceResponse<GameSerialized> {
+  const game = GAMES_DB.get(roomId);
+  if (!game) {
+    return returnServiceResponse<GameSerialized>("INVALID_ROOM_CODE");
+  }
+  const player = game.players.find((p) => p.playerId === playerId);
+  if (!player) {
+    return returnServiceResponse<GameSerialized>("INVALID_PLAYER_ID");
+  }
+
+  game.removePlayer(player);
+
   return returnServiceResponse<GameSerialized>(game.toJSON());
 }
 

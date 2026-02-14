@@ -1,7 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import z from 'zod';
+import type { Level } from './client-copies';
+import { COLORS_SCHEMA } from './client-copies';
 import { BACKEND_URL, type APIResponse } from './game-api';
-import { COLORS_SCHEMA } from './game-state';
 
 export const joinGameSchema = z.object({
   roomName: z.string().min(3, 'Room name must be at least 3 characters.').max(20, 'Room name must be at most 20 characters.'),
@@ -17,7 +18,7 @@ export type JoinGameFormData = z.infer<typeof joinGameSchema>;
 export type JoinRoomResponse = {
   roomId: string;
   playerId: string;
-  level: number[][];
+  level: Level;
 };
 
 export const useJoinRoom = () => {

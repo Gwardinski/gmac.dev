@@ -5,10 +5,8 @@ export const GamePlayerStats = ({ roomId, playerId }: Omit<JoinRoomResponse, 'le
   const { gameState } = useGetGameState(roomId, playerId);
   const { players } = gameState;
 
-  console.log('gameState', gameState);
-
   return (
-    <section className="flex h-20 min-w-sm rounded-md glass px-4 text-sm dark:dark-glass">
+    <section className="flex h-[88px] min-w-sm rounded-md glass p-4 text-sm dark:dark-glass">
       <table>
         <tbody className="text-left">
           <tr>

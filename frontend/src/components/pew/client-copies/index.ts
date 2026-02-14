@@ -1,4 +1,17 @@
 import z from 'zod';
+// 1 = floor
+// 2 = wall
+// 3 = spawn
+// 4 = lava
+type Floor = 1 | 2 | 3 | 4;
+export const GRID_SIZE = 16;
+
+/* prettier-ignore */
+// don't format line length
+type LevelRow = [Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor, Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor,Floor];
+export type Level = LevelRow[];
+
+export const TILE_SIZE = 16;
 
 // Types synced with backend models
 export type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
@@ -15,6 +28,7 @@ export type Player = {
   playerColour: Color;
   x: number;
   y: number;
+  speed: number;
   health: number;
   killCount: number;
   deathCount: number;

@@ -1,7 +1,7 @@
 import z from "zod";
-import type { Level } from "../levels.pew";
 import { generatePlayerId } from "../util.pew";
 import { COLORS_SCHEMA, type Color, type Direction } from "./base.models.pew";
+import type { Level } from "./level.model.pew";
 
 const PLAYER_SIZE = 16; // width and height of the player
 const PLAYER_BASE_SPEED = 1; // todo implement the collision code todo if increasing
@@ -25,6 +25,7 @@ export const playerSerialisedSchema = z.object({
   playerColour: COLORS_SCHEMA,
   x: z.number(),
   y: z.number(),
+  speed: z.number().optional(),
   health: z.number().optional(),
   topLeft: z.object({ x: z.number(), y: z.number() }).optional(),
   topRight: z.object({ x: z.number(), y: z.number() }).optional(),
@@ -120,7 +121,6 @@ export class PlayerClass {
     const isInWall = checkWallCollision(newX, newY, level);
 
     if (isInWall) {
-      console.log("collision detected");
       newX = this.x;
       newY = this.y;
 
@@ -205,6 +205,7 @@ export class PlayerClass {
       x: this.x,
       y: this.y,
       health: this.health,
+      speed: this.speed,
       topLeft: this.topLeft,
       topRight: this.topRight,
       bottomLeft: this.bottomLeft,

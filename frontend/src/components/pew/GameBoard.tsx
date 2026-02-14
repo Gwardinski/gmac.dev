@@ -1,50 +1,71 @@
 import { useEffect, useRef } from 'react';
+import { TILE_SIZE, type Direction, type GameState } from './client-copies';
+import { PlayerClient } from './client-copies/PlayerClient';
 import { useGameKeyPress } from './useGameKeyPress';
-import { useGetGameState } from './useGetGameState';
 import type { JoinRoomResponse } from './useJoinRoom';
 
-export const GameBoard = ({ roomId, playerId, level }: JoinRoomResponse) => {
-  const { gameState, sendMessage } = useGetGameState(roomId, playerId);
+interface GameBoardProps extends JoinRoomResponse {
+  gameState: GameState;
+  sendMessage: (message: unknown) => boolean;
+}
+
+const DRIFT_THRESHOLD = 4;
+
+export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: GameBoardProps) => {
   const { players, bullets } = gameState;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  console.log('bullets', bullets);
+  const playerClientRef = useRef<PlayerClient | null>(null);
 
-  // Set up fluid keyboard controls using useKeyPress
+  useEffect(() => {
+    if (!playerId || playerClientRef.current) return;
+
+    const currentPlayer = players?.find((p) => p.playerId === playerId);
+    if (currentPlayer) {
+      playerClientRef.current = new PlayerClient(currentPlayer.x, currentPlayer.y, currentPlayer.speed);
+    }
+  }, [playerId, players]);
+
+  // Drift check and correction
+  useEffect(() => {
+    if (!playerId || !playerClientRef.current) return;
+
+    const currentPlayer = players?.find((p) => p.playerId === playerId);
+    if (!currentPlayer) return;
+
+    const dx = Math.abs(currentPlayer.x - playerClientRef.current.x);
+    const dy = Math.abs(currentPlayer.y - playerClientRef.current.y);
+
+    if (dx > DRIFT_THRESHOLD || dy > DRIFT_THRESHOLD) {
+      playerClientRef.current.setPlayerPosition(currentPlayer.x, currentPlayer.y);
+    }
+  }, [playerId, players]);
+
+  const handleMovement = (direction: Direction) => {
+    if (roomId && playerId && playerClientRef.current) {
+      playerClientRef.current.updatePosition(direction, level);
+      sendMessage({ type: 'update-movement', data: { direction } });
+    }
+  };
+
   useGameKeyPress(
     [
       {
         key: 'w',
-        callback: () => {
-          if (roomId && playerId) {
-            sendMessage({ type: 'update-movement', data: { direction: 'UP' } });
-          }
-        }
+        callback: () => handleMovement('UP')
       },
       {
         key: 'a',
-        callback: () => {
-          if (roomId && playerId) {
-            sendMessage({ type: 'update-movement', data: { direction: 'LEFT' } });
-          }
-        }
+        callback: () => handleMovement('LEFT')
       },
       {
         key: 's',
-        callback: () => {
-          if (roomId && playerId) {
-            sendMessage({ type: 'update-movement', data: { direction: 'DOWN' } });
-          }
-        }
+        callback: () => handleMovement('DOWN')
       },
       {
         key: 'd',
-        callback: () => {
-          if (roomId && playerId) {
-            sendMessage({ type: 'update-movement', data: { direction: 'RIGHT' } });
-          }
-        }
+        callback: () => handleMovement('RIGHT')
       },
       {
         key: 'ArrowUp',
@@ -112,16 +133,21 @@ export const GameBoard = ({ roomId, playerId, level }: JoinRoomResponse) => {
     level?.forEach((row, y) => {
       row.forEach((cell, x) => {
         ctx.fillStyle = cell === 1 ? 'black' : 'gray';
-        ctx.fillRect(x * 16, y * 16, 16, 16);
+        ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
       });
     });
 
     // Draw all players
     players?.forEach((player) => {
+      // Use client position for local player, server position for others
+      const isLocalPlayer = player.playerId === playerId;
+      const x = isLocalPlayer && playerClientRef.current ? playerClientRef.current.x : player.x;
+      const y = isLocalPlayer && playerClientRef.current ? playerClientRef.current.y : player.y;
+
       ctx.fillStyle = player.playerColour.toLowerCase();
-      ctx.fillRect(player.x, player.y, 16, 16);
+      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
       ctx.fillStyle = 'white';
-      ctx.fillText(player.playerName, player.x, player.y + 32);
+      ctx.fillText(player.playerName, x, y + 32);
     });
 
     // Draw all bullets
@@ -129,7 +155,7 @@ export const GameBoard = ({ roomId, playerId, level }: JoinRoomResponse) => {
       ctx.fillStyle = 'white';
       ctx.fillRect(bullet.x, bullet.y, 2, 2);
     });
-  }); // No dependencies - run on every render to ensure canvas is always up to date
+  }); // No dependencies - run on every render
 
   if (!roomId || !playerId) {
     return null;
@@ -141,8 +167,8 @@ export const GameBoard = ({ roomId, playerId, level }: JoinRoomResponse) => {
         ref={canvasRef}
         id="game-canvas"
         tabIndex={0}
-        width={level[0].length * 16}
-        height={level.length * 16}
+        width={level[0].length * TILE_SIZE}
+        height={level.length * TILE_SIZE}
         className="mx-auto w-full bg-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
       />
     </div>

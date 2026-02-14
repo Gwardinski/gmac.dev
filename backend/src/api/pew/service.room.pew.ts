@@ -1,9 +1,9 @@
 import { returnServiceResponse } from "../../responses";
 import type { ServiceResponse } from "../../types";
 import { GAMES_DB, ROOMS_DB } from "./db.pew";
-import { LEVEL_1 } from "./levels.pew";
 import type { Room, ROOM_ID, RoomListModel } from "./models/base.models.pew";
 import { GameClass } from "./models/game.model.pew";
+import { LEVEL_1 } from "./models/level.model.pew";
 import { generateRoomId } from "./util.pew";
 
 // REST Services
@@ -12,7 +12,6 @@ export function roomServiceGetByName(roomName: ROOM_ID): ServiceResponse<Room> {
   const existingRoom = ROOMS_DB.values().find(
     (room) => room.roomName === roomName
   );
-  console.log(existingRoom);
   if (!existingRoom) {
     return returnServiceResponse<Room>("ROOM_NOT_FOUND");
   }

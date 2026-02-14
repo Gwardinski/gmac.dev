@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type { Color } from './game-state';
+import type { Color } from './client-copies';
 
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
 

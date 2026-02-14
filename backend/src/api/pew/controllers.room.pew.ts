@@ -1,10 +1,10 @@
 import { returnAPIError, returnAPIResponse } from "../../responses";
-import { LEVEL_1 } from "./levels.pew";
 import type {
   Color,
   Room,
   RoomJoinRequestModel,
 } from "./models/base.models.pew";
+import { LEVEL_1 } from "./models/level.model.pew";
 import {
   playerServiceCreate,
   playerServiceGetSerialisedByDeviceId,

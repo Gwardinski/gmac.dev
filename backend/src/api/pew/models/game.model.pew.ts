@@ -1,6 +1,6 @@
 import z from "zod";
-import { type Level } from "../levels.pew";
 import { BulletClass, bulletSerialisedSchema } from "./bullet.model.pew";
+import { type Level } from "./level.model.pew";
 import { PlayerClass, playerSerialisedSchema } from "./player.model.pew";
 
 const PLAYER_RESPAWN_TIME = 3000;
@@ -30,6 +30,7 @@ export class GameClass {
 
   public removePlayer(player: PlayerClass) {
     this.players = this.players.filter((p) => p !== player);
+    this.bullets = this.bullets.filter((b) => b.playerId !== player.playerId);
   }
 
   public addBullet(bullet: BulletClass) {

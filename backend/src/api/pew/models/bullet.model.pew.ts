@@ -1,7 +1,7 @@
 import z from "zod";
-import { GRID_SIZE, type Level } from "../levels.pew";
 import { generateBulletId } from "../util.pew";
 import { directionSchema, type Direction } from "./base.models.pew";
+import { GRID_SIZE, type Level } from "./level.model.pew";
 import type { PlayerClass } from "./player.model.pew";
 
 const BULLET_BASE_SPEED = 10;

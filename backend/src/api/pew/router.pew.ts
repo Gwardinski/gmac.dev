@@ -16,7 +16,10 @@ import {
   type WSSendMessageType,
 } from "./models/base.models.pew.js";
 import type { GameSerialized } from "./models/game.model.pew.js";
-import { getGameSerialisedState } from "./service.game.pew.js";
+import {
+  getGameSerialisedState,
+  removeGamePlayer,
+} from "./service.game.pew.js";
 import {
   playerFire,
   playerServiceGetSerialisedById,
@@ -69,8 +72,6 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
         return;
       }
 
-      console.log("gameState", gameState);
-
       // check player exists
       const [player, playerErr] = playerServiceGetSerialisedById(
         roomId,
@@ -120,9 +121,30 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
       }
 
       switch (message.type) {
+        case "leave-room": {
+          sendMessage(`Player ${playerId} leaving room: ${roomId}`);
+
+          const [removedGame, removedGameError] = removeGamePlayer(
+            roomId,
+            playerId
+          );
+          if (!removedGame || removedGameError) {
+            ws.send(JSON.stringify({ error: removedGameError }));
+            return;
+          }
+
+          broadcastToRoom(
+            roomId,
+            returnWSResponse<WSSendMessageType, GameSerialized>(
+              "game-state",
+              removedGame
+            )
+          );
+
+          break;
+        }
         case "update-movement": {
           const { direction } = message.data;
-          sendMessage(`Player ${playerId} moving: ${direction}`);
 
           const [updatedGameState, gameStateErr] = updatePlayerPosition(
             roomId,
@@ -162,8 +184,6 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
             ws.send(JSON.stringify({ error: gameStateErr }));
             return;
           }
-
-          console.log("updatedGameState", updatedGameState);
 
           if (updatedGameState) {
             // Broadcasts to all players in the room

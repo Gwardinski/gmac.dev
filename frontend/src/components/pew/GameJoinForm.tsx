@@ -6,8 +6,8 @@ import { RadioGroup, RadioGroupItem } from '@radix-ui/react-radio-group';
 import { useForm } from '@tanstack/react-form';
 import { getRouteApi } from '@tanstack/react-router';
 import { useState } from 'react';
+import { COLORS, type Color } from './client-copies';
 import { mapAPIErrorsToForm } from './form-utils';
-import { COLORS, type Color } from './game-state';
 import { joinGameSchema, useJoinRoom, type JoinRoomResponse } from './useJoinRoom';
 
 const savedPlayerName = localStorage.getItem('player-name') || '';
@@ -37,8 +37,8 @@ export function GameJoinForm({ onJoinSuccess }: GameJoinFormProps) {
   const form = useForm({
     defaultValues: {
       playerName: (searchParams as any)?.playerName || savedPlayerName,
-      roomCode: sharedRoomCode ?? savedRoomCode,
-      roomName: sharedRoomName ?? savedRoomName,
+      roomCode: sharedRoomCode || savedRoomCode,
+      roomName: sharedRoomName || savedRoomName,
       playerColour: (searchParams as any)?.playerColour || savedPlayerColor,
       playerId: localStorage.getItem('player-id') || null,
       playerDeviceId: localStorage.getItem('player-device-id') || createNewPlayerDeviceId()

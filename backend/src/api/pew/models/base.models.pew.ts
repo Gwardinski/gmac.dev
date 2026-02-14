@@ -51,6 +51,16 @@ export const roomJoinSchema = z.object({
 export type RoomJoinRequestModel = z.infer<typeof roomJoinSchema>;
 export type RoomJoinResponseModel = Pick<Room, "roomId"> & { playerId: string };
 
+// leave room
+export const roomLeaveSchema = z.object({
+  roomId: z.string(),
+  playerId: z.string(),
+});
+export type RoomLeaveRequestModel = z.infer<typeof roomLeaveSchema>;
+export type RoomLeaveResponseModel = Pick<Room, "roomId"> & {
+  playerId: string;
+};
+
 // WEBSOCKET
 
 // WebSocket query parameters
@@ -62,23 +72,21 @@ export type WSQuery = z.infer<typeof wsQuerySchema>;
 
 // WEBSOCKET MESSAGES
 
-// Message data schemas
+// movement
 const updateMovementDataSchema = z.object({
   direction: directionSchema,
 });
-export type UpdateMovementData = z.infer<typeof updateMovementDataSchema>;
 
-// WebSocket message wrapper schemas
 const updateMovementMessageSchema = z.object({
   type: z.literal("update-movement"),
   data: updateMovementDataSchema,
 });
 export type UpdateMovementMessage = z.infer<typeof updateMovementMessageSchema>;
 
+// fire
 const fireDataSchema = z.object({
   direction: directionSchema,
 });
-export type FireData = z.infer<typeof fireDataSchema>;
 
 const fireMessageSchema = z.object({
   type: z.literal("fire"),
@@ -86,10 +94,17 @@ const fireMessageSchema = z.object({
 });
 export type FireMessage = z.infer<typeof fireMessageSchema>;
 
+// leave room
+const leaveRoomMessageSchema = z.object({
+  type: z.literal("leave-room"),
+});
+export type LeaveRoomMessage = z.infer<typeof leaveRoomMessageSchema>;
+
 // Union of all possible WebSocket messages
 export const wsMessageSchema = z.discriminatedUnion("type", [
   updateMovementMessageSchema,
   fireMessageSchema,
+  leaveRoomMessageSchema,
 ]);
 export type WSMessage = z.infer<typeof wsMessageSchema>;
 
