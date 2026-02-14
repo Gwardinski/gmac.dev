@@ -22,8 +22,6 @@ export const GameChat = ({ messages, onSendMessage }: { messages: Message[]; onS
     }
   });
 
-  console.log(messages);
-
   return (
     <section className="flex max-h-[640px] min-w-sm flex-col gap-2 self-stretch rounded-md glass p-2 dark:dark-glass">
       <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto p-2">
