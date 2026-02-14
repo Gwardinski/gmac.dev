@@ -15,6 +15,10 @@ export type Player = {
   playerColour: Color;
   x: number;
   y: number;
+  health: number;
+  killCount: number;
+  deathCount: number;
+  isDestroyed: boolean;
 };
 
 // Bullet type matching backend Bullet model

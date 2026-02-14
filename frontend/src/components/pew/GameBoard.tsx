@@ -145,23 +145,6 @@ export const GameBoard = ({ roomId, playerId, level }: JoinRoomResponse) => {
         height={level.length * 16}
         className="mx-auto w-full bg-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
       />
-      <div className="text-sm text-white">
-        {gameState?.players?.map((player) => (
-          <div key={player.playerId}>
-            <p>{player.playerName}</p>
-            <p>{player.playerColour}</p>
-            <p>{player.x}</p>
-            <p>{player.y}</p>
-          </div>
-        ))}
-        {gameState?.bullets?.map((bullet) => (
-          <div key={bullet.bulletId}>
-            <p>{bullet.x}</p>
-            <p>{bullet.y}</p>
-            <p>{bullet.direction}</p>
-          </div>
-        ))}
-      </div>
     </div>
   );
 };

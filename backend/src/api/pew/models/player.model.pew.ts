@@ -19,7 +19,7 @@ type PlayerPositions = {
 };
 
 export const playerSerialisedSchema = z.object({
-  playerId: z.string(),
+  playerId: z.string(), // todo maybe don't return, could be hijacked...
   playerDeviceId: z.string(),
   playerName: z.string(),
   playerColour: COLORS_SCHEMA,
@@ -149,11 +149,20 @@ export class PlayerClass {
     this.health += amount;
   }
 
-  public takeDamage(amount: number) {
+  public incrementKillCount(killedPlayerId: string) {
+    if (killedPlayerId === this.playerId) {
+      return;
+    }
+    this.killCount++;
+  }
+
+  public takeDamage(amount: number): boolean {
     this.health -= amount;
     if (this.health <= 0) {
       this.destroy();
+      return true;
     }
+    return false;
   }
 
   private destroy() {

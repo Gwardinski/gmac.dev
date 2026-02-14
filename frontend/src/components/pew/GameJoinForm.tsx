@@ -4,6 +4,7 @@ import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@radix-ui/react-radio-group';
 import { useForm } from '@tanstack/react-form';
+import { getRouteApi } from '@tanstack/react-router';
 import { useState } from 'react';
 import { mapAPIErrorsToForm } from './form-utils';
 import { COLORS, type Color } from './game-state';
@@ -13,6 +14,8 @@ const savedPlayerName = localStorage.getItem('player-name') || '';
 const savedPlayerColor = (localStorage.getItem('player-color') as Color) || 'RED';
 const savedRoomCode = localStorage.getItem('room-code') || '';
 const savedRoomName = localStorage.getItem('room-name') || '';
+
+const route = getRouteApi('/pew/');
 
 interface GameJoinFormProps {
   onJoinSuccess: (response: JoinRoomResponse) => void;
@@ -26,12 +29,17 @@ export function GameJoinForm({ onJoinSuccess }: GameJoinFormProps) {
   const { mutate, isPending } = useJoinRoom();
   const [globalError, setGlobalError] = useState<string>('');
 
+  const searchParams = route.useSearch();
+
+  const sharedRoomCode = (searchParams as any)?.code?.toString().trim() ?? '';
+  const sharedRoomName = (searchParams as any)?.room?.toString().trim() ?? '';
+
   const form = useForm({
     defaultValues: {
-      playerName: savedPlayerName,
-      roomCode: savedRoomCode,
-      roomName: savedRoomName,
-      playerColour: savedPlayerColor,
+      playerName: (searchParams as any)?.playerName || savedPlayerName,
+      roomCode: sharedRoomCode ?? savedRoomCode,
+      roomName: sharedRoomName ?? savedRoomName,
+      playerColour: (searchParams as any)?.playerColour || savedPlayerColor,
       playerId: localStorage.getItem('player-id') || null,
       playerDeviceId: localStorage.getItem('player-device-id') || createNewPlayerDeviceId()
     },

@@ -50,10 +50,10 @@ const CoinflipIndexRoute = CoinflipIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/coinflip': typeof CoinflipIndexRoute
-  '/maze': typeof MazeIndexRoute
-  '/pew': typeof PewIndexRoute
-  '/testing': typeof TestingIndexRoute
+  '/coinflip/': typeof CoinflipIndexRoute
+  '/maze/': typeof MazeIndexRoute
+  '/pew/': typeof PewIndexRoute
+  '/testing/': typeof TestingIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -74,7 +74,7 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/coinflip' | '/maze' | '/pew' | '/testing'
+  fullPaths: '/' | '/about' | '/coinflip/' | '/maze/' | '/pew/' | '/testing/'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/about' | '/coinflip' | '/maze' | '/pew' | '/testing'
   id:
@@ -115,28 +115,28 @@ declare module '@tanstack/react-router' {
     '/testing/': {
       id: '/testing/'
       path: '/testing'
-      fullPath: '/testing'
+      fullPath: '/testing/'
       preLoaderRoute: typeof TestingIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pew/': {
       id: '/pew/'
       path: '/pew'
-      fullPath: '/pew'
+      fullPath: '/pew/'
       preLoaderRoute: typeof PewIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/maze/': {
       id: '/maze/'
       path: '/maze'
-      fullPath: '/maze'
+      fullPath: '/maze/'
       preLoaderRoute: typeof MazeIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/coinflip/': {
       id: '/coinflip/'
       path: '/coinflip'
-      fullPath: '/coinflip'
+      fullPath: '/coinflip/'
       preLoaderRoute: typeof CoinflipIndexRouteImport
       parentRoute: typeof rootRouteImport
     }

@@ -2,7 +2,9 @@ import { Page, PageHeader, PageHeading, PageSection } from '@/components/layout'
 import { GameBoard } from '@/components/pew/GameBoard';
 import { GameControls } from '@/components/pew/GameControls';
 import { GameJoinForm } from '@/components/pew/GameJoinForm';
+import { GamePlayerStats } from '@/components/pew/GamePlayerStats';
 import { GameRoomsActive } from '@/components/pew/GameRoomsActive';
+import { GameShareButton } from '@/components/pew/GameShareButton';
 import type { JoinRoomResponse } from '@/components/pew/useJoinRoom';
 import { H1, H1Description } from '@/components/ui/typography';
 import { createFileRoute } from '@tanstack/react-router';
@@ -36,10 +38,14 @@ function RouteComponent() {
       </PageHeader>
 
       <PageSection className="flex flex-col items-center justify-center gap-4 font-mono">
-        <GameControls />
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          <GameControls />
+          {!showLoginForm && <GamePlayerStats roomId={roomId ?? ''} playerId={playerId ?? ''} />}
+          {!showLoginForm && <GameShareButton />}
+        </div>
         {showLoginForm && <GameJoinForm onJoinSuccess={onJoinSuccess} />}
+        {showLoginForm && <GameRoomsActive />}
         <GameBoard roomId={roomId ?? ''} playerId={playerId ?? ''} level={level ?? []} />
-        <GameRoomsActive />
       </PageSection>
     </Page>
   );

@@ -70,7 +70,12 @@ export class GameClass {
         }
 
         if (isBulletHittingPlayer(bullet, player)) {
-          player.takeDamage(bullet.damage);
+          const died = player.takeDamage(bullet.damage);
+          if (died) {
+            this.players
+              .find((p) => p.playerId === bullet.playerId)
+              ?.incrementKillCount(player.playerId);
+          }
           bullet.destroy();
           break;
         }
