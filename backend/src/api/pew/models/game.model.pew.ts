@@ -1,7 +1,9 @@
 import z from "zod";
-import type { Level } from "../levels.pew";
+import { type Level } from "../levels.pew";
 import { BulletClass, bulletSerialisedSchema } from "./bullet.model.pew";
 import { PlayerClass, playerSerialisedSchema } from "./player.model.pew";
+
+const PLAYER_RESPAWN_TIME = 3000;
 
 // Internal Game State - Class based
 const gameSchema = z.object({
@@ -35,18 +37,45 @@ export class GameClass {
   }
 
   public updateBullets() {
-    // Update all bullet positions
     this.bullets.forEach((bullet) => {
       bullet.updatePosition(this.level);
     });
 
-    // Remove destroyed bullets from memory
+    this.checkBulletPlayerCollisions();
+
+    // Clean up
     this.bullets = this.bullets.filter((bullet) => !bullet.isDestroyed);
   }
 
-  // currently unused
-  public removeBullet(bullet: BulletClass) {
-    this.bullets = this.bullets.filter((b) => b.bulletId !== bullet.bulletId);
+  public respawnPlayers() {
+    const timestamp = Date.now();
+    this.players.forEach((p) => {
+      if (p.isDestroyed && p.deathTimestamp + PLAYER_RESPAWN_TIME < timestamp) {
+        p.respawn({
+          x: 64,
+          y: 64,
+        });
+      }
+    });
+  }
+
+  private checkBulletPlayerCollisions() {
+    for (const bullet of this.bullets) {
+      if (bullet.isDestroyed) {
+        continue;
+      }
+      for (const player of this.players) {
+        if (player.isDestroyed || player.playerId === bullet.playerId) {
+          continue;
+        }
+
+        if (isBulletHittingPlayer(bullet, player)) {
+          player.takeDamage(bullet.damage);
+          bullet.destroy();
+          break;
+        }
+      }
+    }
   }
 
   public toJSON() {
@@ -66,3 +95,24 @@ export const gameSerializedSchema = z.object({
   players: z.array(playerSerialisedSchema),
 });
 export type GameSerialized = z.infer<typeof gameSerializedSchema>;
+
+function isBulletHittingPlayer(
+  bullet: BulletClass,
+  player: PlayerClass
+): boolean {
+  const bulletBounds = bullet.getBounds();
+  const playerPos = player.getPositions();
+
+  // Simple AABB (Axis-Aligned Bounding Box) collision detection
+  const bulletRight = bulletBounds.x + bulletBounds.size;
+  const bulletBottom = bulletBounds.y + bulletBounds.size;
+  const playerRight = playerPos.x + player.playerSize;
+  const playerBottom = playerPos.y + player.playerSize;
+
+  return (
+    bulletBounds.x < playerRight &&
+    bulletRight > playerPos.x &&
+    bulletBounds.y < playerBottom &&
+    bulletBottom > playerPos.y
+  );
+}

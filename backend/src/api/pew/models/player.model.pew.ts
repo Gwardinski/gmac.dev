@@ -32,6 +32,7 @@ export const playerSerialisedSchema = z.object({
   bottomRight: z.object({ x: z.number(), y: z.number() }).optional(),
   killCount: z.number().optional(),
   deathCount: z.number().optional(),
+  isDestroyed: z.boolean().optional(),
 });
 export type PlayerSerialised = z.infer<typeof playerSerialisedSchema>;
 
@@ -62,6 +63,8 @@ export class PlayerClass {
     this.bottomRight = { x: this.x + PLAYER_SIZE, y: this.y + PLAYER_SIZE };
     this.killCount = 0;
     this.deathCount = 0;
+    this.deathTimestamp = 0;
+    this.isDestroyed = false;
   }
 
   public playerId: string;
@@ -77,6 +80,8 @@ export class PlayerClass {
   // scoring
   public killCount: number;
   public deathCount: number;
+  public deathTimestamp: number;
+  public isDestroyed: boolean;
 
   public getPositions(): PlayerPositions {
     return {
@@ -144,6 +149,27 @@ export class PlayerClass {
     this.health += amount;
   }
 
+  public takeDamage(amount: number) {
+    this.health -= amount;
+    if (this.health <= 0) {
+      this.destroy();
+    }
+  }
+
+  private destroy() {
+    this.isDestroyed = true;
+    this.deathTimestamp = Date.now();
+    this.deathCount++;
+    this.setPlayerPosition(-1000, -1000); // off screen
+  }
+
+  public respawn(spawnPoint: { x: number; y: number }) {
+    this.isDestroyed = false;
+    this.deathTimestamp = 0;
+    this.health = PLAYER_BASE_HEALTH;
+    this.setPlayerPosition(spawnPoint.x, spawnPoint.y);
+  }
+
   public canFire(): boolean {
     const currentTime = Date.now();
     const timeSinceLastFire = currentTime - this.lastFireTime;
@@ -176,6 +202,7 @@ export class PlayerClass {
       bottomRight: this.bottomRight,
       killCount: this.killCount,
       deathCount: this.deathCount,
+      isDestroyed: this.isDestroyed,
     };
   }
 }

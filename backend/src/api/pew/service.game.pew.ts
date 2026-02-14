@@ -61,7 +61,7 @@ export function updateGamePlayerFire(
 
   const { x, y } = getBulletSpawnPoint(currentPlayer, direction);
 
-  const newBullet = new BulletClass(playerId, x, y, direction);
+  const newBullet = new BulletClass(roomId, playerId, x, y, direction);
 
   currentGame.addBullet(newBullet);
 

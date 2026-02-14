@@ -20,12 +20,14 @@ export type BulletModel = z.infer<typeof bulletSerialisedSchema>;
 
 export class BulletClass {
   constructor(
+    public gameId: string,
     public playerId: string,
     public x: number,
     public y: number,
     public direction: Direction
   ) {
     // set constructor values
+    this.gameId = gameId;
     this.bulletId = generateBulletId();
     this.playerId = playerId;
     this.x = x;
@@ -35,11 +37,13 @@ export class BulletClass {
     this.speed = BULLET_BASE_SPEED;
     this.spawnTimestamp = Date.now();
     this.isDestroyed = false;
+    this.damage = BULLET_BASE_DAMAGE;
   }
 
   public spawnTimestamp: number;
   public bulletId: string;
   public speed: number;
+  public damage: number;
   public isDestroyed: boolean;
 
   public updatePosition(level: Level) {
@@ -68,10 +72,10 @@ export class BulletClass {
 
     // Check if bullet hit a wall
     const hitWall = isBulletInWall(newX, newY, level);
-    // const hitPlayer = isBulletInPlayer(newX, newY);
 
     if (hitWall) {
       this.destroy();
+      return;
     }
 
     this.x = newX;
@@ -88,8 +92,16 @@ export class BulletClass {
     };
   }
 
-  private destroy() {
+  public destroy() {
     this.isDestroyed = true;
+  }
+
+  public getBounds() {
+    return {
+      x: this.x,
+      y: this.y,
+      size: BULLET_SIZE,
+    };
   }
 }
 
@@ -126,9 +138,4 @@ function isBulletInWall(x: number, y: number, level: Level): boolean {
   }
 
   return level[gridY]?.[gridX] === 2;
-}
-
-// more complicated...
-function isBulletInPlayer(x: number, y: number): boolean {
-  return false;
 }

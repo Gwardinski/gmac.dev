@@ -62,14 +62,14 @@ function gameEngineTick(roomId: ROOM_ID) {
     return;
   }
 
+  game.respawnPlayers();
+
   // Only update if there is automated content to process
-  // todo: add other automated content here
   if (game.bullets.length === 0) {
     return;
   }
 
   game.updateBullets();
-  // todo: items?
 
   GAMES_DB.set(roomId, game);
 

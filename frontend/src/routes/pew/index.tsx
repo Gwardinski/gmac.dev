@@ -30,7 +30,8 @@ function RouteComponent() {
       <PageHeader>
         <PageHeading>
           <H1>Pew</H1>
-          <H1Description>Work-in-Progress. Websockets are hard</H1Description>
+          <H1Description>Has free access to professional grade, state-of-the-art game engines</H1Description>
+          <H1Description>uses Javascript</H1Description>
         </PageHeading>
       </PageHeader>
 
