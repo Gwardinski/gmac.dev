@@ -9,8 +9,8 @@ import { pewRouter } from "./pew/router.pew.js";
 const ELYSIA_PORT = 3001;
 
 export function initServer() {
-  console.log(figlet.textSync("gmac.api"));
-  console.log(figlet.textSync("BUN BUN BUN"));
+  console.log(console.log("gmac.api"));
+  console.log(console.log("BUN BUN BUN"));
   console.log(`IT RHYMES WITH FUN!`);
 
   // Elysia REST API
@@ -33,8 +33,12 @@ function initAPI() {
       })
     )
     .get("/", () => {
-      const body = figlet.textSync("gmac.api");
-      return body;
+      try {
+        const body = figlet.textSync("gmac.api");
+        return body;
+      } catch (error) {
+        return "gmac.api";
+      }
     })
     .use(noteRouter)
     .use(pewRouter)
