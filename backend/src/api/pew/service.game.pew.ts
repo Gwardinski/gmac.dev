@@ -85,3 +85,20 @@ export function updateGamePlayerFire(
 
   return returnServiceResponse<GameSerialized>(currentGame.toJSON());
 }
+
+export function addMessageToGameState(
+  roomId: ROOM_ID,
+  playerId: string,
+  messageContent: string
+): ServiceResponse<GameSerialized> {
+  const currentGame = GAMES_DB.get(roomId);
+  if (!currentGame) {
+    return returnServiceResponse<GameSerialized>("INVALID_ROOM_CODE");
+  }
+  const player = currentGame.players.find((p) => p.playerId === playerId);
+  if (!player) {
+    return returnServiceResponse<GameSerialized>("INVALID_PLAYER_ID");
+  }
+  currentGame.addMessage(player, messageContent);
+  return returnServiceResponse<GameSerialized>(currentGame.toJSON());
+}

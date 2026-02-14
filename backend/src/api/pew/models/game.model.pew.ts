@@ -1,4 +1,6 @@
 import z from "zod";
+import { generateMessageId } from "../util.pew";
+import { gameMessageSchema, type GameMessage } from "./base.models.pew";
 import { BulletClass, bulletSerialisedSchema } from "./bullet.model.pew";
 import { type Level } from "./level.model.pew";
 import { PlayerClass, playerSerialisedSchema } from "./player.model.pew";
@@ -10,6 +12,7 @@ const gameSchema = z.object({
   roomId: z.string(),
   bullets: z.array(z.instanceof(BulletClass)),
   players: z.array(z.instanceof(PlayerClass)),
+  messages: z.array(gameMessageSchema),
 });
 export type GameModel = z.infer<typeof gameSchema>;
 
@@ -19,10 +22,12 @@ export class GameClass {
     this.level = level;
     this.players = [];
     this.bullets = [];
+    this.messages = [];
   }
 
   public players: PlayerClass[];
   public bullets: BulletClass[];
+  public messages: GameMessage[];
 
   public addPlayer(player: PlayerClass) {
     this.players.push(player);
@@ -84,11 +89,24 @@ export class GameClass {
     }
   }
 
+  public addMessage(player: PlayerClass, messageContent: string) {
+    this.messages.push({
+      messageId: generateMessageId(),
+      playerId: player.playerId,
+      playerName: player.playerName,
+      playerColour: player.playerColour,
+      messageContent: messageContent,
+      timestamp: Date.now(),
+      isGameMessage: false,
+    });
+  }
+
   public toJSON() {
     return {
       roomId: this.roomId,
       bullets: this.bullets.map((bullet) => bullet.toJSON()),
       players: this.players.map((player) => player.toJSON()),
+      messages: this.messages,
       // exclude level from JSON (too big)
     };
   }
@@ -99,6 +117,7 @@ export const gameSerializedSchema = z.object({
   roomId: z.string(),
   bullets: z.array(bulletSerialisedSchema),
   players: z.array(playerSerialisedSchema),
+  messages: z.array(gameMessageSchema),
 });
 export type GameSerialized = z.infer<typeof gameSerializedSchema>;
 

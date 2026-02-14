@@ -44,9 +44,20 @@ export type Bullet = {
   direction: Direction;
 };
 
+export type Message = {
+  messageId: string;
+  playerId: string;
+  playerName: string;
+  playerColour: Color;
+  messageContent: string;
+  timestamp: number;
+  isGameMessage: boolean;
+};
+
 // Game state matching backend Game model
 export type GameState = {
   roomId?: string;
   players: Player[];
   bullets: Bullet[];
+  messages: Message[];
 };

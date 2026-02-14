@@ -1,6 +1,7 @@
 import { Page, PageHeader, PageHeading, PageSection } from '@/components/layout';
 import type { Level } from '@/components/pew/client-copies';
 import { GameBoard } from '@/components/pew/GameBoard';
+import { GameChat } from '@/components/pew/GameChat';
 import { GameControls } from '@/components/pew/GameControls';
 import { GameJoinForm } from '@/components/pew/GameJoinForm';
 import { GameLeaveButton } from '@/components/pew/GameLeaveButton';
@@ -23,7 +24,7 @@ function RouteComponent() {
   const [level, setLevel] = useState<Level | null>(null);
 
   const { gameState, isConnected, sendMessage } = useGetGameState(roomId, playerId);
-
+  const { messages } = gameState;
   const showLoginForm = !isConnected;
 
   useEffect(() => {
@@ -47,6 +48,10 @@ function RouteComponent() {
     setLevel(null);
   }
 
+  function onSendMessage(message: string) {
+    sendMessage({ type: 'send-message', data: { messageContent: message } });
+  }
+
   return (
     <Page>
       <PageHeader>
@@ -68,7 +73,12 @@ function RouteComponent() {
         </div>
         {showLoginForm && <GameJoinForm onJoinSuccess={onJoinSuccess} />}
         {showLoginForm && <GameRoomsActive />}
-        {!showLoginForm && level && <GameBoard roomId={roomId ?? ''} playerId={playerId ?? ''} level={level} gameState={gameState} sendMessage={sendMessage} />}
+        {!showLoginForm && level && (
+          <div className="flex flex-wrap items-stretch gap-4">
+            <GameBoard roomId={roomId ?? ''} playerId={playerId ?? ''} level={level} gameState={gameState} sendMessage={sendMessage} />
+            <GameChat messages={messages} onSendMessage={onSendMessage} />
+          </div>
+        )}
       </PageSection>
     </Page>
   );

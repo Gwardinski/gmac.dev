@@ -5,4 +5,3 @@ import type { GameClass } from "./models/game.model.pew";
 
 export const ROOMS_DB = new Map<ROOM_ID, Room>();
 export const GAMES_DB = new Map<ROOM_ID, GameClass>();
-// const CHATS_DB = new Map<ROOM_ID, GameChat>();

@@ -17,6 +17,7 @@ import {
 } from "./models/base.models.pew.js";
 import type { GameSerialized } from "./models/game.model.pew.js";
 import {
+  addMessageToGameState,
   getGameSerialisedState,
   removeGamePlayer,
 } from "./service.game.pew.js";
@@ -195,6 +196,30 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
               )
             );
           }
+          break;
+        }
+
+        case "send-message": {
+          const { messageContent } = message.data;
+          sendMessage(`Player ${playerId} sending message: ${messageContent}`);
+
+          const [updatedGameState, gameStateErr] = addMessageToGameState(
+            roomId,
+            playerId,
+            messageContent
+          );
+          if (gameStateErr) {
+            ws.send(JSON.stringify({ error: gameStateErr }));
+            return;
+          }
+
+          broadcastToRoom(
+            roomId,
+            returnWSResponse<WSSendMessageType, GameSerialized>(
+              "game-state",
+              updatedGameState
+            )
+          );
           break;
         }
       }

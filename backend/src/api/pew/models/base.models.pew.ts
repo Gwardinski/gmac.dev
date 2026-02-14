@@ -100,11 +100,21 @@ const leaveRoomMessageSchema = z.object({
 });
 export type LeaveRoomMessage = z.infer<typeof leaveRoomMessageSchema>;
 
+// send message
+const sendMessageMessageSchema = z.object({
+  type: z.literal("send-message"),
+  data: z.object({
+    messageContent: z.string(),
+  }),
+});
+export type SendMessageMessage = z.infer<typeof sendMessageMessageSchema>;
+
 // Union of all possible WebSocket messages
 export const wsMessageSchema = z.discriminatedUnion("type", [
   updateMovementMessageSchema,
   fireMessageSchema,
   leaveRoomMessageSchema,
+  sendMessageMessageSchema,
 ]);
 export type WSMessage = z.infer<typeof wsMessageSchema>;
 
@@ -112,15 +122,13 @@ export type WSSendMessageType = "game-state";
 
 // CHAT
 
-// type GameChat = {
-//   messages: Message[];
-// };
-
-// // Possibly too many fields here. Want to keep simple, but can delete later.
-// type Message = {
-//   messageId: string;
-//   playerId: string; // might not need this since we have playerColor
-//   playerColor: Color;
-//   content: string;
-//   timestamp: number;
-// };
+export const gameMessageSchema = z.object({
+  messageId: z.string(),
+  playerId: z.string(),
+  playerName: z.string(),
+  playerColour: COLORS_SCHEMA,
+  messageContent: z.string(),
+  timestamp: z.number(),
+  isGameMessage: z.boolean(),
+});
+export type GameMessage = z.infer<typeof gameMessageSchema>;
