@@ -4,6 +4,7 @@ export type Playground = {
   title: string;
   subTitle: string;
   tags: TECH_TAG[];
+  deprecated_tags?: TECH_TAG[];
   description: string;
   link: string;
   code: string;
@@ -13,10 +14,11 @@ export const PLAYGROUNDS: Playground[] = [
   {
     title: 'Pew',
     subTitle: 'Work-in-Progress.',
-    tags: ['React', 'TypeScript', 'TailwindCSS', 'Bun', 'WebSocket', 'Elysia', 'Socket.io'],
+    tags: ['React', 'TypeScript', 'TailwindCSS', 'Bun', 'WebSocket', 'Elysia'],
     description: 'Work-in-Progress. Fun with web sockets',
     link: '/pew',
-    code: ''
+    code: '',
+    deprecated_tags: ['Socket.io']
   },
   {
     title: 'Maze',

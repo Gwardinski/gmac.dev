@@ -8,17 +8,20 @@ import { PLAYGROUNDS, type Playground } from '@/data/playgrounds';
 import { PROJECTS, type Project } from '@/data/projects';
 import { TECH_TAGS, type TECH_TAG } from '@/data/types';
 import {
+  IconApi,
   IconBrandCloudflare,
   IconBrandGithub,
   IconBrandReact,
   IconBrandTailwind,
   IconBrandVite,
+  IconBurger,
   IconCrane,
   IconExternalLink,
   IconGhost,
   IconLego,
   IconLock,
   IconPalette,
+  IconPlugConnected,
   IconTrain
 } from '@tabler/icons-react';
 import { createFileRoute, Link } from '@tanstack/react-router';
@@ -54,12 +57,26 @@ function App() {
               <AccordionTrigger>Site TechStack</AccordionTrigger>
               <AccordionContent className="flex flex-col gap-2 pb-6">
                 <GithubLink href="https://github.com/Gwardinski/gmac.dev" text="Source Code" />
-                <DocumentationLink href="https://vitejs.dev/" text="Vite / React" icon={IconBrandVite} />
-                <DocumentationLink href="https://tanstack.com/router" text="Tanstack Router" icon={IconBrandReact} />
-                <DocumentationLink href="https://railway.app/" text="Railway" icon={IconTrain} />
-                <DocumentationLink href="https://www.cloudflare.com/en-gb/" text="Cloudflare" icon={IconBrandCloudflare} />
-                <DocumentationLink href="https://tailwindcss.com" text="Tailwind" icon={IconBrandTailwind} />
-                <DocumentationLink href="https://ui.shadcn.com/" text="shadcn/ui" icon={IconPalette} />
+                <div className="grid grid-cols-1 gap-2 pt-2 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="flex flex-col gap-2">
+                    <p className="pb-2 font-mono">Frontend</p>
+                    <DocumentationLink href="https://vitejs.dev/" text="Vite / React" icon={IconBrandVite} />
+                    <DocumentationLink href="https://tanstack.com/router" text="Tanstack Router" icon={IconBrandReact} />
+                    <DocumentationLink href="https://tailwindcss.com" text="Tailwind" icon={IconBrandTailwind} />
+                    <DocumentationLink href="https://ui.shadcn.com/" text="shadcn/ui" icon={IconPalette} />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <p className="pb-2 font-mono">Backend</p>
+                    <DocumentationLink href="https://bun.sh/" text="Bun" icon={IconBurger} />
+                    <DocumentationLink href="https://elysiajs.com/" text="Elysia" icon={IconApi} />
+                    <DocumentationLink href="https://elysiajs.com/patterns/websocket.html#websocket" text="WebSocket" icon={IconPlugConnected} />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <p className="pb-2 font-mono">Infra</p>
+                    <DocumentationLink href="https://railway.app/" text="Railway" icon={IconTrain} />
+                    <DocumentationLink href="https://www.cloudflare.com/en-gb/" text="Cloudflare" icon={IconBrandCloudflare} />
+                  </div>
+                </div>
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -141,7 +158,7 @@ const ProjectCard: React.FC<{
         </div>
       )}
       <CardHeader className={`transition-opacity duration-300 ${locked ? 'group-hover:opacity-0' : ''}`}>
-        <CardTitle>{project.title}</CardTitle>
+        <CardTitle className="pr-8">{project.title}</CardTitle>
         {project.inProgress && <IconCrane className="absolute top-5 right-5 ml-auto size-8" />}
         {project.offline && <IconGhost className="absolute top-5 right-5 ml-auto size-8" />}
         <CardDescription>{project.subTitle}</CardDescription>
@@ -210,11 +227,18 @@ const PlaygroundCard: React.FC<{
               {tag}
             </Button>
           ))}
+        {playground.deprecated_tags
+          ?.sort((a, b) => a.localeCompare(b))
+          .map((tag) => (
+            <Button key={tag} variant={selectedTags.includes(tag) ? 'default' : 'glass'} onClick={() => onTagClick(tag)} size="sm" disabled>
+              <s>{tag}</s>
+            </Button>
+          ))}
       </CardContent>
       <CardContent>
         <p>{playground.description}</p>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="mt-auto">
         <Link to={playground.link} className="flex-1">
           <Button className="w-full">
             <IconLego />

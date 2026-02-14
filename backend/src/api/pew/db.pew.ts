@@ -1,7 +1,8 @@
-import type { Game, Room, ROOM_ID } from "./models.pew";
+import type { Room, ROOM_ID } from "./models/base.models.pew";
+import type { GameClass } from "./models/game.model.pew";
 
-// DATA STORE - Consider moving to Redis, but for now just big objects.
+// DATA STORE - Redis?, Big Objects for now.
 
 export const ROOMS_DB = new Map<ROOM_ID, Room>();
-export const GAMES_DB = new Map<ROOM_ID, Game>();
+export const GAMES_DB = new Map<ROOM_ID, GameClass>();
 // const CHATS_DB = new Map<ROOM_ID, GameChat>();

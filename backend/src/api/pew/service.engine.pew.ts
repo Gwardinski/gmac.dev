@@ -1,11 +1,9 @@
 import { returnWSResponse } from "../../responses.js";
 import { GAMES_DB } from "./db.pew.js";
-import { level1 } from "./levels.pew.js";
-import type { Bullet, Game, ROOM_ID, WSSendMessageType } from "./models.pew.js";
-import { BULLET_SPEED } from "./models.pew.js";
+import type { ROOM_ID, WSSendMessageType } from "./models/base.models.pew.js";
+import type { GameSerialized } from "./models/game.model.pew.js";
 
 const TICK_RATE = 1000 / 60; // 60 FPS?
-const GRID_SIZE = 16;
 
 // Store active game loops per room
 const gameLoops = new Map<ROOM_ID, NodeJS.Timeout>();
@@ -70,85 +68,19 @@ function gameEngineTick(roomId: ROOM_ID) {
     return;
   }
 
-  // Update bullet positions
-  const updatedBullets = updateBullets(game.bullets);
-  // todo: create update functions for other automated content here
+  game.updateBullets();
+  // todo: items?
 
-  // Update game state
-  const updatedGame: Game = {
-    ...game,
-    bullets: updatedBullets,
-    // todo: add other automated content here
-  };
+  GAMES_DB.set(roomId, game);
 
-  GAMES_DB.set(roomId, updatedGame);
-
-  // Broadcast updated state to all connected clients
   const broadcast = broadcastCallbacks.get(roomId);
   if (broadcast) {
     broadcast(
       roomId,
-      returnWSResponse<WSSendMessageType, Game>("game-state", updatedGame)
+      returnWSResponse<WSSendMessageType, GameSerialized>(
+        "game-state",
+        game.toJSON()
+      )
     );
   }
-}
-
-function updateBullets(bullets: Bullet[]): Bullet[] {
-  const activeBullets: Bullet[] = [];
-
-  for (const bullet of bullets) {
-    let newX = bullet.x;
-    let newY = bullet.y;
-
-    switch (bullet.direction) {
-      case "UP":
-        newY -= BULLET_SPEED;
-        break;
-      case "DOWN":
-        newY += BULLET_SPEED;
-        break;
-      case "LEFT":
-        newX -= BULLET_SPEED;
-        break;
-      case "RIGHT":
-        newX += BULLET_SPEED;
-        break;
-    }
-
-    // Check if bullet hit a wall
-    const hitWall = isBulletInWall(newX, newY);
-    // todo: create collision detection for players
-
-    if (!hitWall) {
-      activeBullets.push({
-        ...bullet,
-        x: newX,
-        y: newY,
-      });
-    }
-  }
-
-  return activeBullets;
-}
-
-function isBulletInWall(x: number, y: number): boolean {
-  const gridX = Math.floor(x / GRID_SIZE);
-  const gridY = Math.floor(y / GRID_SIZE);
-
-  //  todo: check if should add 16 to account for wall width
-  if (
-    gridY < 0 ||
-    gridY >= level1.length ||
-    gridX < 0 ||
-    gridX >= (level1[0]?.length || 0)
-  ) {
-    return true; // outside level bounds
-  }
-
-  return level1[gridY]?.[gridX] === 2;
-}
-
-function isBulletInPlayer(x: number, y: number): boolean {
-  // more complicated...
-  return false;
 }

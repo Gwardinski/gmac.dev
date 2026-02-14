@@ -1,7 +1,9 @@
 import { returnServiceResponse } from "../../responses";
 import type { ServiceResponse } from "../../types";
 import { GAMES_DB, ROOMS_DB } from "./db.pew";
-import type { Game, Room, ROOM_ID, RoomListModel } from "./models.pew";
+import { LEVEL_1 } from "./levels.pew";
+import type { Room, ROOM_ID, RoomListModel } from "./models/base.models.pew";
+import { GameClass } from "./models/game.model.pew";
 import { generateRoomId } from "./util.pew";
 
 // REST Services
@@ -38,11 +40,7 @@ export function roomServiceCreate(
     roomName,
     roomCode,
   };
-  const game: Game = {
-    roomId,
-    players: [],
-    bullets: [],
-  };
+  const game = new GameClass(roomId, LEVEL_1);
   ROOMS_DB.set(roomId, room);
   GAMES_DB.set(roomId, game);
   return returnServiceResponse({ roomId, roomName, roomCode });

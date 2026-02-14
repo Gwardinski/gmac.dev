@@ -1,9 +1,13 @@
 import { returnAPIError, returnAPIResponse } from "../../responses";
-import { level1 } from "./levels.pew";
-import type { Color, Room, RoomJoinRequestModel } from "./models.pew";
+import { LEVEL_1 } from "./levels.pew";
+import type {
+  Color,
+  Room,
+  RoomJoinRequestModel,
+} from "./models/base.models.pew";
 import {
   playerServiceCreate,
-  playerServiceGetByDeviceId,
+  playerServiceGetSerialisedByDeviceId,
   removePlayerFromGame,
 } from "./service.player.pew";
 import {
@@ -70,10 +74,8 @@ export const joinRoomController = (body: RoomJoinRequestModel) => {
   }
 
   // existing player, via deviceId (the provided playerId may have changed if switched rooms. deviceId is constant)
-  const [existingPlayer, existingPlayerError] = playerServiceGetByDeviceId(
-    room.roomId,
-    playerDeviceId
-  );
+  const [existingPlayer, existingPlayerError] =
+    playerServiceGetSerialisedByDeviceId(room.roomId, playerDeviceId);
   if (!existingPlayer || existingPlayerError) {
     sendMessage("return new player (no existing deviceId)");
     return returnCreateNewPlayerResponse(
@@ -111,7 +113,7 @@ export const joinRoomController = (body: RoomJoinRequestModel) => {
   return returnAPIResponse({
     roomId: room.roomId,
     playerId: existingPlayer.playerId,
-    level: level1,
+    level: LEVEL_1,
   });
 };
 
@@ -133,6 +135,6 @@ function returnCreateNewPlayerResponse(
   return returnAPIResponse({
     roomId: roomId,
     playerId: player.playerId,
-    level: level1,
+    level: LEVEL_1,
   });
 }

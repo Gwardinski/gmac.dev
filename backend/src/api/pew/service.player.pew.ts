@@ -1,44 +1,46 @@
 import { returnServiceResponse } from "../../responses";
 import type { ServiceResponse } from "../../types";
 import { GAMES_DB } from "./db.pew";
-import type { Color, Direction, Game, Player, ROOM_ID } from "./models.pew";
+import type { Color, Direction, ROOM_ID } from "./models/base.models.pew";
+import type { GameSerialized } from "./models/game.model.pew";
+import { PlayerClass, type PlayerSerialised } from "./models/player.model.pew";
+
 import {
   updateGamePlayerFire,
   updateGamePlayerPosition,
 } from "./service.game.pew";
-import { generatePlayerId } from "./util.pew";
 
 // REST Services
 
-export function playerServiceGetById(
+export function playerServiceGetSerialisedById(
   roomId: ROOM_ID,
   playerId: string
-): ServiceResponse<Player> {
+): ServiceResponse<PlayerSerialised> {
   const game = GAMES_DB.get(roomId);
   if (!game) {
-    return returnServiceResponse<Player>("ROOM_NOT_FOUND");
+    return returnServiceResponse<PlayerSerialised>("ROOM_NOT_FOUND");
   }
   const player = game.players.find((p) => p.playerId === playerId);
   if (!player) {
-    return returnServiceResponse<Player>("INVALID_PLAYER_ID");
+    return returnServiceResponse<PlayerSerialised>("INVALID_PLAYER_ID");
   }
-  return returnServiceResponse(player);
+  return returnServiceResponse(player.toJSON());
 }
 
-export function playerServiceGetByDeviceId(
+export function playerServiceGetSerialisedByDeviceId(
   roomId: ROOM_ID,
   playerDeviceId: string
-): ServiceResponse<Player> {
+): ServiceResponse<PlayerSerialised> {
   const game = GAMES_DB.get(roomId);
   if (!game) {
-    return returnServiceResponse<Player>("ROOM_NOT_FOUND");
+    return returnServiceResponse<PlayerSerialised>("ROOM_NOT_FOUND");
   }
   const player = game.players.find((p) => p.playerDeviceId === playerDeviceId);
 
   if (!player) {
-    return returnServiceResponse<Player>("INVALID_PLAYER_ID");
+    return returnServiceResponse<PlayerSerialised>("INVALID_PLAYER_ID");
   }
-  return returnServiceResponse(player);
+  return returnServiceResponse(player.toJSON());
 }
 
 export function playerServiceCreate(
@@ -46,18 +48,16 @@ export function playerServiceCreate(
   playerName: string,
   playerColour: Color,
   playerDeviceId: string
-): ServiceResponse<Player> {
-  const player: Player = {
-    playerId: generatePlayerId(),
+): ServiceResponse<PlayerSerialised> {
+  const player = new PlayerClass(
+    playerDeviceId,
     playerName,
     playerColour,
-    playerDeviceId,
-    x: 64,
-    y: 64,
-    lastFireTime: 0,
-  };
-  GAMES_DB.get(roomId)?.players.push(player);
-  return returnServiceResponse<Player>(player);
+    64,
+    64
+  );
+  GAMES_DB.get(roomId)?.players.push(player); // try catch this?
+  return returnServiceResponse<PlayerSerialised>(player.toJSON());
 }
 
 // WebSocket Services
@@ -67,54 +67,49 @@ export function updatePlayerPosition(
   roomId: ROOM_ID,
   playerId: string,
   direction: Direction
-): ServiceResponse<Game> {
+): ServiceResponse<GameSerialized> {
   const [updatedGame, updatedGameErr] = updateGamePlayerPosition(
     roomId,
     playerId,
     direction
   );
   if (updatedGameErr) {
-    return returnServiceResponse<Game>(updatedGameErr);
+    return returnServiceResponse<GameSerialized>(updatedGameErr);
   }
-  return returnServiceResponse(updatedGame);
+  return returnServiceResponse<GameSerialized>(updatedGame);
 }
 
 export function playerFire(
   roomId: ROOM_ID,
   playerId: string,
   direction: Direction
-): ServiceResponse<Game> {
+): ServiceResponse<GameSerialized> {
   const [updatedGame, updatedGameErr] = updateGamePlayerFire(
     roomId,
     playerId,
     direction
   );
   if (updatedGameErr) {
-    return returnServiceResponse<Game>(updatedGameErr);
+    return returnServiceResponse<GameSerialized>(updatedGameErr);
   }
-  return returnServiceResponse(updatedGame);
+  return returnServiceResponse<GameSerialized>(updatedGame);
 }
 
 export function removePlayerFromGame(
   roomId: ROOM_ID,
   playerId: string
-): ServiceResponse<Game> {
+): ServiceResponse<GameSerialized> {
   const game = GAMES_DB.get(roomId);
   if (!game) {
-    return returnServiceResponse<Game>("INVALID_ROOM_CODE");
+    return returnServiceResponse<GameSerialized>("INVALID_ROOM_CODE");
   }
 
   const player = game.players.find((p) => p.playerId === playerId);
   if (!player) {
-    return returnServiceResponse<Game>("INVALID_PLAYER_ID");
+    return returnServiceResponse<GameSerialized>("INVALID_PLAYER_ID");
   }
 
-  const updatedGame = {
-    ...game,
-    players: game.players.filter((p) => p.playerId !== playerId),
-  };
+  game.removePlayer(player);
 
-  GAMES_DB.set(roomId, updatedGame);
-
-  return returnServiceResponse(updatedGame);
+  return returnServiceResponse<GameSerialized>(game.toJSON());
 }

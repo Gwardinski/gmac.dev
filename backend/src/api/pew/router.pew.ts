@@ -8,18 +8,18 @@ import {
   roomJoinSchema,
   wsMessageSchema,
   wsQuerySchema,
-  type Game,
   type WSSendMessageType,
-} from "./models.pew.js";
+} from "./models/base.models.pew.js";
+import type { GameSerialized } from "./models/game.model.pew.js";
 import {
   isGameEngineRunning,
   startGameEngine,
   stopGameEngine,
 } from "./service.engine.pew.js";
-import { getGameState } from "./service.game.pew.js";
+import { getGameSerialisedState } from "./service.game.pew.js";
 import {
   playerFire,
-  playerServiceGetById,
+  playerServiceGetSerialisedById,
   updatePlayerPosition,
 } from "./service.player.pew.js";
 import { sendMessage } from "./util.pew.js";
@@ -62,15 +62,20 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
     open(ws) {
       const { roomId, playerId } = ws.data.query;
       // check game exists
-      const [gameState, gameErr] = getGameState(roomId);
+      const [gameState, gameErr] = getGameSerialisedState(roomId);
       if (!gameState || gameErr) {
         ws.send(JSON.stringify({ error: gameErr || "Game not found" }));
         ws.close();
         return;
       }
 
+      console.log("gameState", gameState);
+
       // check player exists
-      const [player, playerErr] = playerServiceGetById(roomId, playerId);
+      const [player, playerErr] = playerServiceGetSerialisedById(
+        roomId,
+        playerId
+      );
       if (!player || playerErr) {
         ws.send(JSON.stringify({ error: playerErr || "Player not found" }));
         ws.close();
@@ -97,14 +102,17 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
       // send game state to all players in room
       broadcastToRoom(
         roomId,
-        returnWSResponse<WSSendMessageType, Game>("game-state", gameState)
+        returnWSResponse<WSSendMessageType, GameSerialized>(
+          "game-state",
+          gameState
+        )
       );
     },
 
     message(ws, message) {
       const { roomId, playerId } = ws.data.query;
 
-      const [gameState, gameErr] = getGameState(roomId);
+      const [gameState, gameErr] = getGameSerialisedState(roomId);
       if (!gameState || gameErr) {
         ws.send(gameErr);
         ws.close(); // todo: keep close or ignore?
@@ -131,7 +139,7 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
             // Broadcasts to all players in the room
             broadcastToRoom(
               roomId,
-              returnWSResponse<WSSendMessageType, Game>(
+              returnWSResponse<WSSendMessageType, GameSerialized>(
                 "game-state",
                 updatedGameState
               )
@@ -161,7 +169,7 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
             // Broadcasts to all players in the room
             broadcastToRoom(
               roomId,
-              returnWSResponse<WSSendMessageType, Game>(
+              returnWSResponse<WSSendMessageType, GameSerialized>(
                 "game-state",
                 updatedGameState
               )
