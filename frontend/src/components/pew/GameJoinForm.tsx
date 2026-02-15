@@ -6,7 +6,7 @@ import { RadioGroup, RadioGroupItem } from '@radix-ui/react-radio-group';
 import { useForm } from '@tanstack/react-form';
 import { getRouteApi } from '@tanstack/react-router';
 import { useState } from 'react';
-import { COLORS, type Color } from './client-copies';
+import { COLORS, colorToHex, type Color } from './client-copies';
 import { mapAPIErrorsToForm } from './form-utils';
 import { joinGameSchema, useJoinRoom, type JoinRoomResponse } from './useJoinRoom';
 
@@ -117,7 +117,7 @@ export function GameJoinForm({ onJoinSuccess }: GameJoinFormProps) {
                         value={color}
                         className={`size-10 border-2 ${field.state.value === color ? 'ring-offset-background ring-2 ring-offset-2' : ''}`}
                         style={{
-                          backgroundColor: color.toLowerCase()
+                          backgroundColor: colorToHex(color)
                         }}
                       />
                     </label>

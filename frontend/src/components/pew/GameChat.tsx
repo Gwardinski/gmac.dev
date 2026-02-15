@@ -1,7 +1,7 @@
 import { useForm } from '@tanstack/react-form';
 import z from 'zod';
 import { Input } from '../ui';
-import type { Message } from './client-copies';
+import { colorToHex, type Message } from './client-copies';
 
 const inputFormSchema = z.object({
   chatContent: z.string().min(1, 'Message cannot be empty')
@@ -29,7 +29,7 @@ export const GameChat = ({ chats, onSendChat }: { chats: Message[]; onSendChat: 
         {chats
           .sort((a, b) => b.timestamp - a.timestamp)
           .map((chat) => (
-            <p key={chat.chatId} className={`text-sm ${chat.isSystem ? 'pl-[2px] uppercase' : ''}`} style={{ color: chat.playerColour?.toLowerCase() || 'gray' }}>
+            <p key={chat.chatId} className={`text-sm ${chat.isSystem ? 'pl-[2px] uppercase' : ''}`} style={{ color: colorToHex(chat.playerColour) || 'gray' }}>
               {chat.isSystem ? chat.content : `[${chat.playerName}] ${chat.content}`}
             </p>
           ))}

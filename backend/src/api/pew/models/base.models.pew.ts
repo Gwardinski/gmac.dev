@@ -8,7 +8,8 @@ export const COLORS = [
   "YELLOW",
   "PURPLE",
   "ORANGE",
-  "BROWN",
+  "TEAL",
+  "PINK",
 ] as const;
 export type Color = (typeof COLORS)[number];
 export const COLORS_SCHEMA = z.enum(COLORS);

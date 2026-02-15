@@ -1,3 +1,4 @@
+import { colorToHex } from './client-copies';
 import { useGetGameState } from './useGetGameState';
 import type { JoinRoomResponse } from './useJoinRoom';
 
@@ -15,7 +16,7 @@ export const GameScore = ({ roomId, playerId }: Omit<JoinRoomResponse, 'level'>)
             <th className="pr-4">Name</th>
             {sortedPlayers.map((player) => (
               <th key={`${player.playerId}-name`} className="pr-4" style={{ opacity: player.isDestroyed ? 0.2 : 1 }}>
-                <div className={player.isSpawning ? 'animate-pulse' : ''} style={{ color: player.playerColour.toLowerCase() }}>
+                <div className={player.isSpawning ? 'animate-pulse' : ''} style={{ color: colorToHex(player.playerColour) }}>
                   {player.playerName}
                 </div>
               </th>
@@ -25,7 +26,7 @@ export const GameScore = ({ roomId, playerId }: Omit<JoinRoomResponse, 'level'>)
             <th className="pr-4">Kills</th>
             {sortedPlayers.map((player) => (
               <th key={`${player.playerId}-kills`} className="pr-4" style={{ opacity: player.isDestroyed ? 0.2 : 1 }}>
-                <div className={player.isSpawning ? 'animate-pulse' : ''} style={{ color: player.playerColour.toLowerCase() }}>
+                <div className={player.isSpawning ? 'animate-pulse' : ''} style={{ color: colorToHex(player.playerColour) }}>
                   {player.killCount}
                 </div>
               </th>
@@ -35,7 +36,7 @@ export const GameScore = ({ roomId, playerId }: Omit<JoinRoomResponse, 'level'>)
             <th className="pr-4">Deaths</th>
             {sortedPlayers.map((player) => (
               <th key={`${player.playerId}-deaths`} className="pr-4" style={{ opacity: player.isDestroyed ? 0.2 : 1 }}>
-                <div className={player.isSpawning ? 'animate-pulse' : ''} style={{ color: player.playerColour.toLowerCase() }}>
+                <div className={player.isSpawning ? 'animate-pulse' : ''} style={{ color: colorToHex(player.playerColour) }}>
                   {player.deathCount}
                 </div>
               </th>

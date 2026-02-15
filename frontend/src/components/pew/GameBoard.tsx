@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import backgroundImage from '../../assets/pew-background.png';
-import { TILE_SIZE, type Color, type Direction, type GameState } from './client-copies';
+import { colorToHex, TILE_SIZE, type Color, type Direction, type GameState } from './client-copies';
 import { PlayerClient } from './client-copies/PlayerClient';
 import { useGameKeyPress } from './useGameKeyPress';
 import type { JoinRoomResponse } from './useJoinRoom';
@@ -232,7 +232,7 @@ type DrawPlayerProps = {
 };
 
 const drawPlayer = (ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y }: DrawPlayerProps) => {
-  ctx.fillStyle = playerColour.toLowerCase();
+  ctx.fillStyle = colorToHex(playerColour);
   ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
   ctx.fillStyle = 'white';
   ctx.fillText(playerName, x, y + 32);
@@ -240,7 +240,7 @@ const drawPlayer = (ctx: CanvasRenderingContext2D, { playerName, playerColour, x
 
 const drawSpawningPlayer = (ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y }: DrawPlayerProps) => {
   ctx.globalAlpha = 0.2;
-  ctx.fillStyle = playerColour.toLowerCase();
+  ctx.fillStyle = colorToHex(playerColour);
   ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
   ctx.globalAlpha = 1.0;
 
@@ -253,7 +253,7 @@ const drawInvinciblePlayer = (ctx: CanvasRenderingContext2D, { playerName, playe
   const isTransparent = Math.floor(Date.now() / invincibleFlashInterval) % 2 === 0;
 
   ctx.globalAlpha = isTransparent ? 0.3 : 1.0;
-  ctx.fillStyle = playerColour.toLowerCase();
+  ctx.fillStyle = colorToHex(playerColour);
   ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
   ctx.globalAlpha = 1.0;
 

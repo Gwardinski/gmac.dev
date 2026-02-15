@@ -29,6 +29,7 @@ import {
   playerServiceGetSerialisedById,
   updatePlayerPosition,
 } from "./service.player.pew.js";
+import { roomServiceDeleteEmpty } from "./service.room.pew.js";
 import { roomJoinSchema, sendChatSchema } from "./validation.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,7 +50,7 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
     return response;
   })
   .onAfterResponse(() => {
-    // roomServiceDeleteEmpty();
+    // Cleanup handled in WebSocket close handler
   })
   .get("/", () => ({
     message: "sup",
@@ -145,6 +146,10 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
             )
           );
 
+          if (removedGame.players.length === 0) {
+            roomServiceDeleteEmpty();
+          }
+
           break;
         }
         case "update-movement": {
@@ -229,8 +234,8 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
       }
     },
 
-    close(ws, code, reason) {
-      const { roomId, playerId } = ws.data.query;
+    close(ws) {
+      const { roomId } = ws.data.query;
 
       // Remove connection from room
       const connections = roomConnections.get(roomId);
@@ -239,12 +244,17 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
         if (connections.size === 0) {
           roomConnections.delete(roomId);
           stopGameEngine(roomId);
+
+          // Clean up empty rooms after last connection closes
+          // This allows time for React Strict Mode reconnections
+          setTimeout(() => {
+            roomServiceDeleteEmpty();
+          }, 5000); // 5 second grace period for reconnections
         }
       }
 
       // Don't remove player immediately - allows for React Strict Mode reconnections
       // and quick page refreshes. Players will be cleaned up when rooms are cleaned up.
-      // TODO: Consider adding a timeout to remove players after extended disconnection
     },
   });
 
