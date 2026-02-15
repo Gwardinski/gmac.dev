@@ -5,7 +5,6 @@ type KeyEvent = {
   callback: () => void;
 };
 
-// Helper function to check if canvas is focused
 function isGameFocused<T>(focusElement: RefObject<T | null>) {
   return document.activeElement === focusElement.current;
 }
@@ -17,14 +16,11 @@ export function useGameKeyPress<T>(keyEvents: KeyEvent[], focusElement: RefObjec
   const isAnimating = useRef<boolean>(false);
   const focusElementRef = useRef(focusElement);
 
-  // Keep refs up to date
   keyEventsRef.current = keyEvents;
   focusElementRef.current = focusElement;
 
   const animate = useCallback(() => {
-    // Only fire callbacks if the element is focused
     if (isGameFocused(focusElementRef.current)) {
-      // Fire callbacks for all currently pressed keys
       pressedKeys.current.forEach((key) => {
         const keyEvent = keyEventsRef.current.find((ke) => ke.key === key);
         keyEvent?.callback();
@@ -37,22 +33,23 @@ export function useGameKeyPress<T>(keyEvents: KeyEvent[], focusElement: RefObjec
     } else {
       isAnimating.current = false;
     }
-  }, []); // No dependencies - we use refs instead
+  }, []); // No dependencies, use refs instead
 
   useEffect(() => {
     const abortController = new AbortController();
 
     const onKeyDown = (e: KeyboardEvent) => {
-      // Check focus dynamically on each keydown
-      if (!pressedKeys.current.has(e.key) && isGameFocused(focusElementRef.current)) {
-        // Prevent default behavior for game keys (especially arrow keys)
-        const isGameKey = keyEventsRef.current.some((ke) => ke.key === e.key);
-        if (isGameKey) {
-          e.preventDefault();
-        }
+      const isGameKey = keyEventsRef.current.some((ke) => ke.key === e.key);
+      const isFocused = isGameFocused(focusElementRef.current);
 
+      // stop browser scrolling on arrow key press
+      if (isGameKey && isFocused) {
+        e.preventDefault();
+      }
+
+      // Check focus dynamically on each keydown
+      if (!pressedKeys.current.has(e.key) && isFocused) {
         pressedKeys.current.add(e.key);
-        // Start animation loop if not already running
         if (!isAnimating.current) {
           isAnimating.current = true;
           animate();
