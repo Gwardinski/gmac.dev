@@ -23,6 +23,7 @@ export type Player = {
   killCount: number;
   deathCount: number;
   isDestroyed: boolean;
+  isSpawning: boolean;
 };
 
 // Player "Physical" model, for canvas. Copied from backend PlayerClass.

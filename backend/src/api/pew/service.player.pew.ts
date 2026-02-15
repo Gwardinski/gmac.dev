@@ -54,14 +54,16 @@ export function playerServiceCreate(
     return returnServiceResponse<PlayerSerialised>("ROOM_NOT_FOUND");
   }
 
+  const spawnPoint = game.getSpawnPoint(game.level);
   const player = new PlayerClass(
     playerDeviceId,
     playerName,
     playerColour,
-    64,
-    64
+    spawnPoint.x,
+    spawnPoint.y
   );
   game.addPlayer(player);
+
   return returnServiceResponse<PlayerSerialised>(player.toJSON());
 }
 

@@ -125,12 +125,9 @@ function gameEngineTick(roomId: ROOM_ID) {
 
   game.respawnPlayers();
 
-  // Only update if there is automated content to process
-  if (game.bullets.length === 0) {
-    return;
+  if (game.bullets.length > 0) {
+    game.updateBullets();
   }
-
-  game.updateBullets();
 
   GAMES_DB.set(roomId, game);
 

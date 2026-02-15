@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { TILE_SIZE, type Direction, type GameState } from './client-copies';
+import backgroundImage from '../../assets/pew-background.png';
+import { TILE_SIZE, type Color, type Direction, type GameState } from './client-copies';
 import { PlayerClient } from './client-copies/PlayerClient';
 import { useGameKeyPress } from './useGameKeyPress';
 import type { JoinRoomResponse } from './useJoinRoom';
@@ -15,8 +16,19 @@ export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: G
   const { players, bullets } = gameState;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const backgroundImageRef = useRef<HTMLImageElement | null>(null);
 
   const playerClientRef = useRef<PlayerClient | null>(null);
+  const isSpawningRef = useRef<boolean>(false);
+
+  // Load background image
+  useEffect(() => {
+    const img = new Image();
+    img.src = backgroundImage;
+    img.onload = () => {
+      backgroundImageRef.current = img;
+    };
+  }, []);
 
   useEffect(() => {
     if (!playerId || playerClientRef.current) return;
@@ -25,6 +37,13 @@ export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: G
     if (currentPlayer) {
       playerClientRef.current = new PlayerClient(currentPlayer.x, currentPlayer.y, currentPlayer.speed);
     }
+  }, [playerId, players]);
+
+  // Track spawning state
+  useEffect(() => {
+    if (!playerId) return;
+    const currentPlayer = players?.find((p) => p.playerId === playerId);
+    isSpawningRef.current = currentPlayer?.isSpawning ?? false;
   }, [playerId, players]);
 
   // Drift check and correction
@@ -43,9 +62,15 @@ export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: G
   }, [playerId, players]);
 
   const handleMovement = (direction: Direction) => {
-    if (roomId && playerId && playerClientRef.current) {
+    if (roomId && playerId && playerClientRef.current && !isSpawningRef.current) {
       playerClientRef.current.updatePosition(direction, level);
       sendMessage({ type: 'update-movement', data: { direction } });
+    }
+  };
+
+  const handleFire = (direction: Direction) => {
+    if (roomId && playerId && !isSpawningRef.current) {
+      sendMessage({ type: 'fire', data: { direction } });
     }
   };
 
@@ -69,35 +94,19 @@ export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: G
       },
       {
         key: 'ArrowUp',
-        callback: () => {
-          if (roomId && playerId) {
-            sendMessage({ type: 'fire', data: { direction: 'UP' } });
-          }
-        }
+        callback: () => handleFire('UP')
       },
       {
         key: 'ArrowLeft',
-        callback: () => {
-          if (roomId && playerId) {
-            sendMessage({ type: 'fire', data: { direction: 'LEFT' } });
-          }
-        }
+        callback: () => handleFire('LEFT')
       },
       {
         key: 'ArrowDown',
-        callback: () => {
-          if (roomId && playerId) {
-            sendMessage({ type: 'fire', data: { direction: 'DOWN' } });
-          }
-        }
+        callback: () => handleFire('DOWN')
       },
       {
         key: 'ArrowRight',
-        callback: () => {
-          if (roomId && playerId) {
-            sendMessage({ type: 'fire', data: { direction: 'RIGHT' } });
-          }
-        }
+        callback: () => handleFire('RIGHT')
       }
     ],
     canvasRef
@@ -126,28 +135,56 @@ export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: G
       return;
     }
 
-    // Clear the entire canvas before redrawing
+    // Clear Canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw background image
+    if (backgroundImageRef.current) {
+      ctx.drawImage(backgroundImageRef.current, 0, 0, canvas.width, canvas.height);
+    }
 
     // Draw the level
     level?.forEach((row, y) => {
       row.forEach((cell, x) => {
-        ctx.fillStyle = cell === 1 ? 'black' : 'gray';
-        ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+        switch (cell) {
+          case 1:
+            // Floor is transparent - don't draw anything
+            break;
+          case 2:
+            createWall(ctx, x, y);
+            break;
+          case 3:
+            createSpawnPoint(ctx, x, y);
+            break;
+        }
       });
     });
 
     // Draw all players
     players?.forEach((player) => {
-      // Use client position for local player, server position for others
-      const isLocalPlayer = player.playerId === playerId;
-      const x = isLocalPlayer && playerClientRef.current ? playerClientRef.current.x : player.x;
-      const y = isLocalPlayer && playerClientRef.current ? playerClientRef.current.y : player.y;
+      let drawPlayerProps = {
+        playerName: player.playerName,
+        playerColour: player.playerColour,
+        x: player.x,
+        y: player.y
+      };
 
-      ctx.fillStyle = player.playerColour.toLowerCase();
-      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-      ctx.fillStyle = 'white';
-      ctx.fillText(player.playerName, x, y + 32);
+      if (player.isSpawning) {
+        drawSpawningPlayer(ctx, drawPlayerProps);
+        return;
+      }
+
+      if (player.playerId === playerId && playerClientRef.current) {
+        drawPlayerProps.x = playerClientRef.current.x;
+        drawPlayerProps.y = playerClientRef.current.y;
+      }
+
+      if (player.isInvincible) {
+        drawInvinciblePlayer(ctx, drawPlayerProps);
+        return;
+      }
+
+      drawPlayer(ctx, drawPlayerProps);
     });
 
     // Draw all bullets
@@ -173,4 +210,53 @@ export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: G
       />
     </div>
   );
+};
+
+const createSpawnPoint = (_ctx: CanvasRenderingContext2D, _x: number, _y: number) => {
+  _ctx.fillStyle = 'rgba(0, 255, 0, 0.1)';
+  _ctx.beginPath();
+  _ctx.arc(_x * TILE_SIZE + TILE_SIZE / 2, _y * TILE_SIZE + TILE_SIZE / 2, TILE_SIZE / 3, 0, 2 * Math.PI);
+  _ctx.fill();
+};
+
+const createWall = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
+  ctx.fillStyle = 'gray';
+  ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+};
+
+type DrawPlayerProps = {
+  playerName: string;
+  playerColour: Color;
+  x: number;
+  y: number;
+};
+
+const drawPlayer = (ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y }: DrawPlayerProps) => {
+  ctx.fillStyle = playerColour.toLowerCase();
+  ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+  ctx.fillStyle = 'white';
+  ctx.fillText(playerName, x, y + 32);
+};
+
+const drawSpawningPlayer = (ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y }: DrawPlayerProps) => {
+  ctx.globalAlpha = 0.2;
+  ctx.fillStyle = playerColour.toLowerCase();
+  ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+  ctx.globalAlpha = 1.0;
+
+  ctx.fillStyle = 'white';
+  ctx.fillText(playerName, x, y + 32);
+};
+
+const invincibleFlashInterval = 100;
+const drawInvinciblePlayer = (ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y }: DrawPlayerProps) => {
+  const isTransparent = Math.floor(Date.now() / invincibleFlashInterval) % 2 === 0;
+
+  ctx.globalAlpha = isTransparent ? 0.3 : 1.0;
+  ctx.fillStyle = playerColour.toLowerCase();
+  ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+  ctx.globalAlpha = 1.0;
+
+  ctx.fillStyle = 'white';
+  ctx.fillText(playerName, x, y + 32);
 };

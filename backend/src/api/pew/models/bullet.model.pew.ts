@@ -1,7 +1,7 @@
 import z from "zod";
 import { generateBulletId } from "../util.pew";
 import { directionSchema, type Direction } from "./base.models.pew";
-import { GRID_SIZE, type Level } from "./level.model.pew";
+import { GRID_SIZE, type LevelTiles } from "./level.model.pew";
 import type { PlayerClass } from "./player.model.pew";
 
 const BULLET_BASE_SPEED = 10;
@@ -46,7 +46,7 @@ export class BulletClass {
   public damage: number;
   public isDestroyed: boolean;
 
-  public updatePosition(level: Level) {
+  public updatePosition(level: LevelTiles) {
     if (Date.now() - this.spawnTimestamp > BULLET_DECAY_TIME) {
       this.destroy();
       return;
@@ -123,7 +123,7 @@ export function getBulletSpawnPoint(player: PlayerClass, direction: Direction) {
   }
 }
 
-function isBulletInWall(x: number, y: number, level: Level): boolean {
+function isBulletInWall(x: number, y: number, level: LevelTiles): boolean {
   const gridX = Math.floor(x / GRID_SIZE);
   const gridY = Math.floor(y / GRID_SIZE);
 

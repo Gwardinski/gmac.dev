@@ -1,10 +1,12 @@
 import z from "zod";
 import { BulletClass, bulletSerialisedSchema } from "./bullet.model.pew";
 import type { SystemEvent } from "./chat.model.pew";
-import { type Level } from "./level.model.pew";
+import { LevelClass } from "./level.model.pew";
 import { PlayerClass, playerSerialisedSchema } from "./player.model.pew";
 
-const PLAYER_RESPAWN_TIME = 3000;
+const PLAYER_DEATH_TIME = 2000;
+const PLAYER_SPAWN_TIME = 1200;
+const PLAYER_INVINCIBILITY_TIME = 1600;
 
 // Internal Game State - Class based
 const gameSchema = z.object({
@@ -17,7 +19,7 @@ export type GameModel = z.infer<typeof gameSchema>;
 export class GameClass {
   constructor(
     public roomId: string,
-    public level: Level,
+    public level: LevelClass,
     onSystemEvent?: (event: SystemEvent) => void
   ) {
     this.roomId = roomId;
@@ -68,7 +70,7 @@ export class GameClass {
 
   public updateBullets() {
     this.bullets.forEach((bullet) => {
-      bullet.updatePosition(this.level);
+      bullet.updatePosition(this.level.level);
     });
 
     this.checkBulletPlayerCollisions();
@@ -80,13 +82,31 @@ export class GameClass {
   public respawnPlayers() {
     const timestamp = Date.now();
     this.players.forEach((p) => {
-      if (p.isDestroyed && p.deathTimestamp + PLAYER_RESPAWN_TIME < timestamp) {
-        p.respawn({
-          x: 64,
-          y: 64,
-        });
+      //  note: always check in this order: spawning, invincibility, destroyed
+      if (p.isSpawning && p.spawnTimestamp + PLAYER_SPAWN_TIME < timestamp) {
+        p.respawn();
+      }
+
+      if (
+        p.isInvincible &&
+        p.invincibilityTimestamp + PLAYER_INVINCIBILITY_TIME < timestamp
+      ) {
+        p.endInvincibility();
+      }
+
+      if (p.isDestroyed && p.deathTimestamp + PLAYER_DEATH_TIME < timestamp) {
+        const spawnPoint = this.getSpawnPoint(this.level);
+        p.beginRespawn(spawnPoint);
       }
     });
+  }
+
+  public getSpawnPoint(level: LevelClass) {
+    return (
+      level.spawnPoints[
+        Math.floor(Math.random() * level.spawnPoints.length)
+      ] ?? { x: 128, y: 128 }
+    );
   }
 
   private checkBulletPlayerCollisions() {
@@ -95,7 +115,12 @@ export class GameClass {
         continue;
       }
       for (const player of this.players) {
-        if (player.isDestroyed || player.playerId === bullet.playerId) {
+        if (
+          player.isDestroyed ||
+          player.isSpawning ||
+          player.isInvincible ||
+          player.playerId === bullet.playerId
+        ) {
           continue;
         }
 

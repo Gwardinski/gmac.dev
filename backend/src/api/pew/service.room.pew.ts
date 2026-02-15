@@ -4,7 +4,7 @@ import { CHATS_DB, GAMES_DB, ROOMS_DB } from "./db.pew";
 import { createSystemEventHandler } from "./engine";
 import type { Room, ROOM_ID, RoomListModel } from "./models/base.models.pew";
 import { GameClass } from "./models/game.model.pew";
-import { LEVEL_1 } from "./models/level.model.pew";
+import { LEVEL_1, LevelClass } from "./models/level.model.pew";
 import { generateRoomId } from "./util.pew";
 
 // REST Services
@@ -40,11 +40,12 @@ export function roomServiceCreate(
     roomName,
     roomCode,
   };
-  const game = new GameClass(roomId, LEVEL_1);
-  
+  const level = new LevelClass(LEVEL_1);
+  const game = new GameClass(roomId, level);
+
   // Set up system event handler immediately (broadcasts when engine is running)
   game.setSystemEventHandler(createSystemEventHandler(roomId));
-  
+
   ROOMS_DB.set(roomId, room);
   GAMES_DB.set(roomId, game);
   return returnServiceResponse({ roomId, roomName, roomCode });

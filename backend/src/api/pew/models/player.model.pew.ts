@@ -1,7 +1,7 @@
 import z from "zod";
 import { generatePlayerId } from "../util.pew";
 import { COLORS_SCHEMA, type Color, type Direction } from "./base.models.pew";
-import type { Level } from "./level.model.pew";
+import type { LevelTiles } from "./level.model.pew";
 
 const PLAYER_SIZE = 16; // width and height of the player
 const PLAYER_BASE_SPEED = 2; // todo implement the collision code todo if increasing
@@ -34,6 +34,8 @@ export const playerSerialisedSchema = z.object({
   killCount: z.number().optional(),
   deathCount: z.number().optional(),
   isDestroyed: z.boolean().optional(),
+  isSpawning: z.boolean().optional(),
+  isInvincible: z.boolean().optional(),
 });
 export type PlayerSerialised = z.infer<typeof playerSerialisedSchema>;
 
@@ -66,6 +68,10 @@ export class PlayerClass {
     this.deathCount = 0;
     this.deathTimestamp = 0;
     this.isDestroyed = false;
+    this.isSpawning = false; // no spawn animation on initial join
+    this.spawnTimestamp = 0;
+    this.isInvincible = true; // begin as invincible (can move/shoot but not be damaged)
+    this.invincibilityTimestamp = Date.now();
   }
 
   public playerId: string;
@@ -83,6 +89,11 @@ export class PlayerClass {
   public deathCount: number;
   public deathTimestamp: number;
   public isDestroyed: boolean;
+  // animate
+  public isSpawning: boolean;
+  public spawnTimestamp: number;
+  public isInvincible: boolean;
+  public invincibilityTimestamp: number;
 
   public getPositions(): PlayerPositions {
     return {
@@ -95,7 +106,7 @@ export class PlayerClass {
     };
   }
 
-  public updatePosition(direction: Direction, level: Level) {
+  public updatePosition(direction: Direction, level: LevelTiles) {
     let xMod = 0;
     let yMod = 0;
 
@@ -172,11 +183,27 @@ export class PlayerClass {
     this.setPlayerPosition(-1000, -1000); // off screen
   }
 
-  public respawn(spawnPoint: { x: number; y: number }) {
+  public beginRespawn(spawnPoint: { x: number; y: number }) {
     this.isDestroyed = false;
     this.deathTimestamp = 0;
     this.health = PLAYER_BASE_HEALTH;
     this.setPlayerPosition(spawnPoint.x, spawnPoint.y);
+    this.isSpawning = true;
+    this.spawnTimestamp = Date.now();
+    this.isInvincible = true;
+    this.invincibilityTimestamp = Date.now();
+  }
+
+  public respawn() {
+    this.isSpawning = false;
+    this.spawnTimestamp = 0;
+    this.isInvincible = true;
+    this.invincibilityTimestamp = Date.now();
+  }
+
+  public endInvincibility() {
+    this.isInvincible = false;
+    this.invincibilityTimestamp = 0;
   }
 
   public canFire(): boolean {
@@ -213,12 +240,14 @@ export class PlayerClass {
       killCount: this.killCount,
       deathCount: this.deathCount,
       isDestroyed: this.isDestroyed,
+      isSpawning: this.isSpawning,
+      isInvincible: this.isInvincible,
     };
   }
 }
 
 // Move outside player file if other things need this?
-function checkWallCollision(newX: number, newY: number, level: Level) {
+function checkWallCollision(newX: number, newY: number, level: LevelTiles) {
   // new 4 corners of the player
   const topLeft: CornerPosition = { x: newX, y: newY };
   const topRight: CornerPosition = { x: newX + PLAYER_SIZE, y: newY };

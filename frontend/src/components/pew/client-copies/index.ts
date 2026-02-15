@@ -33,6 +33,8 @@ export type Player = {
   killCount: number;
   deathCount: number;
   isDestroyed: boolean;
+  isSpawning: boolean;
+  isInvincible: boolean;
 };
 
 // Bullet type matching backend Bullet model
