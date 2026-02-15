@@ -1,17 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import type { GameState } from './client-copies';
+import type { GameState, Message } from './client-copies';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
 const WS_URL = BACKEND_URL.replace('http', 'ws');
 
 // WebSocket message types - matches backend structure
-type WSMessage = { type: 'game-state'; data: GameState } | { type: 'echo'; data: unknown } | { error: string };
+type WSMessage = { type: 'game-state'; data: GameState } | { type: 'new-chat'; data: Message } | { error: string };
 
 // WebSocket connection states
 type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
 
 export function useGetGameState(roomId: string | null, playerId: string | null) {
-  const [gameState, setGameState] = useState<GameState>({ players: [], bullets: [], messages: [] });
+  const [gameState, setGameState] = useState<GameState>({ players: [], bullets: [] });
+  const [chats, setChats] = useState<Message[]>([]);
   const [status, setStatus] = useState<ConnectionStatus>('disconnected');
   const [error, setError] = useState<string | null>(null);
 
@@ -29,6 +30,15 @@ export function useGetGameState(roomId: string | null, playerId: string | null) 
     return false;
   };
 
+  // Function to send chat messages
+  const sendChat = (chatContent: string) => {
+    return sendMessage({
+      type: 'send-chat',
+      data: { chatContent }
+    });
+  };
+
+  // WebSocket effect for game state
   useEffect(() => {
     if (!roomId || !playerId) {
       setStatus('disconnected');
@@ -39,36 +49,46 @@ export function useGetGameState(roomId: string | null, playerId: string | null) 
 
     // race conditions when joining a room
     const connectionDelay = setTimeout(() => {
-      // Create WebSocket connection
       const ws = new WebSocket(`${WS_URL}/pew/game?roomId=${roomId}&playerId=${playerId}`);
       wsRef.current = ws;
 
-      // Connection opened
-      ws.onopen = () => {
+      ws.onopen = async () => {
         setStatus('connected');
         setError(null);
+
+        // Fetch initial chat history when connecting
+        try {
+          const response = await fetch(`${BACKEND_URL}/pew/chats/${roomId}`);
+          if (response.ok) {
+            const data = await response.json();
+            if (data.value && Array.isArray(data.value)) {
+              setChats(data.value as Message[]);
+            }
+          }
+        } catch (err) {
+          console.error('Error fetching initial chats:', err);
+        }
       };
 
-      // Listen for messages
       ws.onmessage = (event) => {
         try {
           const message = JSON.parse(event.data) as WSMessage;
 
-          // Handle error messages
           if ('error' in message) {
             setError(message.error);
             setStatus('error');
             return;
           }
 
-          // Handle game state updates
           if (message.type === 'game-state') {
             setGameState(message.data);
             setError(null);
           }
 
-          // Handle other message types as needed
-          // if (message.type === 'echo') { ... }
+          if (message.type === 'new-chat') {
+            setChats((prev) => [...prev, message.data]);
+            setError(null);
+          }
         } catch (err) {
           console.error('Error parsing WebSocket message:', err);
           setError('Failed to parse message from server');
@@ -100,15 +120,18 @@ export function useGetGameState(roomId: string | null, playerId: string | null) 
         ws.close(1000, 'Component unmounted');
       }
       wsRef.current = null;
+      setChats([]); // Clear chats on disconnect
       // Don't set status here - it causes state updates during cleanup
     };
   }, [roomId, playerId]);
 
   return {
     gameState,
+    chats,
     status,
     isConnected: status === 'connected',
     error,
-    sendMessage
+    sendMessage,
+    sendChat
   };
 }

@@ -1,6 +1,10 @@
 import { Elysia } from "elysia";
 import { returnAPIError, returnWSResponse } from "../../responses.js";
 import {
+  getChatsController,
+  sendChatController,
+} from "./controllers.chat.pew.js";
+import {
   joinRoomController,
   listRoomsController,
 } from "./controllers.room.pew.js";
@@ -10,14 +14,13 @@ import {
   stopGameEngine,
 } from "./engine.js";
 import {
-  roomJoinSchema,
   wsMessageSchema,
   wsQuerySchema,
   type WSSendMessageType,
 } from "./models/base.models.pew.js";
 import type { GameSerialized } from "./models/game.model.pew.js";
+import { addChat } from "./service.chat.pew.js";
 import {
-  addMessageToGameState,
   getGameSerialisedState,
   removeGamePlayer,
 } from "./service.game.pew.js";
@@ -26,7 +29,7 @@ import {
   playerServiceGetSerialisedById,
   updatePlayerPosition,
 } from "./service.player.pew.js";
-import { sendMessage } from "./util.pew.js";
+import { roomJoinSchema, sendChatSchema } from "./validation.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const roomConnections = new Map<string, Set<any>>();
@@ -49,7 +52,7 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
     // roomServiceDeleteEmpty();
   })
   .get("/", () => ({
-    message: "Pew game server - connect via WebSocket on port 3001",
+    message: "sup",
   }))
   .get("/health", () => ({
     status: "ok",
@@ -59,7 +62,15 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
   .post("/join-room", ({ body }) => joinRoomController(body), {
     body: roomJoinSchema,
   })
-  // Usage: ws://localhost:3001/pew/game?roomId=room-123
+  .get("/chats/:roomId", ({ params }) => getChatsController(params.roomId))
+  .post(
+    "/chats/:roomId",
+    ({ params, body }) => sendChatController(params.roomId, body),
+    {
+      body: sendChatSchema,
+    }
+  )
+  // Usage: ws://localhost:3001/pew/game?roomId=roomId&playerId=playerId
   .ws("/game", {
     query: wsQuerySchema,
     body: wsMessageSchema,
@@ -95,12 +106,6 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
         startGameEngine(roomId, broadcastToRoom);
       }
 
-      // Publish welcome message
-      sendMessage(
-        `Player ${player.playerName}-${playerId} connected to room: ${roomId}`,
-        true
-      );
-
       // send game state to all players in room
       broadcastToRoom(
         roomId,
@@ -123,8 +128,6 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
 
       switch (message.type) {
         case "leave-room": {
-          sendMessage(`Player ${playerId} leaving room: ${roomId}`);
-
           const [removedGame, removedGameError] = removeGamePlayer(
             roomId,
             playerId
@@ -173,7 +176,6 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
 
         case "fire": {
           const { direction } = message.data;
-          sendMessage(`Player ${playerId} firing: ${direction}`);
 
           const [updatedGameState, gameStateErr] = playerFire(
             roomId,
@@ -199,25 +201,27 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
           break;
         }
 
-        case "send-message": {
-          const { messageContent } = message.data;
-          sendMessage(`Player ${playerId} sending message: ${messageContent}`);
+        case "send-chat": {
+          const { chatContent } = message.data;
 
-          const [updatedGameState, gameStateErr] = addMessageToGameState(
+          const [newChat, chatError] = addChat(
             roomId,
             playerId,
-            messageContent
+            chatContent,
+            false
           );
-          if (gameStateErr) {
-            ws.send(JSON.stringify({ error: gameStateErr }));
+
+          if (chatError || !newChat) {
+            ws.send(JSON.stringify({ error: chatError }));
             return;
           }
 
+          // Broadcast new chat to all players in the room
           broadcastToRoom(
             roomId,
-            returnWSResponse<WSSendMessageType, GameSerialized>(
-              "game-state",
-              updatedGameState
+            returnWSResponse<WSSendMessageType, typeof newChat>(
+              "new-chat",
+              newChat
             )
           );
           break;
@@ -237,10 +241,6 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
           stopGameEngine(roomId);
         }
       }
-
-      sendMessage(
-        `Player ${playerId} disconnected from room: ${roomId} (code: ${code}, reason: ${reason})`
-      );
 
       // Don't remove player immediately - allows for React Strict Mode reconnections
       // and quick page refreshes. Players will be cleaned up when rooms are cleaned up.

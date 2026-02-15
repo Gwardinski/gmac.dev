@@ -23,8 +23,7 @@ function RouteComponent() {
   const [playerId, setPlayerId] = useState<string | null>(localStorage.getItem('player-id') || null);
   const [level, setLevel] = useState<Level | null>(null);
 
-  const { gameState, isConnected, sendMessage } = useGetGameState(roomId, playerId);
-  const { messages } = gameState;
+  const { gameState, chats, isConnected, sendMessage, sendChat } = useGetGameState(roomId, playerId);
   const showLoginForm = !isConnected;
 
   useEffect(() => {
@@ -48,16 +47,12 @@ function RouteComponent() {
     setLevel(null);
   }
 
-  function onSendMessage(message: string) {
-    sendMessage({ type: 'send-message', data: { messageContent: message } });
-  }
-
   return (
     <Page>
       <PageHeader>
         <PageHeading>
           <H1>Pew</H1>
-          <H1Description>Has free access to professional grade, state-of-the-art game engines</H1Description>
+          <H1Description>Has free access to professional game engines</H1Description>
           <H1Description>uses Javascript</H1Description>
         </PageHeading>
       </PageHeader>
@@ -76,7 +71,7 @@ function RouteComponent() {
         {!showLoginForm && level && (
           <div className="flex flex-wrap items-stretch gap-4">
             <GameBoard roomId={roomId ?? ''} playerId={playerId ?? ''} level={level} gameState={gameState} sendMessage={sendMessage} />
-            <GameChat messages={messages} onSendMessage={onSendMessage} />
+            <GameChat chats={chats} onSendChat={sendChat} />
           </div>
         )}
       </PageSection>

@@ -4,32 +4,33 @@ import { Input } from '../ui';
 import type { Message } from './client-copies';
 
 const inputFormSchema = z.object({
-  messageContent: z.string().min(1, 'Message cannot be empty')
+  chatContent: z.string().min(1, 'Message cannot be empty')
 });
 
-export const GameChat = ({ messages, onSendMessage }: { messages: Message[]; onSendMessage: (message: string) => void }) => {
+export const GameChat = ({ chats, onSendChat }: { chats: Message[]; onSendChat: (message: string) => void }) => {
   const form = useForm({
     defaultValues: {
-      messageContent: ''
+      chatContent: ''
     },
     validators: {
       onSubmit: inputFormSchema
     },
     onSubmit: async ({ value, formApi }) => {
-      const message = value.messageContent;
-      onSendMessage(message);
+      const message = value.chatContent;
+      onSendChat(message);
       formApi.reset();
     }
   });
 
   return (
-    <section className="flex max-h-[640px] min-w-sm flex-col gap-2 self-stretch rounded-md glass p-2 dark:dark-glass">
+    <section className="flex max-h-[640px] min-w-sm flex-col gap-2 self-stretch rounded-md glass p-2 font-mono dark:dark-glass">
       <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto p-2">
-        {messages
-          ?.sort((a, b) => b.timestamp - a.timestamp)
-          .map((message) => (
-            <p key={message.timestamp} className="text-sm" style={{ color: message.playerColour.toLowerCase() }}>
-              {message.isGameMessage ? message.messageContent : `[${message.playerName}] ${message.messageContent}`}
+        {chats.length === 0 && <p className="text-sm text-gray-400">No messages yet...</p>}
+        {chats
+          .sort((a, b) => b.timestamp - a.timestamp)
+          .map((chat) => (
+            <p key={chat.chatId} className={`text-sm ${chat.isSystem ? 'pl-[2px] text-gray-400' : ''}`} style={{ color: chat.playerColour?.toLowerCase() || 'gray' }}>
+              {chat.isSystem ? chat.content : `[${chat.playerName}] ${chat.content}`}
             </p>
           ))}
       </div>
@@ -38,7 +39,7 @@ export const GameChat = ({ messages, onSendMessage }: { messages: Message[]; onS
           e.preventDefault();
           form.handleSubmit();
         }}>
-        <form.Field name="messageContent">
+        <form.Field name="chatContent">
           {(field) => (
             <Input
               type="text"

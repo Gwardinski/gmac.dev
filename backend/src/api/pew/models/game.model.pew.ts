@@ -1,7 +1,6 @@
 import z from "zod";
-import { generateMessageId } from "../util.pew";
-import { gameMessageSchema, type GameMessage } from "./base.models.pew";
 import { BulletClass, bulletSerialisedSchema } from "./bullet.model.pew";
+import type { SystemEvent } from "./chat.model.pew";
 import { type Level } from "./level.model.pew";
 import { PlayerClass, playerSerialisedSchema } from "./player.model.pew";
 
@@ -12,28 +11,53 @@ const gameSchema = z.object({
   roomId: z.string(),
   bullets: z.array(z.instanceof(BulletClass)),
   players: z.array(z.instanceof(PlayerClass)),
-  messages: z.array(gameMessageSchema),
 });
 export type GameModel = z.infer<typeof gameSchema>;
 
 export class GameClass {
-  constructor(public roomId: string, public level: Level) {
+  constructor(
+    public roomId: string,
+    public level: Level,
+    onSystemEvent?: (event: SystemEvent) => void
+  ) {
     this.roomId = roomId;
     this.level = level;
     this.players = [];
     this.bullets = [];
-    this.messages = [];
+    this.onSystemEvent = onSystemEvent;
   }
 
   public players: PlayerClass[];
   public bullets: BulletClass[];
-  public messages: GameMessage[];
+  private onSystemEvent?: (event: SystemEvent) => void;
+
+  public setSystemEventHandler(handler: (event: SystemEvent) => void) {
+    this.onSystemEvent = handler;
+  }
 
   public addPlayer(player: PlayerClass) {
     this.players.push(player);
+
+    if (this.onSystemEvent) {
+      this.onSystemEvent({
+        type: "player-join",
+        playerId: player.playerId,
+        playerName: player.playerName,
+        playerColour: player.playerColour,
+      });
+    }
   }
 
   public removePlayer(player: PlayerClass) {
+    if (this.onSystemEvent) {
+      this.onSystemEvent({
+        type: "player-leave",
+        playerId: player.playerId,
+        playerName: player.playerName,
+        playerColour: player.playerColour,
+      });
+    }
+
     this.players = this.players.filter((p) => p !== player);
     this.bullets = this.bullets.filter((b) => b.playerId !== player.playerId);
   }
@@ -78,9 +102,23 @@ export class GameClass {
         if (isBulletHittingPlayer(bullet, player)) {
           const died = player.takeDamage(bullet.damage);
           if (died) {
-            this.players
-              .find((p) => p.playerId === bullet.playerId)
-              ?.incrementKillCount(player.playerId);
+            const killer = this.players.find(
+              (p) => p.playerId === bullet.playerId
+            );
+
+            // Emit death event
+            if (this.onSystemEvent && killer) {
+              this.onSystemEvent({
+                type: "player-death",
+                killerId: killer.playerId,
+                killerName: killer.playerName,
+                killerColour: killer.playerColour,
+                victimId: player.playerId,
+                victimName: player.playerName,
+              });
+            }
+
+            killer?.incrementKillCount(player.playerId);
           }
           bullet.destroy();
           break;
@@ -89,35 +127,21 @@ export class GameClass {
     }
   }
 
-  public addMessage(player: PlayerClass, messageContent: string) {
-    this.messages.push({
-      messageId: generateMessageId(),
-      playerId: player.playerId,
-      playerName: player.playerName,
-      playerColour: player.playerColour,
-      messageContent: messageContent,
-      timestamp: Date.now(),
-      isGameMessage: false,
-    });
-  }
-
   public toJSON() {
     return {
       roomId: this.roomId,
       bullets: this.bullets.map((bullet) => bullet.toJSON()),
       players: this.players.map((player) => player.toJSON()),
-      messages: this.messages,
       // exclude level from JSON (too big)
     };
   }
 }
 
-// External Game State - Serialised
+// External Game State - Serialised (messages moved to separate store)
 export const gameSerializedSchema = z.object({
   roomId: z.string(),
   bullets: z.array(bulletSerialisedSchema),
   players: z.array(playerSerialisedSchema),
-  messages: z.array(gameMessageSchema),
 });
 export type GameSerialized = z.infer<typeof gameSerializedSchema>;
 

@@ -30,37 +30,6 @@ const roomSchema = z.object({
 export type Room = z.infer<typeof roomSchema>;
 export type RoomListModel = Omit<Room, "roomCode" | "roomId">;
 
-// join room
-export const roomJoinSchema = z.object({
-  roomName: z
-    .string()
-    .min(3, "Room name must be at least 3 characters.")
-    .max(20, "Room name must be at most 20 characters."),
-  roomCode: z
-    .string()
-    .min(4, "Room code must be at least 4 characters.")
-    .max(4, "Room code must be at most 4 characters."),
-  playerName: z
-    .string()
-    .min(3, "Player name must be at least 3 characters.")
-    .max(12, "Player name must be at most 12 characters."),
-  playerColour: COLORS_SCHEMA,
-  playerId: z.string().nullable().optional(),
-  playerDeviceId: z.string(),
-});
-export type RoomJoinRequestModel = z.infer<typeof roomJoinSchema>;
-export type RoomJoinResponseModel = Pick<Room, "roomId"> & { playerId: string };
-
-// leave room
-export const roomLeaveSchema = z.object({
-  roomId: z.string(),
-  playerId: z.string(),
-});
-export type RoomLeaveRequestModel = z.infer<typeof roomLeaveSchema>;
-export type RoomLeaveResponseModel = Pick<Room, "roomId"> & {
-  playerId: string;
-};
-
 // WEBSOCKET
 
 // WebSocket query parameters
@@ -100,35 +69,22 @@ const leaveRoomMessageSchema = z.object({
 });
 export type LeaveRoomMessage = z.infer<typeof leaveRoomMessageSchema>;
 
-// send message
-const sendMessageMessageSchema = z.object({
-  type: z.literal("send-message"),
+// send chat
+const sendGameChatSchema = z.object({
+  type: z.literal("send-chat"),
   data: z.object({
-    messageContent: z.string(),
+    chatContent: z.string(),
   }),
 });
-export type SendMessageMessage = z.infer<typeof sendMessageMessageSchema>;
+export type SendGameChat = z.infer<typeof sendGameChatSchema>;
 
 // Union of all possible WebSocket messages
 export const wsMessageSchema = z.discriminatedUnion("type", [
   updateMovementMessageSchema,
   fireMessageSchema,
   leaveRoomMessageSchema,
-  sendMessageMessageSchema,
+  sendGameChatSchema,
 ]);
 export type WSMessage = z.infer<typeof wsMessageSchema>;
 
-export type WSSendMessageType = "game-state";
-
-// CHAT
-
-export const gameMessageSchema = z.object({
-  messageId: z.string(),
-  playerId: z.string(),
-  playerName: z.string(),
-  playerColour: COLORS_SCHEMA,
-  messageContent: z.string(),
-  timestamp: z.number(),
-  isGameMessage: z.boolean(),
-});
-export type GameMessage = z.infer<typeof gameMessageSchema>;
+export type WSSendMessageType = "game-state" | "new-chat";

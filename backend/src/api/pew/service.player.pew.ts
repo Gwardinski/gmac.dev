@@ -49,6 +49,11 @@ export function playerServiceCreate(
   playerColour: Color,
   playerDeviceId: string
 ): ServiceResponse<PlayerSerialised> {
+  const game = GAMES_DB.get(roomId);
+  if (!game) {
+    return returnServiceResponse<PlayerSerialised>("ROOM_NOT_FOUND");
+  }
+
   const player = new PlayerClass(
     playerDeviceId,
     playerName,
@@ -56,7 +61,7 @@ export function playerServiceCreate(
     64,
     64
   );
-  GAMES_DB.get(roomId)?.players.push(player); // try catch this?
+  game.addPlayer(player);
   return returnServiceResponse<PlayerSerialised>(player.toJSON());
 }
 

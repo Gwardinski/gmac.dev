@@ -1,6 +1,7 @@
 import { returnServiceResponse } from "../../responses";
 import type { ServiceResponse } from "../../types";
-import { GAMES_DB, ROOMS_DB } from "./db.pew";
+import { CHATS_DB, GAMES_DB, ROOMS_DB } from "./db.pew";
+import { createSystemEventHandler } from "./engine";
 import type { Room, ROOM_ID, RoomListModel } from "./models/base.models.pew";
 import { GameClass } from "./models/game.model.pew";
 import { LEVEL_1 } from "./models/level.model.pew";
@@ -40,6 +41,10 @@ export function roomServiceCreate(
     roomCode,
   };
   const game = new GameClass(roomId, LEVEL_1);
+  
+  // Set up system event handler immediately (broadcasts when engine is running)
+  game.setSystemEventHandler(createSystemEventHandler(roomId));
+  
   ROOMS_DB.set(roomId, room);
   GAMES_DB.set(roomId, game);
   return returnServiceResponse({ roomId, roomName, roomCode });
@@ -48,6 +53,7 @@ export function roomServiceCreate(
 export function roomServiceDelete(roomId: ROOM_ID): ServiceResponse<void> {
   ROOMS_DB.delete(roomId);
   GAMES_DB.delete(roomId);
+  CHATS_DB.delete(roomId);
   return returnServiceResponse(undefined);
 }
 

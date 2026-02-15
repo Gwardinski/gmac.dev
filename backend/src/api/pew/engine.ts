@@ -1,7 +1,8 @@
 import { returnWSResponse } from "../../responses.js";
 import { GAMES_DB } from "./db.pew.js";
 import type { ROOM_ID, WSSendMessageType } from "./models/base.models.pew.js";
-import type { GameSerialized } from "./models/game.model.pew.js";
+import type { GameSerialized, SystemEvent } from "./models/game.model.pew.js";
+import { addSystemChat } from "./service.chat.pew.js";
 
 const TICK_RATE = 1000 / 60; // 60 FPS?
 
@@ -26,10 +27,8 @@ export function startGameEngine(
     return;
   }
 
-  // Store broadcast callback for this room
+  // Store broadcast callback for this room (used by system event handler)
   broadcastCallbacks.set(roomId, broadcastToRoom);
-
-  console.log(`Starting game engine for room: ${roomId}`);
 
   // Create the game loop interval
   const interval = setInterval(() => {
@@ -51,6 +50,67 @@ export function stopGameEngine(roomId: ROOM_ID) {
 
 export function isGameEngineRunning(roomId: ROOM_ID): boolean {
   return gameLoops.has(roomId);
+}
+
+function handleSystemEvent(
+  roomId: ROOM_ID,
+  event: SystemEvent,
+  broadcastToRoom?: BroadcastCallback
+) {
+  let chatResult;
+
+  switch (event.type) {
+    case "player-death": {
+      chatResult = addSystemChat(
+        roomId,
+        `${event.killerName} killed ${event.victimName}`,
+        event.killerId,
+        event.killerName,
+        event.killerColour
+      );
+      break;
+    }
+    case "player-join": {
+      chatResult = addSystemChat(
+        roomId,
+        `${event.playerName} joined the game`,
+        event.playerId,
+        event.playerName,
+        event.playerColour
+      );
+      break;
+    }
+    case "player-leave": {
+      chatResult = addSystemChat(
+        roomId,
+        `${event.playerName} left the game`,
+        event.playerId,
+        event.playerName,
+        event.playerColour
+      );
+      break;
+    }
+  }
+
+  // Broadcast the new chat message to all connected clients (if engine is running)
+  if (chatResult && broadcastToRoom) {
+    const [newChat, chatError] = chatResult;
+    if (newChat && !chatError) {
+      broadcastToRoom(
+        roomId,
+        returnWSResponse<WSSendMessageType, typeof newChat>("new-chat", newChat)
+      );
+    }
+  }
+}
+
+// Create system event handler factory for use in room service
+export function createSystemEventHandler(roomId: ROOM_ID) {
+  return (event: SystemEvent) => {
+    // Get broadcast callback if engine is running
+    const broadcastToRoom = broadcastCallbacks.get(roomId);
+    handleSystemEvent(roomId, event, broadcastToRoom);
+  };
 }
 
 // Single Game Tick (Frame)

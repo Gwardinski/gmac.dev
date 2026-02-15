@@ -1,9 +1,5 @@
 import { returnAPIError, returnAPIResponse } from "../../responses";
-import type {
-  Color,
-  Room,
-  RoomJoinRequestModel,
-} from "./models/base.models.pew";
+import type { Color, Room } from "./models/base.models.pew";
 import { LEVEL_1 } from "./models/level.model.pew";
 import {
   playerServiceCreate,
@@ -15,7 +11,7 @@ import {
   roomServiceGetAll,
   roomServiceGetByName,
 } from "./service.room.pew";
-import { sendMessage } from "./util.pew";
+import type { RoomJoinRequestModel } from "./validation";
 
 export const listRoomsController = () => {
   const [result, error] = roomServiceGetAll();
@@ -64,7 +60,6 @@ export const joinRoomController = (body: RoomJoinRequestModel) => {
 
   // new player
   if (!playerId) {
-    sendMessage("return new player (no provided playerId)");
     return returnCreateNewPlayerResponse(
       room.roomId,
       playerName,
@@ -77,7 +72,6 @@ export const joinRoomController = (body: RoomJoinRequestModel) => {
   const [existingPlayer, existingPlayerError] =
     playerServiceGetSerialisedByDeviceId(room.roomId, playerDeviceId);
   if (!existingPlayer || existingPlayerError) {
-    sendMessage("return new player (no existing deviceId)");
     return returnCreateNewPlayerResponse(
       room.roomId,
       playerName,
@@ -91,9 +85,6 @@ export const joinRoomController = (body: RoomJoinRequestModel) => {
     existingPlayer.playerName !== playerName ||
     existingPlayer.playerColour !== playerColour
   ) {
-    sendMessage(
-      "return new player & delete old player (name or colour change)"
-    );
     const [removedGame, removedGameError] = removePlayerFromGame(
       room.roomId,
       existingPlayer.playerId
@@ -132,6 +123,7 @@ function returnCreateNewPlayerResponse(
   if (!player || playerError) {
     return returnAPIError(playerError);
   }
+
   return returnAPIResponse({
     roomId: roomId,
     playerId: player.playerId,

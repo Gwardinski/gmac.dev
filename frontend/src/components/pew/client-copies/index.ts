@@ -45,19 +45,18 @@ export type Bullet = {
 };
 
 export type Message = {
-  messageId: string;
-  playerId: string;
-  playerName: string;
-  playerColour: Color;
-  messageContent: string;
+  chatId: string;
+  playerId: string | null;
+  playerName: string | null;
+  playerColour: Color | null;
+  content: string;
   timestamp: number;
-  isGameMessage: boolean;
+  isSystem: boolean;
 };
 
-// Game state matching backend Game model
+// Game state matching backend Game model (messages moved to separate channel)
 export type GameState = {
   roomId?: string;
   players: Player[];
   bullets: Bullet[];
-  messages: Message[];
 };
