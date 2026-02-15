@@ -55,6 +55,11 @@ export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: G
     const currentPlayer = players?.find((p) => p.playerId === playerId);
     if (!currentPlayer) return;
 
+    if (currentPlayer.isSpawning || currentPlayer.isDestroyed) {
+      playerClientRef.current.setPlayerPosition(currentPlayer.x, currentPlayer.y);
+      return;
+    }
+
     const dx = Math.abs(currentPlayer.x - playerClientRef.current.x);
     const dy = Math.abs(currentPlayer.y - playerClientRef.current.y);
 
@@ -193,17 +198,27 @@ export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: G
         drawPlayerProps.y = playerClientRef.current.y;
       }
       // rest players
-      else if (!player.isSpawning) {
-        const lastPos = otherPlayersLastPosRef.current.get(player.playerId);
-        if (lastPos) {
-          drawPlayerProps.x = lastPos.x + (player.x - lastPos.x) * LERP_FACTOR;
-          drawPlayerProps.y = lastPos.y + (player.y - lastPos.y) * LERP_FACTOR;
+      else {
+        // Skip interpolation for spawning/destroyed players - snap to position instantly
+        if (player.isSpawning || player.isDestroyed) {
+          // Clear stored position so we don't interpolate from death/old position
+          otherPlayersLastPosRef.current.delete(player.playerId);
+          // Use server position directly
+          drawPlayerProps.x = player.x;
+          drawPlayerProps.y = player.y;
+        } else {
+          // Normal interpolation for alive players
+          const lastPos = otherPlayersLastPosRef.current.get(player.playerId);
+          if (lastPos) {
+            drawPlayerProps.x = lastPos.x + (player.x - lastPos.x) * LERP_FACTOR;
+            drawPlayerProps.y = lastPos.y + (player.y - lastPos.y) * LERP_FACTOR;
+          }
+          // Update stored positions for next frame
+          otherPlayersLastPosRef.current.set(player.playerId, {
+            x: drawPlayerProps.x,
+            y: drawPlayerProps.y
+          });
         }
-        // Update stored positions for next frame
-        otherPlayersLastPosRef.current.set(player.playerId, {
-          x: drawPlayerProps.x,
-          y: drawPlayerProps.y
-        });
       }
 
       if (player.isSpawning) {

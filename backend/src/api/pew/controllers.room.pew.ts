@@ -23,6 +23,8 @@ export const listRoomsController = () => {
   return returnAPIResponse(result);
 };
 
+// none of this works since moving to OOP? Game contains all logic and bins player after leaving
+// todo: fix this, all isDeleted field to player with timeout to remove after X seconds of inactivity
 export const joinRoomController = (body: RoomJoinRequestModel) => {
   const {
     roomName,
