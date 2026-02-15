@@ -10,7 +10,8 @@ interface GameBoardProps extends JoinRoomResponse {
   sendMessage: (message: unknown) => boolean;
 }
 
-const DRIFT_THRESHOLD = 4;
+const DRIFT_THRESHOLD = 8;
+const LERP_FACTOR = 0.3;
 
 export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: GameBoardProps) => {
   const { players, bullets } = gameState;
@@ -20,6 +21,7 @@ export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: G
 
   const playerClientRef = useRef<PlayerClient | null>(null);
   const isSpawningRef = useRef<boolean>(false);
+  const otherPlayersLastPosRef = useRef<Map<string, { x: number; y: number }>>(new Map());
 
   // Load background image
   useEffect(() => {
@@ -46,7 +48,7 @@ export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: G
     isSpawningRef.current = currentPlayer?.isSpawning ?? false;
   }, [playerId, players]);
 
-  // Drift check and correction
+  // Drift check and correction with lerp
   useEffect(() => {
     if (!playerId || !playerClientRef.current) return;
 
@@ -57,9 +59,25 @@ export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: G
     const dy = Math.abs(currentPlayer.y - playerClientRef.current.y);
 
     if (dx > DRIFT_THRESHOLD || dy > DRIFT_THRESHOLD) {
-      playerClientRef.current.setPlayerPosition(currentPlayer.x, currentPlayer.y);
+      const newX = playerClientRef.current.x + (currentPlayer.x - playerClientRef.current.x) * LERP_FACTOR;
+      const newY = playerClientRef.current.y + (currentPlayer.y - playerClientRef.current.y) * LERP_FACTOR;
+      playerClientRef.current.setPlayerPosition(newX, newY);
     }
   }, [playerId, players]);
+
+  // Cleanup: remove disconnected players from interpolation map
+  useEffect(() => {
+    if (!players) return;
+
+    const currentPlayerIds = new Set(players.map((p) => p.playerId));
+    const storedPlayerIds = Array.from(otherPlayersLastPosRef.current.keys());
+
+    storedPlayerIds.forEach((id) => {
+      if (!currentPlayerIds.has(id)) {
+        otherPlayersLastPosRef.current.delete(id);
+      }
+    });
+  }, [players]);
 
   const handleMovement = (direction: Direction) => {
     if (roomId && playerId && playerClientRef.current && !isSpawningRef.current) {
@@ -169,14 +187,28 @@ export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: G
         y: player.y
       };
 
-      if (player.isSpawning) {
-        drawSpawningPlayer(ctx, drawPlayerProps);
-        return;
-      }
-
+      // this player, uses client prediction above ^
       if (player.playerId === playerId && playerClientRef.current) {
         drawPlayerProps.x = playerClientRef.current.x;
         drawPlayerProps.y = playerClientRef.current.y;
+      }
+      // rest players
+      else if (!player.isSpawning) {
+        const lastPos = otherPlayersLastPosRef.current.get(player.playerId);
+        if (lastPos) {
+          drawPlayerProps.x = lastPos.x + (player.x - lastPos.x) * LERP_FACTOR;
+          drawPlayerProps.y = lastPos.y + (player.y - lastPos.y) * LERP_FACTOR;
+        }
+        // Update stored positions for next frame
+        otherPlayersLastPosRef.current.set(player.playerId, {
+          x: drawPlayerProps.x,
+          y: drawPlayerProps.y
+        });
+      }
+
+      if (player.isSpawning) {
+        drawSpawningPlayer(ctx, drawPlayerProps);
+        return;
       }
 
       if (player.isInvincible) {
