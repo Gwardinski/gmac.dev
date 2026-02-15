@@ -6,6 +6,7 @@ export const gameChatSchema = z.object({
   playerId: z.string().nullable(),
   playerName: z.string().nullable(),
   playerColour: COLORS_SCHEMA.nullable(),
+  secondColor: COLORS_SCHEMA.nullable(),
   content: z.string(),
   timestamp: z.number(),
   isSystem: z.boolean(),
@@ -20,6 +21,7 @@ export type SystemEvent =
       killerColour: Color;
       victimId: string;
       victimName: string;
+      victimColour: Color;
     }
   | {
       type: "player-join";

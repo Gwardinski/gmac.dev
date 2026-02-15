@@ -1,7 +1,8 @@
 import { returnWSResponse } from "../../responses.js";
 import { GAMES_DB } from "./db.pew.js";
 import type { ROOM_ID, WSSendMessageType } from "./models/base.models.pew.js";
-import type { GameSerialized, SystemEvent } from "./models/game.model.pew.js";
+import type { SystemEvent } from "./models/chat.model.pew.js";
+import type { GameSerialized } from "./models/game.model.pew.js";
 import { addSystemChat } from "./service.chat.pew.js";
 
 const TICK_RATE = 1000 / 60; // 60 FPS?

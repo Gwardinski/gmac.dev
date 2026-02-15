@@ -49,6 +49,7 @@ export type Message = {
   playerId: string | null;
   playerName: string | null;
   playerColour: Color | null;
+  secondColor: Color | null;
   content: string;
   timestamp: number;
   isSystem: boolean;

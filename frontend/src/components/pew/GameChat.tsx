@@ -29,7 +29,7 @@ export const GameChat = ({ chats, onSendChat }: { chats: Message[]; onSendChat: 
         {chats
           .sort((a, b) => b.timestamp - a.timestamp)
           .map((chat) => (
-            <p key={chat.chatId} className={`text-sm ${chat.isSystem ? 'pl-[2px] text-gray-400' : ''}`} style={{ color: chat.playerColour?.toLowerCase() || 'gray' }}>
+            <p key={chat.chatId} className={`text-sm ${chat.isSystem ? 'pl-[2px] uppercase' : ''}`} style={{ color: chat.playerColour?.toLowerCase() || 'gray' }}>
               {chat.isSystem ? chat.content : `[${chat.playerName}] ${chat.content}`}
             </p>
           ))}

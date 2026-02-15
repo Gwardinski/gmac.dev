@@ -115,6 +115,7 @@ export class GameClass {
                 killerColour: killer.playerColour,
                 victimId: player.playerId,
                 victimName: player.playerName,
+                victimColour: player.playerColour,
               });
             }
 

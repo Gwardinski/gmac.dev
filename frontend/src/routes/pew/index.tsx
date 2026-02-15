@@ -5,8 +5,8 @@ import { GameChat } from '@/components/pew/GameChat';
 import { GameControls } from '@/components/pew/GameControls';
 import { GameJoinForm } from '@/components/pew/GameJoinForm';
 import { GameLeaveButton } from '@/components/pew/GameLeaveButton';
-import { GamePlayerStats } from '@/components/pew/GamePlayerStats';
 import { GameRoomsActive } from '@/components/pew/GameRoomsActive';
+import { GameScore } from '@/components/pew/GameScore';
 import { GameShareButton } from '@/components/pew/GameShareButton';
 import { useGetGameState } from '@/components/pew/useGetGameState';
 import type { JoinRoomResponse } from '@/components/pew/useJoinRoom';
@@ -60,7 +60,7 @@ function RouteComponent() {
       <PageSection className="flex flex-col items-center justify-center gap-4 font-mono">
         <div className="flex flex-wrap items-center justify-center gap-4">
           <GameControls />
-          {!showLoginForm && <GamePlayerStats roomId={roomId ?? ''} playerId={playerId ?? ''} />}
+          {!showLoginForm && <GameScore roomId={roomId ?? ''} playerId={playerId ?? ''} />}
           <div className="flex h-[88px] flex-col justify-between">
             {!showLoginForm && <GameShareButton />}
             {!showLoginForm && <GameLeaveButton onLeave={onLeave} />}

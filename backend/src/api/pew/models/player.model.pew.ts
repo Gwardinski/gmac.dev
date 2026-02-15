@@ -4,7 +4,7 @@ import { COLORS_SCHEMA, type Color, type Direction } from "./base.models.pew";
 import type { Level } from "./level.model.pew";
 
 const PLAYER_SIZE = 16; // width and height of the player
-const PLAYER_BASE_SPEED = 1; // todo implement the collision code todo if increasing
+const PLAYER_BASE_SPEED = 2; // todo implement the collision code todo if increasing
 const PLAYER_BASE_FIRE_DELAY = 200;
 const PLAYER_BASE_HEALTH = 100;
 

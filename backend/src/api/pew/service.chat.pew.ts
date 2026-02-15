@@ -36,6 +36,7 @@ export function addChat(
     playerId: player.playerId,
     playerName: player.playerName,
     playerColour: player.playerColour,
+    secondColor: null,
     content: content,
     timestamp: Date.now(),
     isSystem: isSystem,
@@ -61,13 +62,15 @@ export function addSystemChat(
   content: string,
   playerId: string,
   playerName: string,
-  playerColour: Color
+  playerColour: Color,
+  secondColor?: Color
 ): ServiceResponse<GameChat> {
   const newChat: GameChat = {
     chatId: generateMessageId(),
     playerId: playerId,
     playerName: playerName,
     playerColour: playerColour,
+    secondColor: secondColor || null,
     content: content,
     timestamp: Date.now(),
     isSystem: true,

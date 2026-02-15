@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useRef, type RefObject } from 'react';
 
+// Matches backend
+const TARGET_FPS = 60;
+const FRAME_TIME = 1000 / TARGET_FPS;
+
 type KeyEvent = {
   key: string;
   callback: () => void;
@@ -15,19 +19,25 @@ export function useGameKeyPress<T>(keyEvents: KeyEvent[], focusElement: RefObjec
   const keyEventsRef = useRef<KeyEvent[]>(keyEvents);
   const isAnimating = useRef<boolean>(false);
   const focusElementRef = useRef(focusElement);
+  const lastUpdateTime = useRef<number>(0);
 
   keyEventsRef.current = keyEvents;
   focusElementRef.current = focusElement;
 
-  const animate = useCallback(() => {
-    if (isGameFocused(focusElementRef.current)) {
-      pressedKeys.current.forEach((key) => {
-        const keyEvent = keyEventsRef.current.find((ke) => ke.key === key);
-        keyEvent?.callback();
-      });
+  const animate = useCallback((timestamp: number) => {
+    const elapsed = timestamp - lastUpdateTime.current;
+
+    if (elapsed >= FRAME_TIME) {
+      lastUpdateTime.current = timestamp;
+
+      if (isGameFocused(focusElementRef.current)) {
+        pressedKeys.current.forEach((key) => {
+          const keyEvent = keyEventsRef.current.find((ke) => ke.key === key);
+          keyEvent?.callback();
+        });
+      }
     }
 
-    // Continue the animation loop if there are still keys pressed
     if (pressedKeys.current.size > 0) {
       animationFrameId.current = requestAnimationFrame(animate);
     } else {
@@ -52,7 +62,7 @@ export function useGameKeyPress<T>(keyEvents: KeyEvent[], focusElement: RefObjec
         pressedKeys.current.add(e.key);
         if (!isAnimating.current) {
           isAnimating.current = true;
-          animate();
+          animationFrameId.current = requestAnimationFrame(animate);
         }
       }
     };
