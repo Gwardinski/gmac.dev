@@ -1,4 +1,5 @@
 import z from "zod";
+import type { Color } from "./base.models.pew";
 import { BulletClass, bulletSerialisedSchema } from "./bullet.model.pew";
 import type { SystemEvent } from "./chat.model.pew";
 import { LevelClass } from "./level.model.pew";
@@ -37,7 +38,24 @@ export class GameClass {
     this.onSystemEvent = handler;
   }
 
-  public addPlayer(player: PlayerClass) {
+  /* 
+    PLAYER MANAGEMENT 
+  */
+
+  public spawnNewPlayer(
+    playerDeviceId: string,
+    playerName: string,
+    playerColour: Color
+  ): PlayerClass {
+    const { x, y } = this.getSpawnPoint(this.level);
+    const player = new PlayerClass(
+      playerDeviceId,
+      playerName,
+      playerColour,
+      x,
+      y
+    );
+
     this.players.push(player);
 
     if (this.onSystemEvent) {
@@ -48,8 +66,11 @@ export class GameClass {
         playerColour: player.playerColour,
       });
     }
+
+    return player;
   }
 
+  // mark for deletion, allow to reconnect
   public removePlayer(player: PlayerClass) {
     if (this.onSystemEvent) {
       this.onSystemEvent({
@@ -59,9 +80,44 @@ export class GameClass {
         playerColour: player.playerColour,
       });
     }
-
-    this.players = this.players.filter((p) => p !== player);
+    // Mark as deleted instead of removing immediately - allows for reconnection
+    player.markAsDeleted();
     this.bullets = this.bullets.filter((b) => b.playerId !== player.playerId);
+  }
+
+  // hard delete
+  public deletePlayer(playerId: string) {
+    this.players = this.players.filter((p) => p.playerId !== playerId);
+    this.bullets = this.bullets.filter((b) => b.playerId !== playerId);
+  }
+
+  public restorePlayer(playerId: string) {
+    const playerIndex = this.players.findIndex((p) => p.playerId === playerId);
+    if (playerIndex === -1 || !this.players[playerIndex]) {
+      return;
+    }
+    this.players[playerIndex].restore();
+  }
+
+  public cleanupDeletedPlayers() {
+    this.players.forEach((p) => {
+      if (p.shouldBeRemoved()) {
+        this.deletePlayer(p.playerId);
+      }
+    });
+  }
+
+  public updatePlayerNameAndColour(
+    playerId: string,
+    name: string,
+    colour: Color
+  ) {
+    this.players.forEach((p) => {
+      if (p.playerId === playerId) {
+        p.updateName(name);
+        p.updateColour(colour);
+      }
+    });
   }
 
   public addBullet(bullet: BulletClass) {
@@ -101,6 +157,7 @@ export class GameClass {
     });
   }
 
+  // remove param
   public getSpawnPoint(level: LevelClass) {
     return (
       level.spawnPoints[
@@ -157,7 +214,10 @@ export class GameClass {
     return {
       roomId: this.roomId,
       bullets: this.bullets.map((bullet) => bullet.toJSON()),
-      players: this.players.map((player) => player.toJSON()),
+      // Filter out deleted players from serialized output
+      players: this.players
+        .filter((player) => !player.isDeleted)
+        .map((player) => player.toJSON()),
       // exclude level from JSON (too big)
     };
   }

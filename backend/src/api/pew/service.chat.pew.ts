@@ -7,14 +7,14 @@ import { generateMessageId } from "./util.pew";
 
 const MAX_MESSAGES_PER_ROOM = 50;
 
-export function getGameChatCount(roomId: ROOM_ID): number {
-  return CHATS_DB.get(roomId)?.length || 0;
-}
+// REST Services
 
 export function getGameChats(roomId: ROOM_ID): ServiceResponse<GameChat[]> {
   const chats = CHATS_DB.get(roomId) || [];
   return returnServiceResponse<GameChat[]>(chats);
 }
+
+// REST + WebSocket Services
 
 export function addChat(
   roomId: ROOM_ID,
@@ -56,6 +56,8 @@ export function addChat(
 
   return returnServiceResponse<GameChat>(newChat);
 }
+
+// System Services
 
 export function addSystemChat(
   roomId: ROOM_ID,

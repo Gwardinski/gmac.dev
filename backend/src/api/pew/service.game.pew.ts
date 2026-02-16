@@ -3,8 +3,42 @@ import type { ServiceResponse } from "../../types";
 import { GAMES_DB } from "./db.pew";
 import { type Direction, type ROOM_ID } from "./models/base.models.pew";
 import { BulletClass, getBulletSpawnPoint } from "./models/bullet.model.pew";
-import type { GameSerialized } from "./models/game.model.pew";
+import type { GameClass, GameSerialized } from "./models/game.model.pew";
 import { LEVEL_1 } from "./models/level.model.pew";
+import type { PlayerClass } from "./models/player.model.pew";
+
+// REST Services
+
+export function getGameState(roomId: ROOM_ID): ServiceResponse<GameClass> {
+  const game = GAMES_DB.get(roomId);
+  if (!game) {
+    return returnServiceResponse<GameClass>("INVALID_ROOM_CODE");
+  }
+  return returnServiceResponse<GameClass>(game);
+}
+
+// Helper Service
+
+type GameAndPlayer = {
+  game: GameClass;
+  player: PlayerClass;
+};
+export function getGameAndPlayer(
+  roomId: ROOM_ID,
+  playerId: string
+): ServiceResponse<GameAndPlayer> {
+  const game = GAMES_DB.get(roomId);
+  if (!game) {
+    return returnServiceResponse<GameAndPlayer>("INVALID_ROOM_CODE");
+  }
+  const player = game.players.find((p) => p.playerId === playerId);
+  if (!player) {
+    return returnServiceResponse<GameAndPlayer>("INVALID_PLAYER_ID");
+  }
+  return returnServiceResponse<GameAndPlayer>({ game, player });
+}
+
+// WebSocket Services
 
 export function getGameSerialisedState(
   roomId: ROOM_ID
@@ -20,14 +54,12 @@ export function removeGamePlayer(
   roomId: ROOM_ID,
   playerId: string
 ): ServiceResponse<GameSerialized> {
-  const game = GAMES_DB.get(roomId);
-  if (!game) {
-    return returnServiceResponse<GameSerialized>("INVALID_ROOM_CODE");
+  const [gameAndPlayer, error] = getGameAndPlayer(roomId, playerId);
+  if (error) {
+    return returnServiceResponse<GameSerialized>(error);
   }
-  const player = game.players.find((p) => p.playerId === playerId);
-  if (!player) {
-    return returnServiceResponse<GameSerialized>("INVALID_PLAYER_ID");
-  }
+
+  const { game, player } = gameAndPlayer;
 
   game.removePlayer(player);
 
@@ -39,20 +71,16 @@ export function updateGamePlayerPosition(
   playerId: string,
   direction: Direction
 ): ServiceResponse<GameSerialized> {
-  const currentGame = GAMES_DB.get(roomId);
-  if (!currentGame) {
-    return returnServiceResponse<GameSerialized>("INVALID_ROOM_CODE");
-  }
-  const currentPlayer = currentGame.players.find(
-    (p) => p.playerId === playerId
-  );
-  if (!currentPlayer) {
-    return returnServiceResponse<GameSerialized>("INVALID_PLAYER_ID");
+  const [gameAndPlayer, error] = getGameAndPlayer(roomId, playerId);
+  if (error) {
+    return returnServiceResponse<GameSerialized>(error);
   }
 
-  currentPlayer.updatePosition(direction, LEVEL_1);
+  const { game, player } = gameAndPlayer;
 
-  return returnServiceResponse(currentGame.toJSON());
+  player.updatePosition(direction, LEVEL_1);
+
+  return returnServiceResponse(game.toJSON());
 }
 
 export function updateGamePlayerFire(
@@ -60,28 +88,24 @@ export function updateGamePlayerFire(
   playerId: string,
   direction: Direction
 ): ServiceResponse<GameSerialized> {
-  const currentGame = GAMES_DB.get(roomId);
-  if (!currentGame) {
-    return returnServiceResponse<GameSerialized>("INVALID_ROOM_CODE");
-  }
-  const currentPlayer = currentGame.players.find(
-    (p) => p.playerId === playerId
-  );
-  if (!currentPlayer) {
-    return returnServiceResponse<GameSerialized>("INVALID_PLAYER_ID");
+  const [gameAndPlayer, error] = getGameAndPlayer(roomId, playerId);
+  if (error) {
+    return returnServiceResponse<GameSerialized>(error);
   }
 
-  if (!currentPlayer.canFire()) {
-    return returnServiceResponse<GameSerialized>(currentGame.toJSON());
+  const { game, player } = gameAndPlayer;
+
+  if (!player.canFire()) {
+    return returnServiceResponse<GameSerialized>(game.toJSON());
   }
 
-  currentPlayer.fire();
+  player.fire();
 
-  const { x, y } = getBulletSpawnPoint(currentPlayer, direction);
+  const { x, y } = getBulletSpawnPoint(player, direction);
 
   const newBullet = new BulletClass(roomId, playerId, x, y, direction);
 
-  currentGame.addBullet(newBullet);
+  game.addBullet(newBullet);
 
-  return returnServiceResponse<GameSerialized>(currentGame.toJSON());
+  return returnServiceResponse<GameSerialized>(game.toJSON());
 }

@@ -7,6 +7,7 @@ const PLAYER_SIZE = 16; // width and height of the player
 const PLAYER_BASE_SPEED = 2; // todo implement the collision code todo if increasing
 const PLAYER_BASE_FIRE_DELAY = 200;
 const PLAYER_BASE_HEALTH = 100;
+const PLAYER_DELETION_GRACE_PERIOD = 30000; // 30 seconds to rejoin
 
 type CornerPosition = { x: number; y: number };
 type PlayerPositions = {
@@ -36,6 +37,7 @@ export const playerSerialisedSchema = z.object({
   isDestroyed: z.boolean().optional(),
   isSpawning: z.boolean().optional(),
   isInvincible: z.boolean().optional(),
+  isDeleted: z.boolean().optional(),
 });
 export type PlayerSerialised = z.infer<typeof playerSerialisedSchema>;
 
@@ -72,6 +74,8 @@ export class PlayerClass {
     this.spawnTimestamp = 0;
     this.isInvincible = true; // begin as invincible (can move/shoot but not be damaged)
     this.invincibilityTimestamp = Date.now();
+    this.isDeleted = false; // todo, make difference between choosing to leave and leaving unexpectedly
+    this.deletedTimestamp = 0;
   }
 
   public playerId: string;
@@ -94,6 +98,17 @@ export class PlayerClass {
   public spawnTimestamp: number;
   public isInvincible: boolean;
   public invincibilityTimestamp: number;
+  // deletion
+  public isDeleted: boolean;
+  public deletedTimestamp: number;
+
+  public updateName(name: string) {
+    this.playerName = name;
+  }
+
+  public updateColour(colour: Color) {
+    this.playerColour = colour;
+  }
 
   public getPositions(): PlayerPositions {
     return {
@@ -206,6 +221,23 @@ export class PlayerClass {
     this.invincibilityTimestamp = 0;
   }
 
+  public markAsDeleted() {
+    this.isDeleted = true;
+    this.deletedTimestamp = Date.now();
+  }
+
+  public restore() {
+    this.isDeleted = false;
+    this.deletedTimestamp = 0;
+  }
+
+  public shouldBeRemoved(): boolean {
+    if (!this.isDeleted) {
+      return false;
+    }
+    return Date.now() - this.deletedTimestamp > PLAYER_DELETION_GRACE_PERIOD;
+  }
+
   public canFire(): boolean {
     const currentTime = Date.now();
     const timeSinceLastFire = currentTime - this.lastFireTime;
@@ -242,6 +274,7 @@ export class PlayerClass {
       isDestroyed: this.isDestroyed,
       isSpawning: this.isSpawning,
       isInvincible: this.isInvincible,
+      isDeleted: this.isDeleted,
     };
   }
 }

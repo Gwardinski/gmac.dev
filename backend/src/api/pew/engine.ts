@@ -124,6 +124,7 @@ function gameEngineTick(roomId: ROOM_ID) {
   }
 
   game.respawnPlayers();
+  game.cleanupDeletedPlayers();
 
   if (game.bullets.length > 0) {
     game.updateBullets();

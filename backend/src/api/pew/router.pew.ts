@@ -4,10 +4,8 @@ import {
   getChatsController,
   sendChatController,
 } from "./controllers.chat.pew.js";
-import {
-  joinRoomController,
-  listRoomsController,
-} from "./controllers.room.pew.js";
+import { joinRoomController } from "./controllers.joinRoom.pew.js";
+import { listRoomsController } from "./controllers.listRooms.pew.js";
 import {
   isGameEngineRunning,
   startGameEngine,
@@ -24,11 +22,7 @@ import {
   getGameSerialisedState,
   removeGamePlayer,
 } from "./service.game.pew.js";
-import {
-  playerFire,
-  playerServiceGetSerialisedById,
-  updatePlayerPosition,
-} from "./service.player.pew.js";
+import { playerFire, updatePlayerPosition } from "./service.player.pew.js";
 import { roomServiceDeleteEmpty } from "./service.room.pew.js";
 import { roomJoinSchema, sendChatSchema } from "./validation.js";
 
@@ -84,14 +78,12 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
         ws.close();
         return;
       }
-
       // check player exists
-      const [player, playerErr] = playerServiceGetSerialisedById(
-        roomId,
-        playerId
+      const playerExists = gameState.players.find(
+        (p) => p.playerId === playerId
       );
-      if (!player || playerErr) {
-        ws.send(JSON.stringify({ error: playerErr || "Player not found" }));
+      if (!playerExists) {
+        ws.send(JSON.stringify({ error: "Player not found" }));
         ws.close();
         return;
       }
