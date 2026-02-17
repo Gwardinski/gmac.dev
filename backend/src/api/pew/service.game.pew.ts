@@ -61,7 +61,7 @@ export function removeGamePlayer(
 
   const { game, player } = gameAndPlayer;
 
-  game.removePlayer(player);
+  game.markPlayerAsDeleted(player);
 
   return returnServiceResponse<GameSerialized>(game.toJSON());
 }

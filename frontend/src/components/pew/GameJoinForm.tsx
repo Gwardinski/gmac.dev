@@ -111,7 +111,7 @@ export function GameJoinForm({ onJoinSuccess }: GameJoinFormProps) {
             <form.Field name="playerColour">
               {(field) => (
                 <RadioGroup value={field.state.value} onValueChange={(value) => field.handleChange(value as Color)} className="flex flex-wrap justify-center gap-2">
-                  {COLORS.map((color) => (
+                  {COLORS.filter((color) => color !== 'YELLOW').map((color) => (
                     <label key={color} className="relative cursor-pointer" title={color}>
                       <RadioGroupItem
                         value={color}

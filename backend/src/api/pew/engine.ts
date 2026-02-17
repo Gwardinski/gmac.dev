@@ -1,8 +1,8 @@
 import { returnWSResponse } from "../../responses.js";
 import { GAMES_DB } from "./db.pew.js";
 import type { ROOM_ID, WSSendMessageType } from "./models/base.models.pew.js";
-import type { SystemEvent } from "./models/chat.model.pew.js";
 import type { GameSerialized } from "./models/game.model.pew.js";
+import type { SystemEvent } from "./models/system-event.model.js";
 import { addSystemChat } from "./service.chat.pew.js";
 
 const TICK_RATE = 1000 / 60; // 60 FPS?
@@ -53,13 +53,49 @@ export function isGameEngineRunning(roomId: ROOM_ID): boolean {
   return gameLoops.has(roomId);
 }
 
+// Single Game Tick
+function gameEngineTick(roomId: ROOM_ID) {
+  const game = GAMES_DB.get(roomId);
+  if (!game) {
+    stopGameEngine(roomId);
+    return;
+  }
+
+  game.respawnPlayers();
+  game.cleanupDeletedPlayers();
+  game.updateBullets();
+  game.updateItems();
+
+  GAMES_DB.set(roomId, game);
+
+  const broadcast = broadcastCallbacks.get(roomId);
+  if (broadcast) {
+    broadcast(
+      roomId,
+      returnWSResponse<WSSendMessageType, GameSerialized>(
+        "game-state",
+        game.toJSON()
+      )
+    );
+  }
+}
+
+export function systemEventHandler(roomId: ROOM_ID) {
+  return (event: SystemEvent) => {
+    const broadcastToRoom = broadcastCallbacks.get(roomId);
+    if (broadcastToRoom) {
+      handleSystemEvent(roomId, event, broadcastToRoom);
+    }
+  };
+}
+
+// these data types need refactored
 function handleSystemEvent(
   roomId: ROOM_ID,
   event: SystemEvent,
-  broadcastToRoom?: BroadcastCallback
+  broadcastToRoom: BroadcastCallback
 ) {
   let chatResult;
-
   switch (event.type) {
     case "player-death": {
       chatResult = addSystemChat(
@@ -91,6 +127,26 @@ function handleSystemEvent(
       );
       break;
     }
+    case "item-spawn": {
+      chatResult = addSystemChat(
+        roomId,
+        `${event.itemName} spawned`,
+        "system",
+        "System",
+        "PINK"
+      );
+      break;
+    }
+    case "item-picked-up": {
+      chatResult = addSystemChat(
+        roomId,
+        `${event.playerName} picked up ${event.itemName}`,
+        "system",
+        "System",
+        "PINK"
+      );
+      break;
+    }
   }
 
   // Broadcast the new chat message to all connected clients (if engine is running)
@@ -102,44 +158,5 @@ function handleSystemEvent(
         returnWSResponse<WSSendMessageType, typeof newChat>("new-chat", newChat)
       );
     }
-  }
-}
-
-// Create system event handler factory for use in room service
-export function createSystemEventHandler(roomId: ROOM_ID) {
-  return (event: SystemEvent) => {
-    // Get broadcast callback if engine is running
-    const broadcastToRoom = broadcastCallbacks.get(roomId);
-    handleSystemEvent(roomId, event, broadcastToRoom);
-  };
-}
-
-// Single Game Tick (Frame)
-function gameEngineTick(roomId: ROOM_ID) {
-  const game = GAMES_DB.get(roomId);
-  if (!game) {
-    // Room no longer exists, stop the engine
-    stopGameEngine(roomId);
-    return;
-  }
-
-  game.respawnPlayers();
-  game.cleanupDeletedPlayers();
-
-  if (game.bullets.length > 0) {
-    game.updateBullets();
-  }
-
-  GAMES_DB.set(roomId, game);
-
-  const broadcast = broadcastCallbacks.get(roomId);
-  if (broadcast) {
-    broadcast(
-      roomId,
-      returnWSResponse<WSSendMessageType, GameSerialized>(
-        "game-state",
-        game.toJSON()
-      )
-    );
   }
 }

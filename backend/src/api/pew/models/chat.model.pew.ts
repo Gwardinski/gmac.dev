@@ -1,5 +1,5 @@
 import z from "zod";
-import { COLORS_SCHEMA, type Color } from "./base.models.pew";
+import { COLORS_SCHEMA } from "./base.models.pew";
 
 export const gameChatSchema = z.object({
   chatId: z.string(),
@@ -12,26 +12,3 @@ export const gameChatSchema = z.object({
   isSystem: z.boolean(),
 });
 export type GameChat = z.infer<typeof gameChatSchema>;
-
-export type SystemEvent =
-  | {
-      type: "player-death";
-      killerId: string;
-      killerName: string;
-      killerColour: Color;
-      victimId: string;
-      victimName: string;
-      victimColour: Color;
-    }
-  | {
-      type: "player-join";
-      playerId: string;
-      playerName: string;
-      playerColour: Color;
-    }
-  | {
-      type: "player-leave";
-      playerId: string;
-      playerName: string;
-      playerColour: Color;
-    };

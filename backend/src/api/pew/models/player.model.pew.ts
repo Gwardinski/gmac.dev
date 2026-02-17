@@ -9,6 +9,10 @@ const PLAYER_BASE_FIRE_DELAY = 200;
 const PLAYER_BASE_HEALTH = 100;
 const PLAYER_DELETION_GRACE_PERIOD = 30000; // 30 seconds to rejoin
 
+const PLAYER_DEATH_TIME = 2000;
+const PLAYER_SPAWN_TIME = 1200;
+const PLAYER_INVINCIBILITY_TIME = 1600;
+
 type CornerPosition = { x: number; y: number };
 type PlayerPositions = {
   x: number;
@@ -19,6 +23,7 @@ type PlayerPositions = {
   bottomRight: { x: number; y: number };
 };
 
+// External Player State - Serialised
 export const playerSerialisedSchema = z.object({
   playerId: z.string(), // todo maybe don't return, could be hijacked...
   playerDeviceId: z.string(),
@@ -41,6 +46,7 @@ export const playerSerialisedSchema = z.object({
 });
 export type PlayerSerialised = z.infer<typeof playerSerialisedSchema>;
 
+// Internal Player State - Class based
 export class PlayerClass {
   constructor(
     public playerDeviceId: string,
@@ -55,52 +61,61 @@ export class PlayerClass {
     this.playerColour = playerColour;
     this.x = x;
     this.y = y;
-    // set default values
-    this.playerId = generatePlayerId();
-    this.playerSize = PLAYER_SIZE;
-    this.health = PLAYER_BASE_HEALTH;
-    this.fireDelay = PLAYER_BASE_FIRE_DELAY;
-    this.lastFireTime = 0;
-    this.speed = PLAYER_BASE_SPEED;
-    this.topLeft = { x: this.x, y: this.y };
-    this.topRight = { x: this.x + PLAYER_SIZE, y: this.y };
-    this.bottomLeft = { x: this.x, y: this.y + PLAYER_SIZE };
-    this.bottomRight = { x: this.x + PLAYER_SIZE, y: this.y + PLAYER_SIZE };
-    this.killCount = 0;
-    this.deathCount = 0;
-    this.deathTimestamp = 0;
-    this.isDestroyed = false;
-    this.isSpawning = false; // no spawn animation on initial join
-    this.spawnTimestamp = 0;
-    this.isInvincible = true; // begin as invincible (can move/shoot but not be damaged)
-    this.invincibilityTimestamp = Date.now();
-    this.isDeleted = false; // todo, make difference between choosing to leave and leaving unexpectedly
-    this.deletedTimestamp = 0;
+    this.topLeft = { x, y };
+    this.topRight = { x: x + PLAYER_SIZE, y };
+    this.bottomLeft = { x, y: y + PLAYER_SIZE };
+    this.bottomRight = { x: x + PLAYER_SIZE, y: y + PLAYER_SIZE };
   }
 
-  public playerId: string;
-  public playerSize: number;
-  private health: number;
-  private fireDelay: number;
-  private lastFireTime: number;
-  private speed: number;
+  public playerId: string = generatePlayerId();
   private topLeft: CornerPosition;
   private topRight: CornerPosition;
   private bottomLeft: CornerPosition;
   private bottomRight: CornerPosition;
+
+  public playerSize: number = PLAYER_SIZE;
+  public speed: number = PLAYER_BASE_SPEED;
+  public health: number = PLAYER_BASE_HEALTH;
+  // shooting
+  public fireDelay: number = PLAYER_BASE_FIRE_DELAY;
+  public lastFireTime: number = 0;
   // scoring
-  public killCount: number;
-  public deathCount: number;
-  public deathTimestamp: number;
-  public isDestroyed: boolean;
-  // animate
-  public isSpawning: boolean;
-  public spawnTimestamp: number;
-  public isInvincible: boolean;
-  public invincibilityTimestamp: number;
+  public killCount: number = 0;
+  public deathCount: number = 0;
+  // death cycle
+  public inDeathCycle: boolean = false;
+  public isDestroyed: boolean = false;
+  public destroyedTimestamp: number = 0;
+  public isSpawning: boolean = false; // no spawn animation on initial join
+  public spawnTimestamp: number = 0;
+  public isInvincible: boolean = false;
+  public invincibilityTimestamp: number = 0;
   // deletion
-  public isDeleted: boolean;
-  public deletedTimestamp: number;
+  public isDeleted: boolean = false; // todo, make difference between choosing to leave and leaving unexpectedly
+  public deletedTimestamp: number = 0;
+
+  public toJSON(): PlayerSerialised {
+    return {
+      playerId: this.playerId,
+      playerDeviceId: this.playerDeviceId,
+      playerName: this.playerName,
+      playerColour: this.playerColour,
+      x: this.x,
+      y: this.y,
+      health: this.health,
+      speed: this.speed,
+      topLeft: this.topLeft,
+      topRight: this.topRight,
+      bottomLeft: this.bottomLeft,
+      bottomRight: this.bottomRight,
+      killCount: this.killCount,
+      deathCount: this.deathCount,
+      isDestroyed: this.isDestroyed,
+      isSpawning: this.isSpawning,
+      isInvincible: this.isInvincible,
+      isDeleted: this.isDeleted,
+    };
+  }
 
   public updateName(name: string) {
     this.playerName = name;
@@ -109,6 +124,10 @@ export class PlayerClass {
   public updateColour(colour: Color) {
     this.playerColour = colour;
   }
+
+  /*
+    MOVEMENT
+  */
 
   public getPositions(): PlayerPositions {
     return {
@@ -140,7 +159,6 @@ export class PlayerClass {
         break;
     }
 
-    // new position
     let newX = this.x + xMod;
     let newY = this.y + yMod;
 
@@ -149,14 +167,11 @@ export class PlayerClass {
     if (isInWall) {
       newX = this.x;
       newY = this.y;
-
-      /*
-      todo...
-      if speed is more than 1 i.e. 4
-      while speed > 0,
-      check speed - 1, speed - 2, speed - 3, etc
-      once found value that's not in wall, snap player that position to hug wall
-      */
+      // todo...
+      // if speed is more than 1 i.e. 4
+      // while speed > 0,
+      // check speed - 1, speed - 2, speed - 3, etc
+      // once found value that's not in wall, snap player that position to hug wall
     }
 
     this.setPlayerPosition(newX, newY);
@@ -171,36 +186,28 @@ export class PlayerClass {
     this.bottomRight = { x: this.x + PLAYER_SIZE, y: this.y + PLAYER_SIZE };
   }
 
-  public updateHealth(amount: number) {
-    this.health += amount;
-  }
+  /*
+    DEATH CYCLE
+  */
 
-  public incrementKillCount(killedPlayerId: string) {
-    if (killedPlayerId === this.playerId) {
-      return;
-    }
-    this.killCount++;
-  }
-
-  public takeDamage(amount: number): boolean {
-    this.health -= amount;
-    if (this.health <= 0) {
-      this.destroy();
-      return true;
-    }
-    return false;
-  }
-
-  private destroy() {
+  private handleDeathState() {
+    this.inDeathCycle = true;
     this.isDestroyed = true;
-    this.deathTimestamp = Date.now();
+    this.destroyedTimestamp = Date.now();
     this.deathCount++;
     this.setPlayerPosition(-1000, -1000); // off screen
   }
 
-  public beginRespawn(spawnPoint: { x: number; y: number }) {
+  public canHandleRespawnState1() {
+    return (
+      this.isDestroyed &&
+      this.destroyedTimestamp + PLAYER_DEATH_TIME < Date.now()
+    );
+  }
+
+  public handleRespawnState1(spawnPoint: { x: number; y: number }) {
     this.isDestroyed = false;
-    this.deathTimestamp = 0;
+    this.destroyedTimestamp = 0;
     this.health = PLAYER_BASE_HEALTH;
     this.setPlayerPosition(spawnPoint.x, spawnPoint.y);
     this.isSpawning = true;
@@ -209,16 +216,29 @@ export class PlayerClass {
     this.invincibilityTimestamp = Date.now();
   }
 
-  public respawn() {
+  public canHandleRespawnState2() {
+    return (
+      this.isSpawning && this.spawnTimestamp + PLAYER_SPAWN_TIME < Date.now()
+    );
+  }
+
+  public handleRespawnState2() {
     this.isSpawning = false;
     this.spawnTimestamp = 0;
     this.isInvincible = true;
     this.invincibilityTimestamp = Date.now();
   }
 
-  public endInvincibility() {
+  public canHandleRespawnState3() {
+    return (
+      this.isInvincible &&
+      this.invincibilityTimestamp + PLAYER_INVINCIBILITY_TIME < Date.now()
+    );
+  }
+  public handleRespawnState3() {
     this.isInvincible = false;
     this.invincibilityTimestamp = 0;
+    this.inDeathCycle = false;
   }
 
   public markAsDeleted() {
@@ -226,17 +246,9 @@ export class PlayerClass {
     this.deletedTimestamp = Date.now();
   }
 
-  public restore() {
-    this.isDeleted = false;
-    this.deletedTimestamp = 0;
-  }
-
-  public shouldBeRemoved(): boolean {
-    if (!this.isDeleted) {
-      return false;
-    }
-    return Date.now() - this.deletedTimestamp > PLAYER_DELETION_GRACE_PERIOD;
-  }
+  /*
+    SHOOTING
+  */
 
   public canFire(): boolean {
     const currentTime = Date.now();
@@ -254,28 +266,40 @@ export class PlayerClass {
     // maybe move Bullet Spawn within Player 🤔
   }
 
-  // Serialize player instance to plain object (for WebSocket/DB)
-  public toJSON(): PlayerSerialised {
-    return {
-      playerId: this.playerId,
-      playerDeviceId: this.playerDeviceId,
-      playerName: this.playerName,
-      playerColour: this.playerColour,
-      x: this.x,
-      y: this.y,
-      health: this.health,
-      speed: this.speed,
-      topLeft: this.topLeft,
-      topRight: this.topRight,
-      bottomLeft: this.bottomLeft,
-      bottomRight: this.bottomRight,
-      killCount: this.killCount,
-      deathCount: this.deathCount,
-      isDestroyed: this.isDestroyed,
-      isSpawning: this.isSpawning,
-      isInvincible: this.isInvincible,
-      isDeleted: this.isDeleted,
-    };
+  public incrementKillCount(killedPlayerId: string) {
+    if (killedPlayerId === this.playerId) {
+      return;
+    }
+    this.killCount++;
+  }
+
+  public takeDamage(amount: number): boolean {
+    this.health -= amount;
+    if (this.health <= 0) {
+      this.handleDeathState();
+      return true;
+    }
+    return false;
+  }
+
+  public increaseFireDelay() {
+    this.fireDelay = 50;
+  }
+
+  /*
+    DELETION
+  */
+
+  public restore() {
+    this.isDeleted = false;
+    this.deletedTimestamp = 0;
+  }
+
+  public shouldBeRemoved(): boolean {
+    if (!this.isDeleted) {
+      return false;
+    }
+    return Date.now() - this.deletedTimestamp > PLAYER_DELETION_GRACE_PERIOD;
   }
 }
 

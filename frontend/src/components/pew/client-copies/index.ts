@@ -68,6 +68,13 @@ export type Bullet = {
   direction: Direction;
 };
 
+export type Item = {
+  itemId: string;
+  itemName: string;
+  x: number;
+  y: number;
+};
+
 export type Message = {
   chatId: string;
   playerId: string | null;
@@ -84,4 +91,5 @@ export type GameState = {
   roomId?: string;
   players: Player[];
   bullets: Bullet[];
+  items: Item[];
 };
