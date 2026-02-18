@@ -127,7 +127,6 @@ export class GameClass {
     const item = new ItemClass(itemSpawnPoint.x, itemSpawnPoint.y, "Big Gun");
     this.items.push(item);
     this.systemEvent.itemSpawnEvent(item);
-    this.level.itemLastSpawnTimestamp = Date.now();
   }
 
   /* 
@@ -251,6 +250,7 @@ export class GameClass {
           player.increaseFireDelay();
           itemsToRemove.push(item.id);
           this.systemEvent.itemPickedUpEvent(player, item);
+          this.level.itemLastSpawnTimestamp = Date.now();
           break; // Only one player
         }
       }

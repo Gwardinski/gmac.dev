@@ -154,7 +154,7 @@ export class PlayerClass extends PhysicalModel {
     this.isDestroyed = true;
     this.destroyedTimestamp = Date.now();
     this.deathCount++;
-    this.setPositions(-1000, -1000); // off screen
+    // this.setPositions(-1000, -1000); // off screen
   }
 
   public canHandleRespawnState1() {

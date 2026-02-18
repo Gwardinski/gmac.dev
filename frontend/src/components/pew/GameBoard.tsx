@@ -18,18 +18,26 @@ export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: G
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const backgroundImageRef = useRef<HTMLImageElement | null>(null);
+  // const wallImageRef = useRef<HTMLImageElement | null>(null);
 
   const playerClientRef = useRef<PlayerClient | null>(null);
   const isSpawningRef = useRef<boolean>(false);
   const otherPlayersLastPosRef = useRef<Map<string, { x: number; y: number }>>(new Map());
+  const dyingFrameRef = useRef<Map<string, number>>(new Map());
 
-  // Load background image
+  // Load background and wall images
   useEffect(() => {
-    const img = new Image();
-    img.src = backgroundImage;
-    img.onload = () => {
-      backgroundImageRef.current = img;
+    const bg = new Image();
+    bg.src = backgroundImage;
+    bg.onload = () => {
+      backgroundImageRef.current = bg;
     };
+
+    // const wall = new Image();
+    // wall.src = wallImage;
+    // wall.onload = () => {
+    //   wallImageRef.current = wall;
+    // };
   }, []);
 
   useEffect(() => {
@@ -186,6 +194,7 @@ export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: G
     // Draw all players
     players?.forEach((player) => {
       let drawPlayerProps = {
+        playerId: player.playerId,
         playerName: player.playerName,
         playerColour: player.playerColour,
         x: player.x,
@@ -220,6 +229,16 @@ export const GameBoard = ({ roomId, playerId, level, gameState, sendMessage }: G
             y: drawPlayerProps.y
           });
         }
+      }
+
+      if (player.isDestroyed) {
+        const currentFrame = dyingFrameRef.current.get(player.playerId) ?? 0;
+        const nextFrame = currentFrame + 1;
+        dyingFrameRef.current.set(player.playerId, nextFrame);
+        drawDyingPlayer(ctx, { ...drawPlayerProps, dyingFrame: nextFrame });
+        return;
+      } else {
+        dyingFrameRef.current.delete(player.playerId);
       }
 
       if (player.isSpawning) {
@@ -276,7 +295,12 @@ const drawSpawnPoint = (_ctx: CanvasRenderingContext2D, _x: number, _y: number) 
 };
 
 const drawWall = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
-  ctx.fillStyle = 'gray';
+  // if (img) {
+  //   ctx.drawImage(img, x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  //   return;
+  // }
+  // fallback
+  ctx.fillStyle = '#686868';
   ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 };
 
@@ -297,11 +321,13 @@ const drawItem = (ctx: CanvasRenderingContext2D, x: number, y: number, itemName:
 };
 
 type DrawPlayerProps = {
+  playerId?: string;
   playerName: string;
   playerColour: Color;
   x: number;
   y: number;
   itemTime?: number;
+  dyingFrame?: number;
 };
 
 const drawPlayer = (ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y, itemTime }: DrawPlayerProps) => {
@@ -319,6 +345,26 @@ const drawPlayer = (ctx: CanvasRenderingContext2D, { playerName, playerColour, x
   ctx.fillStyle = 'green';
   ctx.fillRect(x - 8, y - 16, (TILE_SIZE + 16) * (itemTime / 100), 4);
   ctx.globalAlpha = 1;
+};
+
+const drawDyingPlayer = (ctx: CanvasRenderingContext2D, { playerColour, x, y, dyingFrame = 0 }: DrawPlayerProps) => {
+  const baseSize = TILE_SIZE * 2;
+  const size = Math.max(0, baseSize - dyingFrame);
+  const halfSize = size / 2;
+
+  const now = Date.now();
+  const angle = ((now % 1000) / 1000) * Math.PI * 3;
+
+  const centerX = x + TILE_SIZE / 2;
+  const centerY = y + TILE_SIZE / 2;
+
+  ctx.save();
+  ctx.translate(centerX, centerY);
+  ctx.rotate(angle);
+  ctx.globalAlpha = 0.2;
+  ctx.fillStyle = colorToHex(playerColour);
+  ctx.fillRect(-halfSize, -halfSize, size, size);
+  ctx.restore();
 };
 
 const drawSpawningPlayer = (ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y }: DrawPlayerProps) => {
