@@ -43,7 +43,7 @@ export function playerFire(
   return returnServiceResponse<GameSerialized>(updatedGame);
 }
 
-export function removePlayerFromGame(
+export function markPlayerForDeletion(
   roomId: ROOM_ID,
   playerId: string
 ): ServiceResponse<GameSerialized> {
@@ -53,7 +53,9 @@ export function removePlayerFromGame(
   }
   const { game, player } = gameAndPlayer;
 
-  game.markPlayerAsDeleted(player);
+  if (!player.isDeleted) {
+    game.markPlayerAsDeleted(player);
+  }
 
   return returnServiceResponse<GameSerialized>(game.toJSON());
 }

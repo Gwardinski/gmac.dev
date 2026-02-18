@@ -31,7 +31,7 @@ export function getGameAndPlayer(
   if (!game) {
     return returnServiceResponse<GameAndPlayer>("INVALID_ROOM_CODE");
   }
-  const player = game.players.find((p) => p.playerId === playerId);
+  const player = game.players.find((p) => p.id === playerId);
   if (!player) {
     return returnServiceResponse<GameAndPlayer>("INVALID_PLAYER_ID");
   }

@@ -2,7 +2,7 @@ import { returnWSResponse } from "../../responses.js";
 import { GAMES_DB } from "./db.pew.js";
 import type { ROOM_ID, WSSendMessageType } from "./models/base.models.pew.js";
 import type { GameSerialized } from "./models/game.model.pew.js";
-import type { SystemEvent } from "./models/system-event.model.js";
+import type { SystemChatParams } from "./models/system-event.model.js";
 import { addSystemChat } from "./service.chat.pew.js";
 
 const TICK_RATE = 1000 / 60; // 60 FPS?
@@ -61,10 +61,11 @@ function gameEngineTick(roomId: ROOM_ID) {
     return;
   }
 
-  game.respawnPlayers();
-  game.cleanupDeletedPlayers();
-  game.updateBullets();
-  game.updateItems();
+  game.tickCollisionTracking();
+  game.tickRespawnPlayers();
+  game.tickCleanupDeletedPlayers();
+  game.tickBulletPositionAndCollisions();
+  game.tickItemSpawns();
 
   GAMES_DB.set(roomId, game);
 
@@ -81,75 +82,20 @@ function gameEngineTick(roomId: ROOM_ID) {
 }
 
 export function systemEventHandler(roomId: ROOM_ID) {
-  return (event: SystemEvent) => {
+  return (systemChat: SystemChatParams) => {
     const broadcastToRoom = broadcastCallbacks.get(roomId);
     if (broadcastToRoom) {
-      handleSystemEvent(roomId, event, broadcastToRoom);
+      handleSystemEvent(roomId, systemChat, broadcastToRoom);
     }
   };
 }
 
-// these data types need refactored
 function handleSystemEvent(
   roomId: ROOM_ID,
-  event: SystemEvent,
+  systemChat: SystemChatParams,
   broadcastToRoom: BroadcastCallback
 ) {
-  let chatResult;
-  switch (event.type) {
-    case "player-death": {
-      chatResult = addSystemChat(
-        roomId,
-        `${event.killerName} killed ${event.victimName}`,
-        event.killerId,
-        event.killerName,
-        event.killerColour
-      );
-      break;
-    }
-    case "player-join": {
-      chatResult = addSystemChat(
-        roomId,
-        `${event.playerName} joined the game`,
-        event.playerId,
-        event.playerName,
-        event.playerColour
-      );
-      break;
-    }
-    case "player-leave": {
-      chatResult = addSystemChat(
-        roomId,
-        `${event.playerName} left the game`,
-        event.playerId,
-        event.playerName,
-        event.playerColour
-      );
-      break;
-    }
-    case "item-spawn": {
-      chatResult = addSystemChat(
-        roomId,
-        `${event.itemName} spawned`,
-        "system",
-        "System",
-        "PINK"
-      );
-      break;
-    }
-    case "item-picked-up": {
-      chatResult = addSystemChat(
-        roomId,
-        `${event.playerName} picked up ${event.itemName}`,
-        "system",
-        "System",
-        "PINK"
-      );
-      break;
-    }
-  }
-
-  // Broadcast the new chat message to all connected clients (if engine is running)
+  const chatResult = addSystemChat(roomId, systemChat);
   if (chatResult && broadcastToRoom) {
     const [newChat, chatError] = chatResult;
     if (newChat && !chatError) {

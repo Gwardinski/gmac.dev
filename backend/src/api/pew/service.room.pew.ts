@@ -54,7 +54,8 @@ export function roomServiceCreate(
 
 export function roomServiceDeleteEmpty() {
   GAMES_DB.forEach((game) => {
-    if (game.players.length === 0) {
+    const activePlayers = game.players.filter((player) => !player.isDeleted);
+    if (activePlayers.length === 0) {
       roomServiceDelete(game.roomId);
     }
   });

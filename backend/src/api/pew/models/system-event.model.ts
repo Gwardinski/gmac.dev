@@ -2,43 +2,30 @@ import type { Color } from "./base.models.pew";
 import type { ItemClass } from "./item.model.pew";
 import type { PlayerClass } from "./player.model.pew";
 
-export type SystemEvent =
-  | {
-      type: "player-death";
-      killerId: string;
-      killerName: string;
-      killerColour: Color;
-      victimId: string;
-      victimName: string;
-      victimColour: Color;
-    }
-  | {
-      type: "player-join";
-      playerId: string;
-      playerName: string;
-      playerColour: Color;
-    }
-  | {
-      type: "player-leave";
-      playerId: string;
-      playerName: string;
-      playerColour: Color;
-    }
-  | {
-      type: "item-spawn";
-      itemName: string;
-    }
-  | {
-      type: "item-picked-up";
-      playerName: string;
-      itemName: string;
-    };
+export type SystemChatParams = {
+  content: string;
+  playerId: string;
+  playerName: string;
+  playerColour: Color;
+  secondColor?: Color;
+};
+
 export class SystemEventClass {
-  constructor(public onEvent: (event: SystemEvent) => void) {}
+  constructor(public onEvent: (params: SystemChatParams) => void) {}
+
   public playerJoinEvent(player: PlayerClass) {
     this.onEvent({
-      type: "player-join",
-      playerId: player.playerId,
+      content: `${player.playerName} joined the game`,
+      playerId: player.id,
+      playerName: player.playerName,
+      playerColour: player.playerColour,
+    });
+  }
+
+  public playerRejoinEvent(player: PlayerClass) {
+    this.onEvent({
+      content: `${player.playerName} re-joined the game!`,
+      playerId: player.id,
       playerName: player.playerName,
       playerColour: player.playerColour,
     });
@@ -46,8 +33,8 @@ export class SystemEventClass {
 
   public playerLeaveEvent(player: PlayerClass) {
     this.onEvent({
-      type: "player-leave",
-      playerId: player.playerId,
+      content: `${player.playerName} left the game`,
+      playerId: player.id,
       playerName: player.playerName,
       playerColour: player.playerColour,
     });
@@ -55,28 +42,28 @@ export class SystemEventClass {
 
   public playerDeathEvent(killer: PlayerClass, victim: PlayerClass) {
     this.onEvent({
-      type: "player-death",
-      killerId: killer.playerId,
-      killerName: killer.playerName,
-      killerColour: killer.playerColour,
-      victimId: victim.playerId,
-      victimName: victim.playerName,
-      victimColour: victim.playerColour,
+      content: `${killer.playerName} killed ${victim.playerName}`,
+      playerId: killer.id,
+      playerName: killer.playerName,
+      playerColour: killer.playerColour,
     });
   }
 
   public itemSpawnEvent(item: ItemClass) {
     this.onEvent({
-      type: "item-spawn",
-      itemName: item.itemName,
+      content: `${item.itemName} spawned`,
+      playerId: "system",
+      playerName: "System",
+      playerColour: "YELLOW",
     });
   }
 
   public itemPickedUpEvent(player: PlayerClass, item: ItemClass) {
     this.onEvent({
-      type: "item-picked-up",
-      playerName: player.playerName,
-      itemName: item.itemName,
+      content: `${player.playerName} picked up ${item.itemName}`,
+      playerId: "system",
+      playerName: "System",
+      playerColour: "YELLOW",
     });
   }
 }

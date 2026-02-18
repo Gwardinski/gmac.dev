@@ -51,71 +51,24 @@ export class GameClass {
   }
 
   /* 
-    PLAYER MANAGEMENT 
+    GENERAL "TICK" MANAGEMENT 
   */
 
-  public spawnNewPlayer(
-    playerDeviceId: string,
-    playerName: string,
-    playerColour: Color
-  ): PlayerClass {
-    const { x, y } = this.getPlayerSpawnPoint();
-    const player = new PlayerClass(
-      playerDeviceId,
-      playerName,
-      playerColour,
-      x,
-      y
-    );
+  public tickCollisionTracking() {
+    this.players.forEach((player) => {
+      player.tickCollisionTracking();
+    });
 
-    this.players.push(player);
+    this.bullets.forEach((bullet) => {
+      bullet.tickCollisionTracking();
+    });
 
-    this.systemEvent.playerJoinEvent(player);
-
-    return player;
-  }
-
-  public markPlayerAsDeleted(player: PlayerClass) {
-    player.markAsDeleted();
-    this.bullets = this.bullets.filter((b) => b.playerId !== player.playerId);
-    this.systemEvent.playerLeaveEvent(player);
-  }
-
-  public cleanupDeletedPlayers() {
-    this.players.forEach((p) => {
-      if (p.shouldBeRemoved()) {
-        this.deletePlayer(p.playerId);
-      }
+    this.items.forEach((item) => {
+      item.tickCollisionTracking();
     });
   }
 
-  public deletePlayer(playerId: string) {
-    this.players = this.players.filter((p) => p.playerId !== playerId);
-    this.bullets = this.bullets.filter((b) => b.playerId !== playerId);
-  }
-
-  public restorePlayer(playerId: string) {
-    const playerIndex = this.players.findIndex((p) => p.playerId === playerId);
-    if (playerIndex === -1 || !this.players[playerIndex]) {
-      return;
-    }
-    this.players[playerIndex].restore();
-  }
-
-  public updatePlayerNameAndColour(
-    playerId: string,
-    name: string,
-    colour: Color
-  ) {
-    this.players.forEach((p) => {
-      if (p.playerId === playerId) {
-        p.updateName(name);
-        p.updateColour(colour);
-      }
-    });
-  }
-
-  public respawnPlayers() {
+  public tickRespawnPlayers() {
     this.players
       .filter((p) => p.inDeathCycle)
       .forEach((p) => {
@@ -134,23 +87,15 @@ export class GameClass {
       });
   }
 
-  public getPlayerSpawnPoint() {
-    return (
-      this.level.playerSpawnPoints[
-        Math.floor(Math.random() * this.level.playerSpawnPoints.length)
-      ] ?? { x: 128, y: 128 }
-    );
+  public tickCleanupDeletedPlayers() {
+    this.players.forEach((p) => {
+      if (p.shouldBeRemoved()) {
+        this.deletePlayer(p.id);
+      }
+    });
   }
 
-  /*
-    BULLET MANAGEMENT
-  */
-
-  public addBullet(bullet: BulletClass) {
-    this.bullets.push(bullet);
-  }
-
-  public updateBullets() {
+  public tickBulletPositionAndCollisions() {
     if (this.bullets.length === 0) {
       return;
     }
@@ -161,45 +106,7 @@ export class GameClass {
     this.bullets = this.bullets.filter((bullet) => !bullet.isDestroyed);
   }
 
-  private checkBulletPlayerCollisions() {
-    for (const bullet of this.bullets) {
-      if (bullet.isDestroyed) {
-        continue;
-      }
-      for (const player of this.players) {
-        if (
-          player.isDestroyed ||
-          player.isSpawning ||
-          player.isInvincible ||
-          player.playerId === bullet.playerId
-        ) {
-          continue;
-        }
-
-        if (isBulletHittingPlayer(bullet, player)) {
-          const died = player.takeDamage(bullet.damage);
-          if (died) {
-            const killer = this.players.find(
-              (p) => p.playerId === bullet.playerId
-            );
-            if (!killer) {
-              continue;
-            }
-            killer.incrementKillCount(player.playerId);
-            this.systemEvent.playerDeathEvent(killer, player);
-          }
-          bullet.destroy();
-          break;
-        }
-      }
-    }
-  }
-
-  /*
-    ITEM MANAGEMENT
-  */
-
-  public updateItems() {
+  public tickItemSpawns() {
     this.checkItemPlayerCollisions();
     if (this.items.length >= this.level.maxItems) {
       return;
@@ -223,6 +130,114 @@ export class GameClass {
     this.level.itemLastSpawnTimestamp = Date.now();
   }
 
+  /* 
+    PLAYER MANAGEMENT 
+  */
+
+  public spawnNewPlayer(
+    playerDeviceId: string,
+    playerName: string,
+    playerColour: Color
+  ): PlayerClass {
+    const { x, y } = this.getPlayerSpawnPoint();
+    const player = new PlayerClass(
+      playerDeviceId,
+      playerName,
+      playerColour,
+      x,
+      y
+    );
+
+    this.players.push(player);
+    this.systemEvent.playerJoinEvent(player);
+    return player;
+  }
+
+  public markPlayerAsDeleted(player: PlayerClass) {
+    player.markAsDeleted();
+    this.bullets = this.bullets.filter((b) => b.playerId !== player.id);
+    this.systemEvent.playerLeaveEvent(player);
+  }
+
+  public deletePlayer(playerId: string) {
+    this.players = this.players.filter((p) => p.id !== playerId);
+    this.bullets = this.bullets.filter((b) => b.playerId !== playerId);
+  }
+
+  public restorePlayer(playerId: string) {
+    const playerIndex = this.players.findIndex((p) => p.id === playerId);
+    if (playerIndex === -1 || !this.players[playerIndex]) {
+      return;
+    }
+    this.systemEvent.playerRejoinEvent(this.players[playerIndex]);
+    this.players[playerIndex].restore();
+  }
+
+  public updatePlayerNameAndColour(
+    playerId: string,
+    name: string,
+    colour: Color
+  ) {
+    this.players.forEach((p) => {
+      if (p.id === playerId) {
+        p.updateName(name);
+        p.updateColour(colour);
+      }
+    });
+  }
+
+  public getPlayerSpawnPoint() {
+    return (
+      this.level.playerSpawnPoints[
+        Math.floor(Math.random() * this.level.playerSpawnPoints.length)
+      ] ?? { x: 128, y: 128 }
+    );
+  }
+
+  /*
+    BULLET MANAGEMENT
+  */
+
+  public addBullet(bullet: BulletClass) {
+    this.bullets.push(bullet);
+  }
+
+  private checkBulletPlayerCollisions() {
+    for (const bullet of this.bullets) {
+      if (bullet.isDestroyed) {
+        continue;
+      }
+      for (const player of this.players) {
+        if (
+          player.isDestroyed ||
+          player.isSpawning ||
+          player.isInvincible ||
+          player.id === bullet.playerId
+        ) {
+          continue;
+        }
+
+        if (bullet.onCollisionEnter(player)) {
+          const died = player.takeDamage(bullet.damage);
+          if (died) {
+            const killer = this.players.find((p) => p.id === bullet.playerId);
+            if (!killer) {
+              continue;
+            }
+            killer.incrementKillCount(player.id);
+            this.systemEvent.playerDeathEvent(killer, player);
+          }
+          bullet.destroy();
+          break;
+        }
+      }
+    }
+  }
+
+  /*
+    ITEM MANAGEMENT
+  */
+
   public checkItemPlayerCollisions() {
     const itemsToRemove: string[] = [];
 
@@ -232,9 +247,9 @@ export class GameClass {
           continue;
         }
 
-        if (isItemHittingPlayer(item, player)) {
+        if (item.onCollisionEnter(player)) {
           player.increaseFireDelay();
-          itemsToRemove.push(item.itemId);
+          itemsToRemove.push(item.id);
           this.systemEvent.itemPickedUpEvent(player, item);
           break; // Only one player
         }
@@ -243,49 +258,10 @@ export class GameClass {
 
     if (itemsToRemove.length > 0) {
       this.items = this.items.filter(
-        (item) => !itemsToRemove.includes(item.itemId)
+        (item) => !itemsToRemove.includes(item.id)
       );
     }
   }
 
   // Utility Methods
-}
-
-function isBulletHittingPlayer(
-  bullet: BulletClass,
-  player: PlayerClass
-): boolean {
-  const bulletBounds = bullet.getBounds();
-  const playerPos = player.getPositions();
-
-  // AABB (Axis-Aligned Bounding Box) collision detection
-  const bulletRight = bulletBounds.x + bulletBounds.size;
-  const bulletBottom = bulletBounds.y + bulletBounds.size;
-  const playerRight = playerPos.x + player.playerSize;
-  const playerBottom = playerPos.y + player.playerSize;
-
-  return (
-    bulletBounds.x < playerRight &&
-    bulletRight > playerPos.x &&
-    bulletBounds.y < playerBottom &&
-    bulletBottom > playerPos.y
-  );
-}
-
-function isItemHittingPlayer(item: ItemClass, player: PlayerClass): boolean {
-  const itemBounds = item.getBounds();
-  const playerPos = player.getPositions();
-
-  // AABB (Axis-Aligned Bounding Box) collision detection
-  const itemRight = itemBounds.x + itemBounds.size;
-  const itemBottom = itemBounds.y + itemBounds.size;
-  const playerRight = playerPos.x + player.playerSize;
-  const playerBottom = playerPos.y + player.playerSize;
-
-  return (
-    itemBounds.x < playerRight &&
-    itemRight > playerPos.x &&
-    itemBounds.y < playerBottom &&
-    itemBottom > playerPos.y
-  );
 }

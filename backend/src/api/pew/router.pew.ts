@@ -18,11 +18,12 @@ import {
 } from "./models/base.models.pew.js";
 import type { GameSerialized } from "./models/game.model.pew.js";
 import { addChat } from "./service.chat.pew.js";
+import { getGameSerialisedState } from "./service.game.pew.js";
 import {
-  getGameSerialisedState,
-  removeGamePlayer,
-} from "./service.game.pew.js";
-import { playerFire, updatePlayerPosition } from "./service.player.pew.js";
+  markPlayerForDeletion,
+  playerFire,
+  updatePlayerPosition,
+} from "./service.player.pew.js";
 import { roomServiceDeleteEmpty } from "./service.room.pew.js";
 import { roomJoinSchema, sendChatSchema } from "./validation.js";
 
@@ -121,7 +122,7 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
 
       switch (message.type) {
         case "leave-room": {
-          const [removedGame, removedGameError] = removeGamePlayer(
+          const [removedGame, removedGameError] = markPlayerForDeletion(
             roomId,
             playerId
           );
@@ -227,7 +228,11 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
     },
 
     close(ws) {
-      const { roomId } = ws.data.query;
+      const { roomId, playerId } = ws.data.query;
+      const [, markedPlayerError] = markPlayerForDeletion(roomId, playerId);
+      if (markedPlayerError) {
+        ws.send(JSON.stringify({ error: markedPlayerError }));
+      }
 
       // Remove connection from room
       const connections = roomConnections.get(roomId);

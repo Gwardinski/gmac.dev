@@ -1,5 +1,6 @@
 import z from "zod";
 import { generateItemId } from "../util.pew";
+import { PhysicalModel } from "./physical.model.pew";
 
 const ITEM_SIZE = 16;
 
@@ -13,28 +14,19 @@ export const itemSerialisedSchema = z.object({
 export type ItemSerialised = z.infer<typeof itemSerialisedSchema>;
 
 // Internal Game State - Class based
-export class ItemClass {
-  constructor(public x: number, public y: number, public itemName: string) {
-    this.x = x;
-    this.y = y;
+export class ItemClass extends PhysicalModel {
+  constructor(initialX: number, initialY: number, public itemName: string) {
+    super(generateItemId(), initialX, initialY, ITEM_SIZE);
     this.itemName = itemName;
   }
-  public itemId: string = generateItemId();
 
   public toJSON() {
+    const { x, y } = this.getPositions();
     return {
-      itemId: this.itemId,
+      itemId: this.id,
       itemName: this.itemName,
-      x: this.x,
-      y: this.y,
-    };
-  }
-
-  public getBounds() {
-    return {
-      x: this.x,
-      y: this.y,
-      size: ITEM_SIZE,
+      x: x,
+      y: y,
     };
   }
 }

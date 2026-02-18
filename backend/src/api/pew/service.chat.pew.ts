@@ -1,8 +1,9 @@
 import { returnServiceResponse } from "../../responses";
 import type { ServiceResponse } from "../../types";
 import { CHATS_DB, GAMES_DB } from "./db.pew";
-import type { Color, ROOM_ID } from "./models/base.models.pew";
+import type { ROOM_ID } from "./models/base.models.pew";
 import type { GameChat } from "./models/chat.model.pew";
+import type { SystemChatParams } from "./models/system-event.model";
 import { generateMessageId } from "./util.pew";
 
 const MAX_MESSAGES_PER_ROOM = 50;
@@ -26,17 +27,16 @@ export function addChat(
   if (!currentGame) {
     return returnServiceResponse<GameChat>("INVALID_ROOM_CODE");
   }
-  const player = currentGame.players.find((p) => p.playerId === playerId);
+  const player = currentGame.players.find((p) => p.id === playerId);
   if (!player) {
     return returnServiceResponse<GameChat>("INVALID_PLAYER_ID");
   }
 
   const newChat: GameChat = {
     chatId: generateMessageId(),
-    playerId: player.playerId,
+    playerId: player.id,
     playerName: player.playerName,
     playerColour: player.playerColour,
-    secondColor: null,
     content: content,
     timestamp: Date.now(),
     isSystem: isSystem,
@@ -61,19 +61,14 @@ export function addChat(
 
 export function addSystemChat(
   roomId: ROOM_ID,
-  content: string,
-  playerId: string,
-  playerName: string,
-  playerColour: Color,
-  secondColor?: Color
+  params: SystemChatParams
 ): ServiceResponse<GameChat> {
   const newChat: GameChat = {
     chatId: generateMessageId(),
-    playerId: playerId,
-    playerName: playerName,
-    playerColour: playerColour,
-    secondColor: secondColor || null,
-    content: content,
+    playerId: params.playerId,
+    playerName: params.playerName,
+    playerColour: params.playerColour,
+    content: params.content,
     timestamp: Date.now(),
     isSystem: true,
   };

@@ -78,7 +78,7 @@ export const joinRoomController = (body: RoomJoinRequestModel) => {
     existingPlayer.playerName !== playerName ||
     existingPlayer.playerColour !== playerColour
   ) {
-    game.deletePlayer(existingPlayer.playerId);
+    game.deletePlayer(existingPlayer.id);
     return returnCreateNewPlayerResponse(
       room,
       game,
@@ -89,12 +89,12 @@ export const joinRoomController = (body: RoomJoinRequestModel) => {
   }
 
   if (existingPlayer.isDeleted) {
-    game.restorePlayer(existingPlayer.playerId);
+    game.restorePlayer(existingPlayer.id);
   }
 
   return returnAPIResponse({
     roomId: room.roomId,
-    playerId: existingPlayer.playerId,
+    playerId: existingPlayer.id,
     level: LEVEL_1,
   });
 };
@@ -113,7 +113,7 @@ function returnCreateNewPlayerResponse(
   );
   return returnAPIResponse({
     roomId: room.roomId,
-    playerId: newPlayer.playerId,
+    playerId: newPlayer.id,
     level: LEVEL_1,
   });
 }

@@ -2,6 +2,7 @@ import z from "zod";
 import { generatePlayerId } from "../util.pew";
 import { COLORS_SCHEMA, type Color, type Direction } from "./base.models.pew";
 import type { LevelTiles } from "./level.model.pew";
+import { PhysicalModel } from "./physical.model.pew";
 
 const PLAYER_SIZE = 16; // width and height of the player
 const PLAYER_BASE_SPEED = 2; // todo implement the collision code todo if increasing
@@ -12,16 +13,6 @@ const PLAYER_DELETION_GRACE_PERIOD = 30000; // 30 seconds to rejoin
 const PLAYER_DEATH_TIME = 2000;
 const PLAYER_SPAWN_TIME = 1200;
 const PLAYER_INVINCIBILITY_TIME = 1600;
-
-type CornerPosition = { x: number; y: number };
-type PlayerPositions = {
-  x: number;
-  y: number;
-  topLeft: { x: number; y: number };
-  topRight: { x: number; y: number };
-  bottomLeft: { x: number; y: number };
-  bottomRight: { x: number; y: number };
-};
 
 // External Player State - Serialised
 export const playerSerialisedSchema = z.object({
@@ -47,31 +38,16 @@ export const playerSerialisedSchema = z.object({
 export type PlayerSerialised = z.infer<typeof playerSerialisedSchema>;
 
 // Internal Player State - Class based
-export class PlayerClass {
+export class PlayerClass extends PhysicalModel {
   constructor(
     public playerDeviceId: string,
     public playerName: string,
     public playerColour: Color,
-    private x: number,
-    private y: number
+    initialX: number,
+    initialY: number
   ) {
-    // set properties
-    this.playerDeviceId = playerDeviceId;
-    this.playerName = playerName;
-    this.playerColour = playerColour;
-    this.x = x;
-    this.y = y;
-    this.topLeft = { x, y };
-    this.topRight = { x: x + PLAYER_SIZE, y };
-    this.bottomLeft = { x, y: y + PLAYER_SIZE };
-    this.bottomRight = { x: x + PLAYER_SIZE, y: y + PLAYER_SIZE };
+    super(generatePlayerId(), initialX, initialY, PLAYER_SIZE);
   }
-
-  public playerId: string = generatePlayerId();
-  private topLeft: CornerPosition;
-  private topRight: CornerPosition;
-  private bottomLeft: CornerPosition;
-  private bottomRight: CornerPosition;
 
   public playerSize: number = PLAYER_SIZE;
   public speed: number = PLAYER_BASE_SPEED;
@@ -95,19 +71,21 @@ export class PlayerClass {
   public deletedTimestamp: number = 0;
 
   public toJSON(): PlayerSerialised {
+    const { x, y, topLeft, topRight, bottomLeft, bottomRight } =
+      this.getPositions();
     return {
-      playerId: this.playerId,
+      playerId: this.id,
       playerDeviceId: this.playerDeviceId,
       playerName: this.playerName,
       playerColour: this.playerColour,
-      x: this.x,
-      y: this.y,
+      x: x,
+      y: y,
       health: this.health,
       speed: this.speed,
-      topLeft: this.topLeft,
-      topRight: this.topRight,
-      bottomLeft: this.bottomLeft,
-      bottomRight: this.bottomRight,
+      topLeft: topLeft,
+      topRight: topRight,
+      bottomLeft: bottomLeft,
+      bottomRight: bottomRight,
       killCount: this.killCount,
       deathCount: this.deathCount,
       isDestroyed: this.isDestroyed,
@@ -129,17 +107,6 @@ export class PlayerClass {
     MOVEMENT
   */
 
-  public getPositions(): PlayerPositions {
-    return {
-      x: this.x,
-      y: this.y,
-      topLeft: this.topLeft,
-      topRight: this.topRight,
-      bottomLeft: this.bottomLeft,
-      bottomRight: this.bottomRight,
-    };
-  }
-
   public updatePosition(direction: Direction, level: LevelTiles) {
     let xMod = 0;
     let yMod = 0;
@@ -159,14 +126,15 @@ export class PlayerClass {
         break;
     }
 
-    let newX = this.x + xMod;
-    let newY = this.y + yMod;
+    const currentPositions = this.getPositions();
+    let newX = currentPositions.x + xMod;
+    let newY = currentPositions.y + yMod;
 
-    const isInWall = checkWallCollision(newX, newY, level);
+    const isInWall = this.checkWallCollision(newX, newY, level);
 
     if (isInWall) {
-      newX = this.x;
-      newY = this.y;
+      newX = currentPositions.x;
+      newY = currentPositions.y;
       // todo...
       // if speed is more than 1 i.e. 4
       // while speed > 0,
@@ -174,16 +142,7 @@ export class PlayerClass {
       // once found value that's not in wall, snap player that position to hug wall
     }
 
-    this.setPlayerPosition(newX, newY);
-  }
-
-  private setPlayerPosition(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-    this.topLeft = { x: this.x, y: this.y };
-    this.topRight = { x: this.x + PLAYER_SIZE, y: this.y };
-    this.bottomLeft = { x: this.x, y: this.y + PLAYER_SIZE };
-    this.bottomRight = { x: this.x + PLAYER_SIZE, y: this.y + PLAYER_SIZE };
+    this.setPositions(newX, newY);
   }
 
   /*
@@ -195,7 +154,7 @@ export class PlayerClass {
     this.isDestroyed = true;
     this.destroyedTimestamp = Date.now();
     this.deathCount++;
-    this.setPlayerPosition(-1000, -1000); // off screen
+    this.setPositions(-1000, -1000); // off screen
   }
 
   public canHandleRespawnState1() {
@@ -209,7 +168,7 @@ export class PlayerClass {
     this.isDestroyed = false;
     this.destroyedTimestamp = 0;
     this.health = PLAYER_BASE_HEALTH;
-    this.setPlayerPosition(spawnPoint.x, spawnPoint.y);
+    this.setPositions(spawnPoint.x, spawnPoint.y);
     this.isSpawning = true;
     this.spawnTimestamp = Date.now();
     this.isInvincible = true;
@@ -267,7 +226,7 @@ export class PlayerClass {
   }
 
   public incrementKillCount(killedPlayerId: string) {
-    if (killedPlayerId === this.playerId) {
+    if (killedPlayerId === this.id) {
       return;
     }
     this.killCount++;
@@ -301,43 +260,4 @@ export class PlayerClass {
     }
     return Date.now() - this.deletedTimestamp > PLAYER_DELETION_GRACE_PERIOD;
   }
-}
-
-// Move outside player file if other things need this?
-function checkWallCollision(newX: number, newY: number, level: LevelTiles) {
-  // new 4 corners of the player
-  const topLeft: CornerPosition = { x: newX, y: newY };
-  const topRight: CornerPosition = { x: newX + PLAYER_SIZE, y: newY };
-  const bottomLeft: CornerPosition = { x: newX, y: newY + PLAYER_SIZE };
-  const bottomRight: CornerPosition = {
-    x: newX + PLAYER_SIZE,
-    y: newY + PLAYER_SIZE,
-  };
-
-  // grid coordinates of the new 4 corners of the player
-  const topLeftGrid = {
-    x: Math.floor(topLeft.x / PLAYER_SIZE),
-    y: Math.floor(topLeft.y / PLAYER_SIZE),
-  };
-  const topRightGrid = {
-    x: Math.floor(topRight.x / PLAYER_SIZE),
-    y: Math.floor(topRight.y / PLAYER_SIZE),
-  };
-  const bottomLeftGrid = {
-    x: Math.floor(bottomLeft.x / PLAYER_SIZE),
-    y: Math.floor(bottomLeft.y / PLAYER_SIZE),
-  };
-  const bottomRightGrid = {
-    x: Math.floor(bottomRight.x / PLAYER_SIZE),
-    y: Math.floor(bottomRight.y / PLAYER_SIZE),
-  };
-
-  // Check grid coordinates, is new position in a wall?
-  const isInWall =
-    level[topLeftGrid.y]?.[topLeftGrid.x] === 2 ||
-    level[topRightGrid.y]?.[topRightGrid.x] === 2 ||
-    level[bottomLeftGrid.y]?.[bottomLeftGrid.x] === 2 ||
-    level[bottomRightGrid.y]?.[bottomRightGrid.x] === 2;
-
-  return isInWall;
 }

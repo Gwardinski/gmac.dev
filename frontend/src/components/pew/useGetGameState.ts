@@ -11,7 +11,7 @@ type WSMessage = { type: 'game-state'; data: GameState } | { type: 'new-chat'; d
 type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
 
 export function useGetGameState(roomId: string | null, playerId: string | null) {
-  const [gameState, setGameState] = useState<GameState>({ players: [], bullets: [] });
+  const [gameState, setGameState] = useState<GameState>({ players: [], bullets: [], items: [] });
   const [chats, setChats] = useState<Message[]>([]);
   const [status, setStatus] = useState<ConnectionStatus>('disconnected');
   const [error, setError] = useState<string | null>(null);
