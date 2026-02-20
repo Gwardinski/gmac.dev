@@ -154,6 +154,7 @@ export class PlayerClass extends PhysicalModel {
     this.isDestroyed = true;
     this.destroyedTimestamp = Date.now();
     this.deathCount++;
+    this.fireDelay = PLAYER_BASE_FIRE_DELAY;
     // this.setPositions(-1000, -1000); // off screen
   }
 
