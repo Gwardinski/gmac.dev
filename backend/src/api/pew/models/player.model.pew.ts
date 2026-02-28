@@ -1,6 +1,6 @@
 import z from "zod";
 import { generatePlayerId } from "../util.pew";
-import { COLORS_SCHEMA, type Color, type Direction } from "./base.models.pew";
+import { COLORS_SCHEMA, directionSchema, type Color, type Direction } from "./base.models.pew";
 import type { LevelTiles } from "./level.model.pew";
 import { PhysicalModel } from "./physical.model.pew";
 
@@ -34,6 +34,7 @@ export const playerSerialisedSchema = z.object({
   isSpawning: z.boolean().optional(),
   isInvincible: z.boolean().optional(),
   isDeleted: z.boolean().optional(),
+  direction: directionSchema.optional(),
 });
 export type PlayerSerialised = z.infer<typeof playerSerialisedSchema>;
 
@@ -82,6 +83,7 @@ export class PlayerClass extends PhysicalModel {
       y: y,
       health: this.health,
       speed: this.speed,
+      direction: this.direction,
       topLeft: topLeft,
       topRight: topRight,
       bottomLeft: bottomLeft,
@@ -142,7 +144,7 @@ export class PlayerClass extends PhysicalModel {
       // once found value that's not in wall, snap player that position to hug wall
     }
 
-    this.setPositions(newX, newY);
+    this.setPositions(newX, newY, direction);
   }
 
   /*
@@ -155,7 +157,6 @@ export class PlayerClass extends PhysicalModel {
     this.destroyedTimestamp = Date.now();
     this.deathCount++;
     this.fireDelay = PLAYER_BASE_FIRE_DELAY;
-    // this.setPositions(-1000, -1000); // off screen
   }
 
   public canHandleRespawnState1() {
@@ -169,7 +170,7 @@ export class PlayerClass extends PhysicalModel {
     this.isDestroyed = false;
     this.destroyedTimestamp = 0;
     this.health = PLAYER_BASE_HEALTH;
-    this.setPositions(spawnPoint.x, spawnPoint.y);
+    this.setPositions(spawnPoint.x, spawnPoint.y, undefined);
     this.isSpawning = true;
     this.spawnTimestamp = Date.now();
     this.isInvincible = true;

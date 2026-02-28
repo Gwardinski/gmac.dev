@@ -25,13 +25,14 @@ export class BulletClass extends PhysicalModel {
     public playerId: string,
     initialX: number,
     initialY: number,
-    public direction: Direction
+    direction: Direction
   ) {
     super(generateBulletId(), initialX, initialY, BULLET_SIZE);
     this.speed = BULLET_BASE_SPEED;
     this.spawnTimestamp = Date.now();
     this.isDestroyed = false;
     this.damage = BULLET_BASE_DAMAGE;
+    this.setPositions(initialX, initialY, direction);
   }
 
   public spawnTimestamp: number;
@@ -40,12 +41,12 @@ export class BulletClass extends PhysicalModel {
   public damage: number;
   public isDestroyed: boolean;
 
-  public toJSON() {
+  public toJSON(): BulletModel {
     const { x, y } = this.getPositions();
     return {
       bulletId: this.id,
       playerId: this.playerId,
-      direction: this.direction,
+      direction: this.direction!,
       x: x,
       y: y,
     };
@@ -88,7 +89,7 @@ export class BulletClass extends PhysicalModel {
       return;
     }
 
-    this.setPositions(newX, newY);
+    this.setPositions(newX, newY, this.direction);
   }
 
   public destroy() {

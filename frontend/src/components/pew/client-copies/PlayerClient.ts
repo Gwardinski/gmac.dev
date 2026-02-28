@@ -9,6 +9,7 @@ type PlayerPositions = {
   topRight: { x: number; y: number };
   bottomLeft: { x: number; y: number };
   bottomRight: { x: number; y: number };
+  direction: Direction | undefined;
 };
 
 // Player Data, for general use
@@ -18,6 +19,7 @@ export type Player = {
   playerColour: Color;
   x: number;
   y: number;
+  direction: Direction | undefined;
   speed: number;
   health: number;
   killCount: number;
@@ -42,12 +44,14 @@ export class PlayerClient {
     this.topRight = { x: this.x + PLAYER_SIZE, y: this.y };
     this.bottomLeft = { x: this.x, y: this.y + PLAYER_SIZE };
     this.bottomRight = { x: this.x + PLAYER_SIZE, y: this.y + PLAYER_SIZE };
+    this.direction = undefined;
   }
 
   public topLeft: CornerPosition;
   public topRight: CornerPosition;
   public bottomLeft: CornerPosition;
   public bottomRight: CornerPosition;
+  public direction: Direction | undefined;
 
   public getPositions(): PlayerPositions {
     return {
@@ -56,7 +60,8 @@ export class PlayerClient {
       topLeft: this.topLeft,
       topRight: this.topRight,
       bottomLeft: this.bottomLeft,
-      bottomRight: this.bottomRight
+      bottomRight: this.bottomRight,
+      direction: this.direction || undefined
     };
   }
 
@@ -84,6 +89,8 @@ export class PlayerClient {
     let newY = this.y + yMod;
 
     const isInWall = checkWallCollision(newX, newY, level);
+
+    this.direction = direction;
 
     if (isInWall) {
       newX = this.x;
