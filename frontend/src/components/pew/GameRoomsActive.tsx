@@ -1,5 +1,5 @@
 import { H3 } from '../ui';
-import { useFetchRooms } from './game-api';
+import { useFetchRooms } from './useFetchRooms';
 
 export const GameRoomsActive = () => {
   const { data, isLoading, error } = useFetchRooms();

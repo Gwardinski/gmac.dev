@@ -22,7 +22,7 @@ import { getGameSerialisedState } from "./service.game.pew.js";
 import {
   markPlayerForDeletion,
   playerFire,
-  updatePlayerPosition,
+  playerMove,
 } from "./service.player.pew.js";
 import { roomServiceDeleteEmpty } from "./service.room.pew.js";
 import { roomJoinSchema, sendChatSchema } from "./validation.js";
@@ -148,54 +148,26 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
         case "update-movement": {
           const { direction } = message.data;
 
-          const [updatedGameState, gameStateErr] = updatePlayerPosition(
-            roomId,
-            playerId,
-            direction
-          );
+          const [, gameStateErr] = playerMove(roomId, playerId, direction);
 
           if (gameStateErr) {
             ws.send(JSON.stringify({ error: gameStateErr }));
             return;
           }
 
-          if (updatedGameState) {
-            // Broadcasts to all players in the room
-            broadcastToRoom(
-              roomId,
-              returnWSResponse<WSSendMessageType, GameSerialized>(
-                "game-state",
-                updatedGameState
-              )
-            );
-          }
           break;
         }
 
         case "fire": {
           const { direction } = message.data;
 
-          const [updatedGameState, gameStateErr] = playerFire(
-            roomId,
-            playerId,
-            direction
-          );
+          const [, gameStateErr] = playerFire(roomId, playerId, direction);
 
           if (gameStateErr) {
             ws.send(JSON.stringify({ error: gameStateErr }));
             return;
           }
 
-          if (updatedGameState) {
-            // Broadcasts to all players in the room
-            broadcastToRoom(
-              roomId,
-              returnWSResponse<WSSendMessageType, GameSerialized>(
-                "game-state",
-                updatedGameState
-              )
-            );
-          }
           break;
         }
 
@@ -214,7 +186,6 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
             return;
           }
 
-          // Broadcast new chat to all players in the room
           broadcastToRoom(
             roomId,
             returnWSResponse<WSSendMessageType, typeof newChat>(

@@ -5,10 +5,15 @@ import type { GameSerialized } from "./models/game.model.pew.js";
 import type { SystemChatParams } from "./models/system-event.model.js";
 import { addSystemChat } from "./service.chat.pew.js";
 
-const TICK_RATE = 1000 / 60; // 60 FPS?
+const TICK_RATE = 1000 / 60; // 60 FPS
+const BROADCAST_RATE = 4; // 4 broadcasts per second
+const BROADCAST_INTERVAL_MS = 1000 / BROADCAST_RATE;
 
 // Store active game loops per room
 const gameLoops = new Map<ROOM_ID, NodeJS.Timeout>();
+
+// Store last broadcast time per room (for throttling)
+const lastBroadcastTime = new Map<ROOM_ID, number>();
 
 // Store broadcast callback per room
 type BroadcastCallback = (roomId: string, message: string) => void;
@@ -44,6 +49,7 @@ export function stopGameEngine(roomId: ROOM_ID) {
   if (interval) {
     clearInterval(interval);
     gameLoops.delete(roomId);
+    lastBroadcastTime.delete(roomId);
     broadcastCallbacks.delete(roomId);
     console.log(`Stopped game engine for room: ${roomId}`);
   }
@@ -69,15 +75,21 @@ function gameEngineTick(roomId: ROOM_ID) {
 
   GAMES_DB.set(roomId, game);
 
-  const broadcast = broadcastCallbacks.get(roomId);
-  if (broadcast) {
-    broadcast(
-      roomId,
-      returnWSResponse<WSSendMessageType, GameSerialized>(
-        "game-state",
-        game.toJSON()
-      )
-    );
+  // Throttle broadcasts to 4 per second
+  const now = Date.now();
+  const lastBroadcast = lastBroadcastTime.get(roomId) ?? 0;
+  if (now - lastBroadcast >= BROADCAST_INTERVAL_MS) {
+    lastBroadcastTime.set(roomId, now);
+    const broadcast = broadcastCallbacks.get(roomId);
+    if (broadcast) {
+      broadcast(
+        roomId,
+        returnWSResponse<WSSendMessageType, GameSerialized>(
+          "game-state",
+          game.toJSON()
+        )
+      );
+    }
   }
 }
 

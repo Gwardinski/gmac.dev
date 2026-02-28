@@ -11,7 +11,7 @@ import {
 
 // WebSocket Services
 
-export function updatePlayerPosition(
+export function playerMove(
   roomId: ROOM_ID,
   playerId: string,
   direction: Direction
