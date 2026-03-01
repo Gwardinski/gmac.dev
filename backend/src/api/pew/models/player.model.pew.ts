@@ -1,6 +1,11 @@
 import z from "zod";
 import { generatePlayerId } from "../util.pew";
-import { COLORS_SCHEMA, directionSchema, type Color, type Direction } from "./base.models.pew";
+import {
+  COLORS_SCHEMA,
+  bearingSchema,
+  type Bearing,
+  type Color,
+} from "./base.models.pew";
 import type { LevelTiles } from "./level.model.pew";
 import { PhysicalModel } from "./physical.model.pew";
 
@@ -16,10 +21,10 @@ const PLAYER_INVINCIBILITY_TIME = 1600;
 
 // External Player State - Serialised
 export const playerSerialisedSchema = z.object({
-  playerId: z.string(), // todo maybe don't return, could be hijacked...
-  playerDeviceId: z.string(),
-  playerName: z.string(),
-  playerColour: COLORS_SCHEMA,
+  id: z.string(), // todo maybe don't return, could be hijacked...
+  deviceId: z.string(),
+  name: z.string(),
+  colour: COLORS_SCHEMA,
   x: z.number(),
   y: z.number(),
   speed: z.number().optional(),
@@ -34,16 +39,16 @@ export const playerSerialisedSchema = z.object({
   isSpawning: z.boolean().optional(),
   isInvincible: z.boolean().optional(),
   isDeleted: z.boolean().optional(),
-  direction: directionSchema.optional(),
+  bearing: bearingSchema.optional(),
 });
 export type PlayerSerialised = z.infer<typeof playerSerialisedSchema>;
 
 // Internal Player State - Class based
 export class PlayerClass extends PhysicalModel {
   constructor(
-    public playerDeviceId: string,
-    public playerName: string,
-    public playerColour: Color,
+    public deviceId: string,
+    public name: string,
+    public colour: Color,
     initialX: number,
     initialY: number
   ) {
@@ -75,15 +80,15 @@ export class PlayerClass extends PhysicalModel {
     const { x, y, topLeft, topRight, bottomLeft, bottomRight } =
       this.getPositions();
     return {
-      playerId: this.id,
-      playerDeviceId: this.playerDeviceId,
-      playerName: this.playerName,
-      playerColour: this.playerColour,
+      id: this.id,
+      deviceId: this.deviceId,
+      name: this.name,
+      colour: this.colour,
       x: x,
       y: y,
       health: this.health,
       speed: this.speed,
-      direction: this.direction,
+      bearing: this.bearing,
       topLeft: topLeft,
       topRight: topRight,
       bottomLeft: bottomLeft,
@@ -98,53 +103,63 @@ export class PlayerClass extends PhysicalModel {
   }
 
   public updateName(name: string) {
-    this.playerName = name;
+    this.name = name;
   }
 
   public updateColour(colour: Color) {
-    this.playerColour = colour;
+    this.colour = colour;
   }
 
   /*
     MOVEMENT
   */
 
-  public updatePosition(direction: Direction, level: LevelTiles) {
-    let xMod = 0;
-    let yMod = 0;
-
-    switch (direction) {
-      case "UP":
-        yMod = -this.speed;
-        break;
-      case "DOWN":
-        yMod = this.speed;
-        break;
-      case "LEFT":
-        xMod = -this.speed;
-        break;
-      case "RIGHT":
-        xMod = this.speed;
-        break;
-    }
+  public updateServerPosition(bearing: Bearing, level: LevelTiles) {
+    const rad = (bearing * Math.PI) / 180;
+    const xMod = Math.cos(rad) * this.speed;
+    const yMod = Math.sin(rad) * this.speed;
 
     const currentPositions = this.getPositions();
     let newX = currentPositions.x + xMod;
     let newY = currentPositions.y + yMod;
 
-    const isInWall = this.checkWallCollision(newX, newY, level);
-
-    if (isInWall) {
-      newX = currentPositions.x;
-      newY = currentPositions.y;
-      // todo...
-      // if speed is more than 1 i.e. 4
-      // while speed > 0,
-      // check speed - 1, speed - 2, speed - 3, etc
-      // once found value that's not in wall, snap player that position to hug wall
+    if (this.checkWallCollision(newX, newY, level)) {
+      // Wall sliding: try X-only or Y-only move if diagonal hits a wall
+      const tryX = this.checkWallCollision(
+        currentPositions.x + xMod,
+        currentPositions.y,
+        level
+      );
+      const tryY = this.checkWallCollision(
+        currentPositions.x,
+        currentPositions.y + yMod,
+        level
+      );
+      if (!tryX) {
+        newX = currentPositions.x + xMod;
+        newY = currentPositions.y;
+      } else if (!tryY) {
+        newX = currentPositions.x;
+        newY = currentPositions.y + yMod;
+      } else {
+        newX = currentPositions.x;
+        newY = currentPositions.y;
+      }
     }
 
-    this.setPositions(newX, newY, direction);
+    this.setPositions(newX, newY, bearing);
+  }
+
+  /** Client sends position; server validates (wall collision) and applies or rejects. */
+  public setPositionFromClient(
+    x: number,
+    y: number,
+    bearing: Bearing,
+    level: LevelTiles
+  ): void {
+    const inWall = this.checkWallCollision(x, y, level);
+    if (inWall) return;
+    this.setPositions(x, y, bearing ?? this.bearing);
   }
 
   /*

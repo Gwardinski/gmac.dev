@@ -1,7 +1,7 @@
 import { returnServiceResponse } from "../../responses";
 import type { ServiceResponse } from "../../types";
 import { GAMES_DB } from "./db.pew";
-import { type Direction, type ROOM_ID } from "./models/base.models.pew";
+import { type Bearing, type ROOM_ID } from "./models/base.models.pew";
 import { BulletClass, getBulletSpawnPoint } from "./models/bullet.model.pew";
 import type { GameClass, GameSerialized } from "./models/game.model.pew";
 import { LEVEL_1 } from "./models/level.model.pew";
@@ -69,7 +69,7 @@ export function removeGamePlayer(
 export function updateGamePlayerPosition(
   roomId: ROOM_ID,
   playerId: string,
-  direction: Direction
+  bearing: Bearing
 ): ServiceResponse<GameSerialized> {
   const [gameAndPlayer, error] = getGameAndPlayer(roomId, playerId);
   if (error) {
@@ -78,7 +78,27 @@ export function updateGamePlayerPosition(
 
   const { game, player } = gameAndPlayer;
 
-  player.updatePosition(direction, LEVEL_1);
+  player.updateServerPosition(bearing, LEVEL_1);
+
+  return returnServiceResponse(game.toJSON());
+}
+
+/** Client-authoritative move: client sends (x,y), server validates collision and applies. */
+export function updateGamePlayerPositionFromClient(
+  roomId: ROOM_ID,
+  playerId: string,
+  x: number,
+  y: number,
+  bearing: Bearing
+): ServiceResponse<GameSerialized> {
+  const [gameAndPlayer, error] = getGameAndPlayer(roomId, playerId);
+  if (error) {
+    return returnServiceResponse<GameSerialized>(error);
+  }
+
+  const { game, player } = gameAndPlayer;
+
+  player.setPositionFromClient(x, y, bearing, LEVEL_1);
 
   return returnServiceResponse(game.toJSON());
 }
@@ -86,7 +106,7 @@ export function updateGamePlayerPosition(
 export function updateGamePlayerFire(
   roomId: ROOM_ID,
   playerId: string,
-  direction: Direction
+  bearing: Bearing
 ): ServiceResponse<GameSerialized> {
   const [gameAndPlayer, error] = getGameAndPlayer(roomId, playerId);
   if (error) {
@@ -101,9 +121,9 @@ export function updateGamePlayerFire(
 
   player.fire();
 
-  const { x, y } = getBulletSpawnPoint(player, direction);
+  const { x, y } = getBulletSpawnPoint(player, bearing);
 
-  const newBullet = new BulletClass(roomId, playerId, x, y, direction);
+  const newBullet = new BulletClass(roomId, playerId, x, y, bearing);
 
   game.addBullet(newBullet);
 

@@ -1,6 +1,6 @@
 import z from "zod";
 import { generateBulletId } from "../util.pew";
-import { directionSchema, type Direction } from "./base.models.pew";
+import { bearingSchema, type Bearing } from "./base.models.pew";
 import type { LevelTiles } from "./level.model.pew";
 import { PhysicalModel } from "./physical.model.pew";
 import type { PlayerClass } from "./player.model.pew";
@@ -15,7 +15,7 @@ export const bulletSerialisedSchema = z.object({
   playerId: z.string(),
   x: z.number(),
   y: z.number(),
-  direction: directionSchema,
+  bearing: bearingSchema,
 });
 export type BulletModel = z.infer<typeof bulletSerialisedSchema>;
 
@@ -25,14 +25,14 @@ export class BulletClass extends PhysicalModel {
     public playerId: string,
     initialX: number,
     initialY: number,
-    direction: Direction
+    bearing: Bearing
   ) {
     super(generateBulletId(), initialX, initialY, BULLET_SIZE);
     this.speed = BULLET_BASE_SPEED;
     this.spawnTimestamp = Date.now();
     this.isDestroyed = false;
     this.damage = BULLET_BASE_DAMAGE;
-    this.setPositions(initialX, initialY, direction);
+    this.setPositions(initialX, initialY, bearing);
   }
 
   public spawnTimestamp: number;
@@ -46,35 +46,21 @@ export class BulletClass extends PhysicalModel {
     return {
       bulletId: this.id,
       playerId: this.playerId,
-      direction: this.direction!,
+      bearing: this.bearing!,
       x: x,
       y: y,
     };
   }
 
-  public updatePosition(level: LevelTiles) {
-    if (Date.now() - this.spawnTimestamp > BULLET_DECAY_TIME) {
+  public updateServerPosition(level: LevelTiles) {
+    if (Date.now() - this.spawnTimestamp > BULLET_DECAY_TIME || this.bearing === undefined) {
       this.destroy();
       return;
     }
     const currentPositions = this.getPositions();
-    let newX = currentPositions.x;
-    let newY = currentPositions.y;
-
-    switch (this.direction) {
-      case "UP":
-        newY -= this.speed;
-        break;
-      case "DOWN":
-        newY += this.speed;
-        break;
-      case "LEFT":
-        newX -= this.speed;
-        break;
-      case "RIGHT":
-        newX += this.speed;
-        break;
-    }
+    const rad = (this.bearing * Math.PI) / 180;
+    const newX = currentPositions.x + Math.cos(rad) * this.speed;
+    const newY = currentPositions.y + Math.sin(rad) * this.speed;
 
     const hitWall = this.checkWallCollision(
       newX,
@@ -89,7 +75,7 @@ export class BulletClass extends PhysicalModel {
       return;
     }
 
-    this.setPositions(newX, newY, this.direction);
+    this.setPositions(newX, newY, this.bearing);
   }
 
   public destroy() {
@@ -97,20 +83,14 @@ export class BulletClass extends PhysicalModel {
   }
 }
 
-// spawn point mid point on any 4 sides of the player based on direction
-export function getBulletSpawnPoint(player: PlayerClass, direction: Direction) {
+// spawn at edge of player in bearing direction (0=right, 90=down, 180=left, 270=up)
+export function getBulletSpawnPoint(player: PlayerClass, bearing: Bearing) {
   const { x, y } = player.getPositions();
-  switch (direction) {
-    case "UP":
-      return { x: x + player.playerSize / 2, y: y };
-    case "DOWN":
-      return { x: x + player.playerSize / 2, y: y + player.playerSize };
-    case "LEFT":
-      return { x: x, y: y + player.playerSize / 2 };
-    case "RIGHT":
-      return { x: x + player.playerSize, y: y + player.playerSize / 2 };
-    default:
-      // Fallback to right direction if invalid direction provided 🤷‍♂️
-      return { x: x + player.playerSize, y: y + player.playerSize / 2 };
-  }
+  const half = player.playerSize / 2;
+  const rad = (bearing * Math.PI) / 180;
+  const dist = half + 1;
+  return {
+    x: x + half + Math.cos(rad) * dist,
+    y: y + half + Math.sin(rad) * dist,
+  };
 }

@@ -1,5 +1,4 @@
 import { Page, PageHeader, PageHeading, PageSection } from '@/components/layout';
-import type { Level } from '@/components/pew/client-copies';
 import { GameBoard } from '@/components/pew/GameBoard';
 import { GameChat } from '@/components/pew/GameChat';
 import { GameControls } from '@/components/pew/GameControls';
@@ -8,45 +7,15 @@ import { GameLeaveButton } from '@/components/pew/GameLeaveButton';
 import { GameRoomsActive } from '@/components/pew/GameRoomsActive';
 import { GameScore } from '@/components/pew/GameScore';
 import { GameShareButton } from '@/components/pew/GameShareButton';
-import { useGetGameState } from '@/components/pew/useGetGameState';
-import type { JoinRoomResponse } from '@/components/pew/useJoinRoom';
+import { GameStateProvider, useLocalGameState } from '@/components/pew/useGetGameState';
 import { H1, H1Description } from '@/components/ui/typography';
 import { createFileRoute } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
 
 export const Route = createFileRoute('/pew/')({
   component: RouteComponent
 });
 
 function RouteComponent() {
-  const [roomId, setRoomId] = useState<string | null>(localStorage.getItem('room-id') || null);
-  const [playerId, setPlayerId] = useState<string | null>(localStorage.getItem('player-id') || null);
-  const [level, setLevel] = useState<Level | null>(null);
-
-  const { gameState, chats, isConnected, sendMessage, sendChat } = useGetGameState(roomId, playerId);
-  const showLoginForm = !isConnected;
-
-  useEffect(() => {
-    if (!isConnected) {
-      setRoomId(null);
-      setPlayerId(null);
-      setLevel(null);
-    }
-  }, [isConnected]);
-
-  function onJoinSuccess({ roomId, playerId, level }: JoinRoomResponse) {
-    setRoomId(roomId);
-    setPlayerId(playerId);
-    setLevel(level);
-  }
-
-  function onLeave() {
-    sendMessage({ type: 'leave-room' });
-    setRoomId(null);
-    setPlayerId(null);
-    setLevel(null);
-  }
-
   return (
     <Page>
       <PageHeader>
@@ -56,25 +25,45 @@ function RouteComponent() {
           <H1Description>uses Javascript</H1Description>
         </PageHeading>
       </PageHeader>
-
       <PageSection className="flex flex-col items-center justify-center gap-4 font-mono">
-        <div className="flex flex-wrap items-center justify-center gap-4">
-          <GameControls />
-          {!showLoginForm && <GameScore roomId={roomId ?? ''} playerId={playerId ?? ''} />}
-          <div className="flex h-[88px] flex-col justify-between">
-            {!showLoginForm && <GameShareButton />}
-            {!showLoginForm && <GameLeaveButton onLeave={onLeave} />}
-          </div>
-        </div>
-        {showLoginForm && <GameJoinForm onJoinSuccess={onJoinSuccess} />}
-        {showLoginForm && <GameRoomsActive />}
-        {!showLoginForm && level && (
-          <div className="flex flex-wrap items-stretch gap-4">
-            <GameBoard roomId={roomId ?? ''} playerId={playerId ?? ''} level={level} gameState={gameState} sendMessage={sendMessage} />
-            <GameChat chats={chats} onSendChat={sendChat} />
-          </div>
-        )}
+        <GameStateProvider>
+          <GameContent />
+        </GameStateProvider>
       </PageSection>
     </Page>
+  );
+}
+
+function GameContent() {
+  const roomId = useLocalGameState((s) => s.roomId);
+  const status = useLocalGameState((s) => s.status);
+  const hasRoom = Boolean(roomId);
+
+  return (
+    <>
+      <div className="flex flex-wrap items-center justify-center gap-4">
+        <GameControls />
+        {hasRoom && <GameScore />}
+        <div className="flex h-[88px] flex-col justify-between">
+          {hasRoom && <GameShareButton />}
+          {hasRoom && <GameLeaveButton />}
+        </div>
+      </div>
+      {!hasRoom && <GameJoinForm />}
+      {!hasRoom && <GameRoomsActive />}
+      {hasRoom && (
+        <div className="flex w-full flex-col items-center gap-4">
+          {status === 'connecting' && <p className="text-center text-amber-500">Connecting…</p>}
+          {status === 'disconnected' && <p className="text-center text-amber-500">Disconnected. Reconnecting…</p>}
+          {status === 'error' && <p className="text-center text-red-500">Connection failed. Try again or leave.</p>}
+          {status === 'connected' && (
+            <div className="flex flex-wrap items-stretch gap-4">
+              <GameBoard />
+              <GameChat />
+            </div>
+          )}
+        </div>
+      )}
+    </>
   );
 }

@@ -1,41 +1,50 @@
-import type { Color, Direction, Level } from '.';
+import type { Bearing, Color, Level } from '.';
 
 export const PLAYER_SIZE = 16;
 type CornerPosition = { x: number; y: number };
 type PlayerPositions = {
   x: number;
   y: number;
-  topLeft: { x: number; y: number };
-  topRight: { x: number; y: number };
-  bottomLeft: { x: number; y: number };
-  bottomRight: { x: number; y: number };
-  direction: Direction | undefined;
+  topLeft: CornerPosition;
+  topRight: CornerPosition;
+  bottomLeft: CornerPosition;
+  bottomRight: CornerPosition;
+  bearing: Bearing | undefined;
 };
 
-// Player Data, for general use
+// Game State Players
 export type Player = {
-  playerId: string;
-  playerName: string;
-  playerColour: Color;
+  id: string;
+  name: string;
+  colour: Color;
   x: number;
   y: number;
-  direction: Direction | undefined;
+  bearing: Bearing | undefined;
   speed: number;
   health: number;
   killCount: number;
   deathCount: number;
   isDestroyed: boolean;
   isSpawning: boolean;
+  isInvincible: boolean;
 };
 
-// Player "Physical" model, for canvas. Copied from backend PlayerClass.
+// Active Player (For Client Rendering)
+// Simplified copy of server Player class
 export class PlayerClient {
   constructor(
+    public id: string,
+    public name: string,
+    public colour: Color,
     public x: number,
     public y: number,
-    public speed: number
+    public speed: number,
+    public bearing: Bearing | undefined
   ) {
     // from api
+    this.id = id;
+    this.name = name;
+    this.colour = colour;
     this.x = x;
     this.y = y;
     this.speed = speed;
@@ -44,14 +53,19 @@ export class PlayerClient {
     this.topRight = { x: this.x + PLAYER_SIZE, y: this.y };
     this.bottomLeft = { x: this.x, y: this.y + PLAYER_SIZE };
     this.bottomRight = { x: this.x + PLAYER_SIZE, y: this.y + PLAYER_SIZE };
-    this.direction = undefined;
+    this.bearing = bearing;
   }
 
   public topLeft: CornerPosition;
   public topRight: CornerPosition;
   public bottomLeft: CornerPosition;
   public bottomRight: CornerPosition;
-  public direction: Direction | undefined;
+
+  // set from player server data
+  public inDeathCycle: boolean = false;
+  public isDestroyed: boolean = false;
+  public isSpawning: boolean = false;
+  public isInvincible: boolean = false;
 
   public getPositions(): PlayerPositions {
     return {
@@ -61,48 +75,34 @@ export class PlayerClient {
       topRight: this.topRight,
       bottomLeft: this.bottomLeft,
       bottomRight: this.bottomRight,
-      direction: this.direction || undefined
+      bearing: this.bearing ?? undefined
     };
   }
 
-  public updatePosition(direction: Direction, level: Level) {
-    let xMod = 0;
-    let yMod = 0;
+  public updatePosition(bearing: Bearing, level: Level) {
+    const rad = (bearing * Math.PI) / 180;
+    const xMod = Math.cos(rad) * this.speed;
+    const yMod = Math.sin(rad) * this.speed;
 
-    switch (direction) {
-      case 'UP':
-        yMod = -this.speed;
-        break;
-      case 'DOWN':
-        yMod = this.speed;
-        break;
-      case 'LEFT':
-        xMod = -this.speed;
-        break;
-      case 'RIGHT':
-        xMod = this.speed;
-        break;
-    }
-
-    // new position
     let newX = this.x + xMod;
     let newY = this.y + yMod;
 
-    const isInWall = checkWallCollision(newX, newY, level);
+    this.bearing = bearing;
 
-    this.direction = direction;
-
-    if (isInWall) {
-      newX = this.x;
-      newY = this.y;
-
-      /*
-      todo...
-      if speed is more than 1 i.e. 4
-      while speed > 0,
-      check speed - 1, speed - 2, speed - 3, etc
-      once found value that's not in wall, snap player that position to hug wall
-      */
+    if (checkWallCollision(newX, newY, level)) {
+      // Wall sliding: try X-only or Y-only move if diagonal hits a wall
+      const tryX = checkWallCollision(this.x + xMod, this.y, level);
+      const tryY = checkWallCollision(this.x, this.y + yMod, level);
+      if (!tryX) {
+        newX = this.x + xMod;
+        newY = this.y;
+      } else if (!tryY) {
+        newX = this.x;
+        newY = this.y + yMod;
+      } else {
+        newX = this.x;
+        newY = this.y;
+      }
     }
 
     this.setPlayerPosition(newX, newY);

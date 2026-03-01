@@ -1,4 +1,5 @@
 import z from 'zod';
+import type { Player } from './PlayerClient';
 // 1 = floor
 // 2 = wall
 // 3 = spawn
@@ -13,8 +14,8 @@ export type Level = LevelRow[];
 
 export const TILE_SIZE = 16;
 
-// Types synced with backend models
-export type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
+// Bearing in degrees 0-359: 0=right, 90=down, 180=left, 270=up (allows diagonal movement)
+export type Bearing = number;
 
 // COLORS
 export const COLORS = ['RED', 'BLUE', 'GREEN', 'YELLOW', 'PURPLE', 'ORANGE', 'TEAL', 'PINK'] as const;
@@ -43,29 +44,13 @@ export function colorToHex(color: Color | null) {
   }
 }
 
-// Player type matching backend Player model
-export type Player = {
-  playerId: string;
-  playerName: string;
-  playerColour: Color;
-  x: number;
-  y: number;
-  speed: number;
-  health: number;
-  killCount: number;
-  deathCount: number;
-  isDestroyed: boolean;
-  isSpawning: boolean;
-  isInvincible: boolean;
-};
-
 // Bullet type matching backend Bullet model
 export type Bullet = {
   bulletId: string;
   playerId: string;
   x: number;
   y: number;
-  direction: Direction;
+  bearing: Bearing;
 };
 
 export type Item = {

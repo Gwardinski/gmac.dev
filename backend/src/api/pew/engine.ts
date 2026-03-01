@@ -6,7 +6,7 @@ import type { SystemChatParams } from "./models/system-event.model.js";
 import { addSystemChat } from "./service.chat.pew.js";
 
 const TICK_RATE = 1000 / 60; // 60 FPS
-const BROADCAST_RATE = 4; // 4 broadcasts per second
+const BROADCAST_RATE = 10; // broadcasts per second
 const BROADCAST_INTERVAL_MS = 1000 / BROADCAST_RATE;
 
 // Store active game loops per room

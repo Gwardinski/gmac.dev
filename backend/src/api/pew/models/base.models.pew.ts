@@ -14,10 +14,9 @@ export const COLORS = [
 export type Color = (typeof COLORS)[number];
 export const COLORS_SCHEMA = z.enum(COLORS);
 
-// Direction enum for movement and firing
-export const DIRECTIONS = ["UP", "DOWN", "LEFT", "RIGHT"] as const;
-export const directionSchema = z.enum(DIRECTIONS);
-export type Direction = z.infer<typeof directionSchema>;
+// Bearing in degrees 0-359: 0=right, 90=down, 180=left, 270=up (allows diagonal movement)
+export const bearingSchema = z.number().int().min(0).max(359);
+export type Bearing = z.infer<typeof bearingSchema>;
 
 // ROOMS
 // list rooms
@@ -42,20 +41,21 @@ export type WSQuery = z.infer<typeof wsQuerySchema>;
 
 // WEBSOCKET MESSAGES
 
-// movement
-const updateMovementDataSchema = z.object({
-  direction: directionSchema,
+// position
+const updatePositionDataSchema = z.object({
+  x: z.number(),
+  y: z.number(),
+  bearing: bearingSchema,
 });
-
-const updateMovementMessageSchema = z.object({
-  type: z.literal("update-movement"),
-  data: updateMovementDataSchema,
+const updatePositionMessageSchema = z.object({
+  type: z.literal("update-position"),
+  data: updatePositionDataSchema,
 });
-export type UpdateMovementMessage = z.infer<typeof updateMovementMessageSchema>;
+export type UpdatePositionMessage = z.infer<typeof updatePositionMessageSchema>;
 
 // fire
 const fireDataSchema = z.object({
-  direction: directionSchema,
+  bearing: bearingSchema,
 });
 
 const fireMessageSchema = z.object({
@@ -81,7 +81,7 @@ export type SendGameChat = z.infer<typeof sendGameChatSchema>;
 
 // Union of all possible WebSocket messages
 export const wsMessageSchema = z.discriminatedUnion("type", [
-  updateMovementMessageSchema,
+  updatePositionMessageSchema,
   fireMessageSchema,
   leaveRoomMessageSchema,
   sendGameChatSchema,

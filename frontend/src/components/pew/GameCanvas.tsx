@@ -1,21 +1,18 @@
 import { useEffect, useRef, type RefObject } from 'react';
 import backgroundImage from '../../assets/pew-background.png';
-import { colorToHex, TILE_SIZE, type Color, type GameState, type Player } from './client-copies';
+import { colorToHex, TILE_SIZE, type Color } from './client-copies';
 import type { PlayerClient } from './client-copies/PlayerClient';
+import { useLocalGameState } from './useGetGameState';
 
 const LERP_FACTOR = 0.3;
 const invincibleFlashInterval = 100;
 
 interface GameCanvasProps {
   canvasRef: RefObject<HTMLCanvasElement | null>;
-  gameState: GameState;
-  level: number[][];
-  playerId: string | undefined;
-  playerClientRef: RefObject<PlayerClient | null>;
 }
 
-export const GameCanvas = ({ canvasRef, gameState, level, playerId, playerClientRef }: GameCanvasProps) => {
-  const { players, bullets, items } = gameState;
+export const GameCanvas = ({ canvasRef }: GameCanvasProps) => {
+  const level = useLocalGameState((s) => s.level);
   const backgroundImageRef = useRef<HTMLImageElement | null>(null);
   const otherPlayersLastPosRef = useRef<Map<string, { x: number; y: number }>>(new Map());
   const dyingFrameRef = useRef<Map<string, number>>(new Map());
@@ -28,57 +25,83 @@ export const GameCanvas = ({ canvasRef, gameState, level, playerId, playerClient
     };
   }, []);
 
-  useEffect(() => {
-    if (!players) return;
-    const currentPlayerIds = new Set(players.map((p) => p.playerId));
-    const storedPlayerIds = Array.from(otherPlayersLastPosRef.current.keys());
-    storedPlayerIds.forEach((id) => {
-      if (!currentPlayerIds.has(id)) {
-        otherPlayersLastPosRef.current.delete(id);
-      }
-    });
-  }, [players]);
-
+  // 60 FPS render loop: read state from store each frame so canvas updates regardless of React state
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    let frameId: number;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const tick = () => {
+      const c = canvasRef.current;
+      if (!c) {
+        frameId = requestAnimationFrame(tick);
+        return;
+      }
+      const ctx = c.getContext('2d');
+      if (!ctx) {
+        frameId = requestAnimationFrame(tick);
+        return;
+      }
 
-    if (backgroundImageRef.current) {
-      ctx.drawImage(backgroundImageRef.current, 0, 0, canvas.width, canvas.height);
-    }
+      const { gameState, level: lvl, playerId: pid, playerClient, otherPlayers, serverPlayer } = useLocalGameState.getState();
+      const { bullets, items } = gameState;
 
-    level?.forEach((row, y) => {
-      row.forEach((cell, x) => {
-        switch (cell) {
-          case 1:
-            break;
-          case 2:
-            drawWall(ctx, x, y);
-            break;
-          case 3:
-            drawSpawnPoint(ctx, x, y);
-            break;
-        }
+      ctx.clearRect(0, 0, c.width, c.height);
+
+      if (backgroundImageRef.current) {
+        ctx.drawImage(backgroundImageRef.current, 0, 0, c.width, c.height);
+      }
+
+      lvl?.forEach((row, y) => {
+        row.forEach((cell, x) => {
+          switch (cell) {
+            case 1:
+              break;
+            case 2:
+              drawWall(ctx, x, y);
+              break;
+            case 3:
+              drawSpawnPoint(ctx, x, y);
+              break;
+          }
+        });
       });
-    });
 
-    players?.forEach((player) => {
-      drawPlayer(ctx, player, playerId, playerClientRef, otherPlayersLastPosRef, dyingFrameRef);
-    });
+      if (otherPlayers) {
+        const currentPlayerIds = new Set(otherPlayers.map((p) => p.id));
+        Array.from(otherPlayersLastPosRef.current.keys()).forEach((id) => {
+          if (!currentPlayerIds.has(id)) otherPlayersLastPosRef.current.delete(id);
+        });
+        otherPlayers.forEach((otherPlayer) => {
+          drawOtherPlayers(ctx, otherPlayer, pid, otherPlayersLastPosRef, dyingFrameRef);
+        });
+      }
 
-    bullets?.forEach((bullet) => {
-      drawBullet(ctx, bullet.x, bullet.y);
-    });
+      if (serverPlayer) {
+        drawPlayerServerPosition(ctx, serverPlayer);
+      }
 
-    items?.forEach((item) => {
-      drawItem(ctx, item.x, item.y, item.itemName);
-    });
-  });
+      if (playerClient) {
+        drawPlayerClient(ctx, playerClient, dyingFrameRef);
+      }
+
+      bullets?.forEach((bullet) => {
+        drawBullet(ctx, bullet.x, bullet.y);
+      });
+
+      items?.forEach((item) => {
+        drawItem(ctx, item.x, item.y, item.itemName);
+      });
+
+      frameId = requestAnimationFrame(tick);
+    };
+
+    frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
+  }, [canvasRef]);
+
+  if (!level) return null;
 
   return (
     <div>
@@ -100,56 +123,96 @@ type DrawPlayerProps = {
   playerColour: Color;
   x: number;
   y: number;
-  itemTime?: number;
   dyingFrame?: number;
 };
 
-function drawPlayer(
+/** Draws the local player's server position at 0.5 opacity (ghost). */
+function drawPlayerServerPosition(ctx: CanvasRenderingContext2D, serverPlayer: PlayerClient) {
+  ctx.save();
+  ctx.globalAlpha = 0.5;
+  ctx.fillStyle = colorToHex(serverPlayer.colour);
+  ctx.fillRect(serverPlayer.x, serverPlayer.y, TILE_SIZE, TILE_SIZE);
+  ctx.fillStyle = 'white';
+  ctx.fillText(serverPlayer.name, serverPlayer.x, serverPlayer.y + 32);
+  ctx.restore();
+}
+
+function drawPlayerClient(ctx: CanvasRenderingContext2D, playerClient: PlayerClient, dyingFrameRef: RefObject<Map<string, number>>) {
+  if (!playerClient) return;
+  const drawPlayerProps: DrawPlayerProps = {
+    playerId: playerClient.id,
+    playerName: playerClient.name,
+    playerColour: playerClient.colour,
+    x: playerClient.x,
+    y: playerClient.y
+  };
+
+  if (playerClient.isDestroyed) {
+    const currentFrame = dyingFrameRef.current.get(playerClient.id) ?? 0;
+    const nextFrame = currentFrame + 1;
+    dyingFrameRef.current.set(playerClient.id, nextFrame);
+    drawDyingPlayer(ctx, { ...drawPlayerProps, dyingFrame: nextFrame });
+    return;
+  }
+  dyingFrameRef.current.delete(playerClient.id);
+
+  if (playerClient.isSpawning) {
+    drawSpawningPlayer(ctx, drawPlayerProps);
+    return;
+  }
+
+  if (playerClient.isInvincible) {
+    drawInvinciblePlayer(ctx, drawPlayerProps);
+    return;
+  }
+
+  drawNormalPlayer(ctx, drawPlayerProps);
+}
+
+function drawOtherPlayers(
   ctx: CanvasRenderingContext2D,
-  player: Player,
-  playerId: string | undefined,
-  playerClientRef: RefObject<PlayerClient | null>,
+  player: PlayerClient,
+  playerClientId: string | null,
   otherPlayersLastPosRef: RefObject<Map<string, { x: number; y: number }>>,
   dyingFrameRef: RefObject<Map<string, number>>
 ) {
   let drawPlayerProps = {
-    playerId: player.playerId,
-    playerName: player.playerName,
-    playerColour: player.playerColour,
+    playerId: player.id,
+    playerName: player.name,
+    playerColour: player.colour,
     x: player.x,
     y: player.y,
     health: 60
   };
 
-  if (player.playerId === playerId && playerClientRef.current) {
-    drawPlayerProps.x = playerClientRef.current.x;
-    drawPlayerProps.y = playerClientRef.current.y;
+  if (player.id === playerClientId) {
+    return;
+  }
+
+  if (player.isSpawning || player.isDestroyed) {
+    otherPlayersLastPosRef.current.delete(player.id);
+    drawPlayerProps.x = player.x;
+    drawPlayerProps.y = player.y;
   } else {
-    if (player.isSpawning || player.isDestroyed) {
-      otherPlayersLastPosRef.current.delete(player.playerId);
-      drawPlayerProps.x = player.x;
-      drawPlayerProps.y = player.y;
-    } else {
-      const lastPos = otherPlayersLastPosRef.current.get(player.playerId);
-      if (lastPos) {
-        drawPlayerProps.x = lastPos.x + (player.x - lastPos.x) * LERP_FACTOR;
-        drawPlayerProps.y = lastPos.y + (player.y - lastPos.y) * LERP_FACTOR;
-      }
-      otherPlayersLastPosRef.current.set(player.playerId, {
-        x: drawPlayerProps.x,
-        y: drawPlayerProps.y
-      });
+    const lastPos = otherPlayersLastPosRef.current.get(player.id);
+    if (lastPos) {
+      drawPlayerProps.x = lastPos.x + (player.x - lastPos.x) * LERP_FACTOR;
+      drawPlayerProps.y = lastPos.y + (player.y - lastPos.y) * LERP_FACTOR;
     }
+    otherPlayersLastPosRef.current.set(player.id, {
+      x: drawPlayerProps.x,
+      y: drawPlayerProps.y
+    });
   }
 
   if (player.isDestroyed) {
-    const currentFrame = dyingFrameRef.current.get(player.playerId) ?? 0;
+    const currentFrame = dyingFrameRef.current.get(player.id) ?? 0;
     const nextFrame = currentFrame + 1;
-    dyingFrameRef.current.set(player.playerId, nextFrame);
+    dyingFrameRef.current.set(player.id, nextFrame);
     drawDyingPlayer(ctx, { ...drawPlayerProps, dyingFrame: nextFrame });
     return;
   } else {
-    dyingFrameRef.current.delete(player.playerId);
+    dyingFrameRef.current.delete(player.id);
   }
 
   if (player.isSpawning) {
@@ -165,18 +228,11 @@ function drawPlayer(
   drawNormalPlayer(ctx, drawPlayerProps);
 }
 
-function drawNormalPlayer(ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y, itemTime }: DrawPlayerProps) {
+function drawNormalPlayer(ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y }: DrawPlayerProps) {
   ctx.fillStyle = colorToHex(playerColour);
   ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
   ctx.fillStyle = 'white';
   ctx.fillText(playerName, x, y + 32);
-  if (!itemTime) return;
-  ctx.fillStyle = 'red';
-  ctx.globalAlpha = 0.8;
-  ctx.fillRect(x - 8, y - 16, TILE_SIZE + 16, 4);
-  ctx.fillStyle = 'green';
-  ctx.fillRect(x - 8, y - 16, (TILE_SIZE + 16) * (itemTime / 100), 4);
-  ctx.globalAlpha = 1;
 }
 
 function drawDyingPlayer(ctx: CanvasRenderingContext2D, { playerColour, x, y, dyingFrame = 0 }: DrawPlayerProps) {

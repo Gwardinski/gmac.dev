@@ -1,4 +1,4 @@
-import type { Direction } from "./base.models.pew";
+import type { Bearing } from "./base.models.pew";
 import { GRID_SIZE, type LevelTiles } from "./level.model.pew";
 
 type CornerPosition = { x: number; y: number };
@@ -33,14 +33,14 @@ export class PhysicalModel {
     this.topRight = { x: x + size, y };
     this.bottomLeft = { x, y: y + size };
     this.bottomRight = { x: x + size, y: y + size };
-    this.direction = undefined;
+    this.bearing = undefined;
   }
 
   private topLeft: CornerPosition;
   private topRight: CornerPosition;
   private bottomLeft: CornerPosition;
   private bottomRight: CornerPosition;
-  public direction: Direction | undefined;
+  public bearing: Bearing | undefined;
   // Map of other.id -> collision entry for tracking active collisions
   private collidingWith: Map<string, CollisionEntry> = new Map();
 
@@ -56,14 +56,14 @@ export class PhysicalModel {
     };
   }
 
-  public setPositions(x: number, y: number, direction?: Direction) {
+  public setPositions(x: number, y: number, bearing?: Bearing) {
     this.x = x;
     this.y = y;
     this.topLeft = { x: this.x, y: this.y };
     this.topRight = { x: this.x + this.size, y: this.y };
     this.bottomLeft = { x: this.x, y: this.y + this.size };
     this.bottomRight = { x: this.x + this.size, y: this.y + this.size };
-    this.direction = direction;
+    this.bearing = bearing;
   }
 
   public onCollisionEnter(

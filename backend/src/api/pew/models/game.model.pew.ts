@@ -100,7 +100,7 @@ export class GameClass {
       return;
     }
     this.bullets.forEach((bullet) => {
-      bullet.updatePosition(this.level.level);
+      bullet.updateServerPosition(this.level.level);
     });
     this.checkBulletPlayerCollisions();
     this.bullets = this.bullets.filter((bullet) => !bullet.isDestroyed);

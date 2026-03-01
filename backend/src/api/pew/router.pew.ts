@@ -22,7 +22,7 @@ import { getGameSerialisedState } from "./service.game.pew.js";
 import {
   markPlayerForDeletion,
   playerFire,
-  playerMove,
+  playerSetPosition,
 } from "./service.player.pew.js";
 import { roomServiceDeleteEmpty } from "./service.room.pew.js";
 import { roomJoinSchema, sendChatSchema } from "./validation.js";
@@ -79,10 +79,8 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
         ws.close();
         return;
       }
-      // check player exists
-      const playerExists = gameState.players.find(
-        (p) => p.playerId === playerId
-      );
+      // check player exists (serialized state uses .id not .playerId)
+      const playerExists = gameState.players.find((p) => p.id === playerId);
       if (!playerExists) {
         ws.send(JSON.stringify({ error: "Player not found" }));
         ws.close();
@@ -145,23 +143,27 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
 
           break;
         }
-        case "update-movement": {
-          const { direction } = message.data;
 
-          const [, gameStateErr] = playerMove(roomId, playerId, direction);
-
+        case "update-position": {
+          const { x, y, bearing } = message.data;
+          const [updatedGame, gameStateErr] = playerSetPosition(
+            roomId,
+            playerId,
+            x,
+            y,
+            bearing
+          );
           if (gameStateErr) {
             ws.send(JSON.stringify({ error: gameStateErr }));
             return;
           }
-
           break;
         }
 
         case "fire": {
-          const { direction } = message.data;
+          const { bearing } = message.data;
 
-          const [, gameStateErr] = playerFire(roomId, playerId, direction);
+          const [, gameStateErr] = playerFire(roomId, playerId, bearing);
 
           if (gameStateErr) {
             ws.send(JSON.stringify({ error: gameStateErr }));

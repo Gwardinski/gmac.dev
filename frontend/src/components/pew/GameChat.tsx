@@ -1,13 +1,17 @@
 import { useForm } from '@tanstack/react-form';
 import z from 'zod';
 import { Input } from '../ui';
-import { colorToHex, type Message } from './client-copies';
+import { colorToHex } from './client-copies';
+import { useGameActions, useLocalGameState } from './useGetGameState';
 
 const inputFormSchema = z.object({
   chatContent: z.string().min(1, 'Message cannot be empty')
 });
 
-export const GameChat = ({ chats, onSendChat }: { chats: Message[]; onSendChat: (message: string) => void }) => {
+export const GameChat = () => {
+  const chats = useLocalGameState((s) => s.chats);
+  const { sendChat } = useGameActions();
+
   const form = useForm({
     defaultValues: {
       chatContent: ''
@@ -17,7 +21,7 @@ export const GameChat = ({ chats, onSendChat }: { chats: Message[]; onSendChat: 
     },
     onSubmit: async ({ value, formApi }) => {
       const message = value.chatContent;
-      onSendChat(message);
+      sendChat(message);
       formApi.reset();
     }
   });
