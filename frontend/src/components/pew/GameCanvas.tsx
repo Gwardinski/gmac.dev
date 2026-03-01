@@ -44,8 +44,8 @@ export const GameCanvas = ({ canvasRef }: GameCanvasProps) => {
         return;
       }
 
-      const { gameState, level: lvl, playerId: pid, playerClient, otherPlayers, serverPlayer } = useLocalGameState.getState();
-      const { bullets, items } = gameState;
+      const { gameState, level: lvl, playerId: pid, playerClient, otherPlayers, serverPlayer, displayBullets, debugEnabled } = useLocalGameState.getState();
+      const { items } = gameState;
 
       ctx.clearRect(0, 0, c.width, c.height);
 
@@ -78,7 +78,7 @@ export const GameCanvas = ({ canvasRef }: GameCanvasProps) => {
         });
       }
 
-      if (serverPlayer) {
+      if (debugEnabled && serverPlayer && !serverPlayer.isDestroyed && !serverPlayer.isSpawning) {
         drawPlayerServerPosition(ctx, serverPlayer);
       }
 
@@ -86,7 +86,7 @@ export const GameCanvas = ({ canvasRef }: GameCanvasProps) => {
         drawPlayerClient(ctx, playerClient, dyingFrameRef);
       }
 
-      bullets?.forEach((bullet) => {
+      displayBullets?.forEach((bullet) => {
         drawBullet(ctx, bullet.x, bullet.y);
       });
 

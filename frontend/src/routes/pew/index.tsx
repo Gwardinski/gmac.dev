@@ -2,6 +2,7 @@ import { Page, PageHeader, PageHeading, PageSection } from '@/components/layout'
 import { GameBoard } from '@/components/pew/GameBoard';
 import { GameChat } from '@/components/pew/GameChat';
 import { GameControls } from '@/components/pew/GameControls';
+import { GameDebugButton } from '@/components/pew/GameDebugButton';
 import { GameJoinForm } from '@/components/pew/GameJoinForm';
 import { GameLeaveButton } from '@/components/pew/GameLeaveButton';
 import { GameRoomsActive } from '@/components/pew/GameRoomsActive';
@@ -62,6 +63,7 @@ function GameContent() {
               <GameChat />
             </div>
           )}
+          {hasRoom && <GameDebugButton />}
         </div>
       )}
     </>

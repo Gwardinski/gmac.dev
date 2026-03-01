@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef } from 'react';
 import { create } from 'zustand';
-import type { Bearing, GameState, Level, Message } from './client-copies';
+import type { Bearing, Bullet, GameState, Level, Message } from './client-copies';
 import { PlayerClient, type Player } from './client-copies/PlayerClient';
 import type { JoinRoomResponse } from './useJoinRoom';
 
@@ -10,8 +10,8 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
 export const TARGET_FPS = 60;
 export const FRAME_TIME = 1000 / TARGET_FPS;
 
-const DRIFT_THRESHOLD = 8;
-const LERP_FACTOR = 0.3;
+const LERP_FACTOR = 0.15;
+const BULLET_SPEED = 10;
 const WS_URL = BACKEND_URL.replace('http', 'ws');
 
 // WebSocket message types - matches backend structure
@@ -44,6 +44,10 @@ type LocalGameState = {
   setChats: (chats: Message[]) => void;
   serverPlayer: PlayerClient | null;
   setServerPlayer: (serverPlayer: PlayerClient | null) => void;
+  displayBullets: Bullet[];
+  setDisplayBullets: (displayBullets: Bullet[]) => void;
+  debugEnabled: boolean;
+  setDebugEnabled: (debugEnabled: boolean) => void;
 };
 
 export const useLocalGameState = create<LocalGameState>((set) => ({
@@ -55,7 +59,18 @@ export const useLocalGameState = create<LocalGameState>((set) => ({
   setRoomId: (roomId) => set({ roomId }),
   setPlayerId: (playerId) => set({ playerId }),
   setRoom: (roomId, playerId, level) => set({ roomId, playerId, level }),
-  clearRoom: () => set({ roomId: null, playerId: null, level: null }),
+  clearRoom: () =>
+    set({
+      roomId: null,
+      playerId: null,
+      level: null,
+      playerClient: null,
+      serverPlayer: null,
+      otherPlayers: [],
+      gameState: { players: [], bullets: [], items: [] },
+      previousGameState: { players: [], bullets: [], items: [] },
+      displayBullets: []
+    }),
   setStatus: (status) => set({ status }),
   setError: (error) => set({ error }),
   playerClient: null,
@@ -69,7 +84,11 @@ export const useLocalGameState = create<LocalGameState>((set) => ({
   chats: [],
   setChats: (chats) => set({ chats }),
   serverPlayer: null,
-  setServerPlayer: (serverPlayer) => set({ serverPlayer })
+  setServerPlayer: (serverPlayer) => set({ serverPlayer }),
+  displayBullets: [],
+  setDisplayBullets: (displayBullets) => set({ displayBullets }),
+  debugEnabled: false,
+  setDebugEnabled: (debugEnabled) => set({ debugEnabled })
 }));
 
 type GameActions = ReturnType<typeof useGetGameState>;
@@ -100,6 +119,7 @@ export function useGetGameState() {
   const setOtherPlayers = useLocalGameState((s) => s.setOtherPlayers);
   const setPreviousGameState = useLocalGameState((s) => s.setPreviousGameState);
   const setServerPlayer = useLocalGameState((s) => s.setServerPlayer);
+  const setDisplayBullets = useLocalGameState((s) => s.setDisplayBullets);
 
   const wsRef = useRef<WebSocket | null>(null);
 
@@ -157,6 +177,7 @@ export function useGetGameState() {
           if (message.type === 'game-state') {
             setPreviousGameState(useLocalGameState.getState().gameState);
             setGameState(message.data);
+            setDisplayBullets(message.data.bullets.map((b) => ({ ...b })));
             const thisPlayer = message.data.players.find((p) => p.id === playerId);
             _createLocalPlayerClient(thisPlayer);
             _syncPlayerClientWithPlayerServer(thisPlayer);
@@ -213,69 +234,80 @@ export function useGetGameState() {
 
   function _syncPlayerClientWithPlayerServer(serverPlayer: Player | undefined) {
     if (!playerId || !playerClient || !serverPlayer) return;
-    const { isDestroyed, isSpawning, isInvincible } = serverPlayer;
-    if (isDestroyed === playerClient.isDestroyed && isSpawning === playerClient.isSpawning && isInvincible === playerClient.isInvincible) return;
+    const { isDestroyed, isSpawning, isInvincible, x, y, bearing } = serverPlayer;
+    const snapToServer = (isSpawning ?? false) || (isDestroyed ?? false);
+    const useX = snapToServer ? x : playerClient.x;
+    const useY = snapToServer ? y : playerClient.y;
+    const useBearing = snapToServer ? bearing : playerClient.bearing;
+    if (!snapToServer && isDestroyed === playerClient.isDestroyed && isSpawning === playerClient.isSpawning && isInvincible === playerClient.isInvincible) return;
 
-    const updatedPlayerClient = new PlayerClient(playerClient.id, playerClient.name, playerClient.colour, playerClient.x, playerClient.y, playerClient.speed, playerClient.bearing);
-    updatedPlayerClient.isDestroyed = isDestroyed;
-    updatedPlayerClient.isSpawning = isSpawning;
-    updatedPlayerClient.isInvincible = isInvincible;
+    const updatedPlayerClient = new PlayerClient(playerClient.id, playerClient.name, playerClient.colour, useX, useY, playerClient.speed, useBearing ?? undefined);
+    updatedPlayerClient.isDestroyed = isDestroyed ?? false;
+    updatedPlayerClient.isSpawning = isSpawning ?? false;
+    updatedPlayerClient.isInvincible = isInvincible ?? false;
     setPlayerClient(updatedPlayerClient);
   }
 
   function _syncOtherPlayers(serverPlayers: Player[]) {
     if (!serverPlayers || serverPlayers.length === 0) return;
-    const updatedOtherPlayers = serverPlayers.filter((p) => p.id !== playerId).map((p) => new PlayerClient(p.id, p.name, p.colour, p.x, p.y, p.speed, p.bearing));
+    const { otherPlayers: prevOthers, serverPlayer: prevServer } = useLocalGameState.getState();
+    const updatedOtherPlayers = serverPlayers
+      .filter((p) => p.id !== playerId)
+      .map((p) => {
+        const prev = prevOthers.find((o) => o.id === p.id);
+        const snapOnDeath = (p.isDestroyed ?? false) || (p.isSpawning ?? false);
+        const x = !snapOnDeath && prev !== undefined ? prev.x : p.x;
+        const y = !snapOnDeath && prev !== undefined ? prev.y : p.y;
+        const client = new PlayerClient(p.id, p.name, p.colour, x, y, p.speed, p.bearing);
+        client.isDestroyed = p.isDestroyed ?? false;
+        client.isSpawning = p.isSpawning ?? false;
+        client.isInvincible = p.isInvincible ?? false;
+        return client;
+      });
     setOtherPlayers(updatedOtherPlayers);
     const thisPlayer = serverPlayers.find((p) => p.id === playerId);
     if (!thisPlayer) return;
-    const serverPlayer = new PlayerClient(thisPlayer.id, thisPlayer.name, thisPlayer.colour, thisPlayer.x, thisPlayer.y, thisPlayer.speed, thisPlayer.bearing);
-    serverPlayer.isDestroyed = thisPlayer.isDestroyed;
-    serverPlayer.isSpawning = thisPlayer.isSpawning;
-    serverPlayer.isInvincible = thisPlayer.isInvincible;
+    const snapOnDeath = (thisPlayer.isDestroyed ?? false) || (thisPlayer.isSpawning ?? false);
+    const x = !snapOnDeath && prevServer?.id === thisPlayer.id ? prevServer.x : thisPlayer.x;
+    const y = !snapOnDeath && prevServer?.id === thisPlayer.id ? prevServer.y : thisPlayer.y;
+    const serverPlayer = new PlayerClient(thisPlayer.id, thisPlayer.name, thisPlayer.colour, x, y, thisPlayer.speed, thisPlayer.bearing);
+    serverPlayer.isDestroyed = thisPlayer.isDestroyed ?? false;
+    serverPlayer.isSpawning = thisPlayer.isSpawning ?? false;
+    serverPlayer.isInvincible = thisPlayer.isInvincible ?? false;
     setServerPlayer(serverPlayer);
   }
 
-  _useEngineTick((_deltaMs) => {
-    const { otherPlayers, level: lvl, serverPlayer, previousGameState: prev } = useLocalGameState.getState();
+  _useEngineTick((deltaMs) => {
+    const { otherPlayers, level: lvl, serverPlayer, gameState, displayBullets } = useLocalGameState.getState();
     if (!lvl) return;
+    const dist = BULLET_SPEED * (deltaMs / 1000) * 60;
+    const advancedBullets: Bullet[] = displayBullets.map((b) => {
+      const rad = (b.bearing * Math.PI) / 180;
+      return {
+        ...b,
+        x: b.x + Math.cos(rad) * dist,
+        y: b.y + Math.sin(rad) * dist
+      };
+    });
+    setDisplayBullets(advancedBullets);
+    const updatePositionTowardServer = (player: PlayerClient, serverP: Player) => {
+      if ((serverP.isDestroyed ?? false) || (serverP.isSpawning ?? false)) {
+        player.setPlayerPosition(serverP.x, serverP.y);
+      } else {
+        const x = player.x + (serverP.x - player.x) * LERP_FACTOR;
+        const y = player.y + (serverP.y - player.y) * LERP_FACTOR;
+        player.setPlayerPosition(x, y);
+      }
+    };
     if (serverPlayer) {
-      const previousPlayer = prev.players.find((p) => p.id === serverPlayer.id);
-      if (!previousPlayer) return;
-      if (previousPlayer.x === serverPlayer.x && previousPlayer.y === serverPlayer.y) return;
-      serverPlayer.updatePosition(serverPlayer.bearing ?? 0, lvl);
+      const serverP = gameState.players.find((p) => p.id === serverPlayer.id);
+      if (serverP) updatePositionTowardServer(serverPlayer, serverP);
     }
     otherPlayers.forEach((otherPlayer) => {
-      const previousPlayer = prev.players.find((p) => p.id === otherPlayer.id);
-      if (!previousPlayer) return;
-      if (previousPlayer.x === otherPlayer.x && previousPlayer.y === otherPlayer.y) return;
-      if (otherPlayer.bearing !== undefined && otherPlayer.bearing !== null) {
-        otherPlayer.updatePosition(otherPlayer.bearing, lvl);
-      }
+      const serverP = gameState.players.find((p) => p.id === otherPlayer.id);
+      if (serverP) updatePositionTowardServer(otherPlayer, serverP);
     });
   });
-
-  // Sync local position from server (spawn/destroy snap + drift lerp)
-  // useEffect(() => {
-  //   if (!playerId || !playerClientRef.current) return;
-  //   const currentPlayer = gameState.players?.find((p) => p.playerId === playerId);
-  //   if (!currentPlayer) return;
-
-  //   if (currentPlayer.isSpawning || currentPlayer.isDestroyed) {
-  //     playerClientRef.current.setPlayerPosition(currentPlayer.x, currentPlayer.y);
-  //     setPlayerClientState({ x: currentPlayer.x, y: currentPlayer.y });
-  //     return;
-  //   }
-
-  //   const dx = Math.abs(currentPlayer.x - playerClientRef.current.x);
-  //   const dy = Math.abs(currentPlayer.y - playerClientRef.current.y);
-  //   if (dx > DRIFT_THRESHOLD || dy > DRIFT_THRESHOLD) {
-  //     const newX = playerClientRef.current.x + (currentPlayer.x - playerClientRef.current.x) * LERP_FACTOR;
-  //     const newY = playerClientRef.current.y + (currentPlayer.y - playerClientRef.current.y) * LERP_FACTOR;
-  //     playerClientRef.current.setPlayerPosition(newX, newY);
-  //     setPlayerClientState({ x: playerClientRef.current.x, y: playerClientRef.current.y });
-  //   }
-  // }, [playerId, gameState.players, setPlayerClientState]);
 
   const updatePlayerClientPosition = useCallback(
     (bearing: Bearing, level: Level) => {
