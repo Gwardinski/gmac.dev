@@ -1,6 +1,6 @@
 import { useEffect, useRef, type RefObject } from 'react';
 import backgroundImage from '../../assets/pew-background.png';
-import { colorToHex, TILE_SIZE, type Color, type GameState } from './client-copies';
+import { colorToHex, TILE_SIZE, type Color, type GameState, type Player } from './client-copies';
 import type { PlayerClient } from './client-copies/PlayerClient';
 
 const LERP_FACTOR = 0.3;
@@ -13,93 +13,6 @@ interface GameCanvasProps {
   playerId: string | undefined;
   playerClientRef: RefObject<PlayerClient | null>;
 }
-
-type DrawPlayerProps = {
-  playerId?: string;
-  playerName: string;
-  playerColour: Color;
-  x: number;
-  y: number;
-  itemTime?: number;
-  dyingFrame?: number;
-};
-
-const drawSpawnPoint = (ctx: CanvasRenderingContext2D, _x: number, _y: number) => {
-  ctx.fillStyle = 'rgba(0, 255, 0, 0.1)';
-  ctx.beginPath();
-  ctx.arc(_x * TILE_SIZE + TILE_SIZE / 2, _y * TILE_SIZE + TILE_SIZE / 2, TILE_SIZE / 3, 0, 2 * Math.PI);
-  ctx.fill();
-};
-
-const drawWall = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
-  ctx.fillStyle = '#686868';
-  ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-};
-
-const drawBullet = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
-  ctx.fillStyle = 'white';
-  ctx.fillRect(x, y, 2, 2);
-};
-
-const drawItem = (ctx: CanvasRenderingContext2D, x: number, y: number, itemName: string) => {
-  const isTransparent = Math.floor(Date.now() / invincibleFlashInterval) % 2 === 0;
-  ctx.globalAlpha = isTransparent ? 0.3 : 1.0;
-  ctx.fillStyle = 'yellow';
-  ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-  ctx.fillStyle = 'white';
-  ctx.fillText(itemName, x - (itemName.length * 8) / itemName.length, y + 32);
-  ctx.globalAlpha = 1.0;
-};
-
-const drawPlayer = (ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y, itemTime }: DrawPlayerProps) => {
-  ctx.fillStyle = colorToHex(playerColour);
-  ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-  ctx.fillStyle = 'white';
-  ctx.fillText(playerName, x, y + 32);
-  if (!itemTime) return;
-  ctx.fillStyle = 'red';
-  ctx.globalAlpha = 0.8;
-  ctx.fillRect(x - 8, y - 16, TILE_SIZE + 16, 4);
-  ctx.fillStyle = 'green';
-  ctx.fillRect(x - 8, y - 16, (TILE_SIZE + 16) * (itemTime / 100), 4);
-  ctx.globalAlpha = 1;
-};
-
-const drawDyingPlayer = (ctx: CanvasRenderingContext2D, { playerColour, x, y, dyingFrame = 0 }: DrawPlayerProps) => {
-  const baseSize = TILE_SIZE * 2;
-  const size = Math.max(0, baseSize - dyingFrame);
-  const halfSize = size / 2;
-  const now = Date.now();
-  const angle = ((now % 1000) / 1000) * Math.PI * 3;
-  const centerX = x + TILE_SIZE / 2;
-  const centerY = y + TILE_SIZE / 2;
-  ctx.save();
-  ctx.translate(centerX, centerY);
-  ctx.rotate(angle);
-  ctx.globalAlpha = 0.2;
-  ctx.fillStyle = colorToHex(playerColour);
-  ctx.fillRect(-halfSize, -halfSize, size, size);
-  ctx.restore();
-};
-
-const drawSpawningPlayer = (ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y }: DrawPlayerProps) => {
-  ctx.globalAlpha = 0.2;
-  ctx.fillStyle = colorToHex(playerColour);
-  ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-  ctx.globalAlpha = 1.0;
-  ctx.fillStyle = 'white';
-  ctx.fillText(playerName, x, y + 32);
-};
-
-const drawInvinciblePlayer = (ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y }: DrawPlayerProps) => {
-  const isTransparent = Math.floor(Date.now() / invincibleFlashInterval) % 2 === 0;
-  ctx.globalAlpha = isTransparent ? 0.3 : 1.0;
-  ctx.fillStyle = colorToHex(playerColour);
-  ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-  ctx.globalAlpha = 1.0;
-  ctx.fillStyle = 'white';
-  ctx.fillText(playerName, x, y + 32);
-};
 
 export const GameCanvas = ({ canvasRef, gameState, level, playerId, playerClientRef }: GameCanvasProps) => {
   const { players, bullets, items } = gameState;
@@ -155,57 +68,7 @@ export const GameCanvas = ({ canvasRef, gameState, level, playerId, playerClient
     });
 
     players?.forEach((player) => {
-      let drawPlayerProps = {
-        playerId: player.playerId,
-        playerName: player.playerName,
-        playerColour: player.playerColour,
-        x: player.x,
-        y: player.y,
-        health: 60
-      };
-
-      if (player.playerId === playerId && playerClientRef.current) {
-        drawPlayerProps.x = playerClientRef.current.x;
-        drawPlayerProps.y = playerClientRef.current.y;
-      } else {
-        if (player.isSpawning || player.isDestroyed) {
-          otherPlayersLastPosRef.current.delete(player.playerId);
-          drawPlayerProps.x = player.x;
-          drawPlayerProps.y = player.y;
-        } else {
-          const lastPos = otherPlayersLastPosRef.current.get(player.playerId);
-          if (lastPos) {
-            drawPlayerProps.x = lastPos.x + (player.x - lastPos.x) * LERP_FACTOR;
-            drawPlayerProps.y = lastPos.y + (player.y - lastPos.y) * LERP_FACTOR;
-          }
-          otherPlayersLastPosRef.current.set(player.playerId, {
-            x: drawPlayerProps.x,
-            y: drawPlayerProps.y
-          });
-        }
-      }
-
-      if (player.isDestroyed) {
-        const currentFrame = dyingFrameRef.current.get(player.playerId) ?? 0;
-        const nextFrame = currentFrame + 1;
-        dyingFrameRef.current.set(player.playerId, nextFrame);
-        drawDyingPlayer(ctx, { ...drawPlayerProps, dyingFrame: nextFrame });
-        return;
-      } else {
-        dyingFrameRef.current.delete(player.playerId);
-      }
-
-      if (player.isSpawning) {
-        drawSpawningPlayer(ctx, drawPlayerProps);
-        return;
-      }
-
-      if (player.isInvincible) {
-        drawInvinciblePlayer(ctx, drawPlayerProps);
-        return;
-      }
-
-      drawPlayer(ctx, drawPlayerProps);
+      drawPlayer(ctx, player, playerId, playerClientRef, otherPlayersLastPosRef, dyingFrameRef);
     });
 
     bullets?.forEach((bullet) => {
@@ -230,3 +93,151 @@ export const GameCanvas = ({ canvasRef, gameState, level, playerId, playerClient
     </div>
   );
 };
+
+type DrawPlayerProps = {
+  playerId?: string;
+  playerName: string;
+  playerColour: Color;
+  x: number;
+  y: number;
+  itemTime?: number;
+  dyingFrame?: number;
+};
+
+function drawPlayer(
+  ctx: CanvasRenderingContext2D,
+  player: Player,
+  playerId: string | undefined,
+  playerClientRef: RefObject<PlayerClient | null>,
+  otherPlayersLastPosRef: RefObject<Map<string, { x: number; y: number }>>,
+  dyingFrameRef: RefObject<Map<string, number>>
+) {
+  let drawPlayerProps = {
+    playerId: player.playerId,
+    playerName: player.playerName,
+    playerColour: player.playerColour,
+    x: player.x,
+    y: player.y,
+    health: 60
+  };
+
+  if (player.playerId === playerId && playerClientRef.current) {
+    drawPlayerProps.x = playerClientRef.current.x;
+    drawPlayerProps.y = playerClientRef.current.y;
+  } else {
+    if (player.isSpawning || player.isDestroyed) {
+      otherPlayersLastPosRef.current.delete(player.playerId);
+      drawPlayerProps.x = player.x;
+      drawPlayerProps.y = player.y;
+    } else {
+      const lastPos = otherPlayersLastPosRef.current.get(player.playerId);
+      if (lastPos) {
+        drawPlayerProps.x = lastPos.x + (player.x - lastPos.x) * LERP_FACTOR;
+        drawPlayerProps.y = lastPos.y + (player.y - lastPos.y) * LERP_FACTOR;
+      }
+      otherPlayersLastPosRef.current.set(player.playerId, {
+        x: drawPlayerProps.x,
+        y: drawPlayerProps.y
+      });
+    }
+  }
+
+  if (player.isDestroyed) {
+    const currentFrame = dyingFrameRef.current.get(player.playerId) ?? 0;
+    const nextFrame = currentFrame + 1;
+    dyingFrameRef.current.set(player.playerId, nextFrame);
+    drawDyingPlayer(ctx, { ...drawPlayerProps, dyingFrame: nextFrame });
+    return;
+  } else {
+    dyingFrameRef.current.delete(player.playerId);
+  }
+
+  if (player.isSpawning) {
+    drawSpawningPlayer(ctx, drawPlayerProps);
+    return;
+  }
+
+  if (player.isInvincible) {
+    drawInvinciblePlayer(ctx, drawPlayerProps);
+    return;
+  }
+
+  drawNormalPlayer(ctx, drawPlayerProps);
+}
+
+function drawNormalPlayer(ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y, itemTime }: DrawPlayerProps) {
+  ctx.fillStyle = colorToHex(playerColour);
+  ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+  ctx.fillStyle = 'white';
+  ctx.fillText(playerName, x, y + 32);
+  if (!itemTime) return;
+  ctx.fillStyle = 'red';
+  ctx.globalAlpha = 0.8;
+  ctx.fillRect(x - 8, y - 16, TILE_SIZE + 16, 4);
+  ctx.fillStyle = 'green';
+  ctx.fillRect(x - 8, y - 16, (TILE_SIZE + 16) * (itemTime / 100), 4);
+  ctx.globalAlpha = 1;
+}
+
+function drawDyingPlayer(ctx: CanvasRenderingContext2D, { playerColour, x, y, dyingFrame = 0 }: DrawPlayerProps) {
+  const baseSize = TILE_SIZE * 2;
+  const size = Math.max(0, baseSize - dyingFrame);
+  const halfSize = size / 2;
+  const now = Date.now();
+  const angle = ((now % 1000) / 1000) * Math.PI * 3;
+  const centerX = x + TILE_SIZE / 2;
+  const centerY = y + TILE_SIZE / 2;
+  ctx.save();
+  ctx.translate(centerX, centerY);
+  ctx.rotate(angle);
+  ctx.globalAlpha = 0.2;
+  ctx.fillStyle = colorToHex(playerColour);
+  ctx.fillRect(-halfSize, -halfSize, size, size);
+  ctx.restore();
+}
+
+function drawSpawningPlayer(ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y }: DrawPlayerProps) {
+  ctx.globalAlpha = 0.2;
+  ctx.fillStyle = colorToHex(playerColour);
+  ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+  ctx.globalAlpha = 1.0;
+  ctx.fillStyle = 'white';
+  ctx.fillText(playerName, x, y + 32);
+}
+
+function drawInvinciblePlayer(ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y }: DrawPlayerProps) {
+  const isTransparent = Math.floor(Date.now() / invincibleFlashInterval) % 2 === 0;
+  ctx.globalAlpha = isTransparent ? 0.3 : 1.0;
+  ctx.fillStyle = colorToHex(playerColour);
+  ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+  ctx.globalAlpha = 1.0;
+  ctx.fillStyle = 'white';
+  ctx.fillText(playerName, x, y + 32);
+}
+
+function drawSpawnPoint(ctx: CanvasRenderingContext2D, _x: number, _y: number) {
+  ctx.fillStyle = 'rgba(0, 255, 0, 0.1)';
+  ctx.beginPath();
+  ctx.arc(_x * TILE_SIZE + TILE_SIZE / 2, _y * TILE_SIZE + TILE_SIZE / 2, TILE_SIZE / 3, 0, 2 * Math.PI);
+  ctx.fill();
+}
+
+function drawWall(ctx: CanvasRenderingContext2D, x: number, y: number) {
+  ctx.fillStyle = '#686868';
+  ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+}
+
+function drawBullet(ctx: CanvasRenderingContext2D, x: number, y: number) {
+  ctx.fillStyle = 'white';
+  ctx.fillRect(x, y, 2, 2);
+}
+
+function drawItem(ctx: CanvasRenderingContext2D, x: number, y: number, itemName: string) {
+  const isTransparent = Math.floor(Date.now() / invincibleFlashInterval) % 2 === 0;
+  ctx.globalAlpha = isTransparent ? 0.3 : 1.0;
+  ctx.fillStyle = 'yellow';
+  ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+  ctx.fillStyle = 'white';
+  ctx.fillText(itemName, x - (itemName.length * 8) / itemName.length, y + 32);
+  ctx.globalAlpha = 1.0;
+}
