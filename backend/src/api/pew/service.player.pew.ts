@@ -1,25 +1,47 @@
 import { returnServiceResponse } from "../../responses";
 import type { ServiceResponse } from "../../types";
-import type { Direction, ROOM_ID } from "./models/base.models.pew";
+import type { Bearing, ROOM_ID } from "./models/base.models.pew";
 import type { GameSerialized } from "./models/game.model.pew";
 
 import {
   getGameAndPlayer,
   updateGamePlayerFire,
   updateGamePlayerPosition,
+  updateGamePlayerPositionFromClient,
 } from "./service.game.pew";
 
 // WebSocket Services
 
-export function updatePlayerPosition(
+export function playerMove(
   roomId: ROOM_ID,
   playerId: string,
-  direction: Direction
+  bearing: Bearing
 ): ServiceResponse<GameSerialized> {
   const [updatedGame, updatedGameErr] = updateGamePlayerPosition(
     roomId,
     playerId,
-    direction
+    bearing
+  );
+  if (updatedGameErr) {
+    return returnServiceResponse<GameSerialized>(updatedGameErr);
+  }
+  return returnServiceResponse<GameSerialized>(updatedGame);
+}
+
+/** Apply client-sent position after server-side collision check. */
+export function playerSetPosition(
+  roomId: ROOM_ID,
+  playerId: string,
+  x: number,
+  y: number,
+  bearing: Bearing
+): ServiceResponse<GameSerialized> {
+  const [updatedGame, updatedGameErr] = updateGamePlayerPositionFromClient(
+    roomId,
+    playerId,
+    x,
+    y,
+    bearing
   );
   if (updatedGameErr) {
     return returnServiceResponse<GameSerialized>(updatedGameErr);
@@ -30,12 +52,12 @@ export function updatePlayerPosition(
 export function playerFire(
   roomId: ROOM_ID,
   playerId: string,
-  direction: Direction
+  bearing: Bearing
 ): ServiceResponse<GameSerialized> {
   const [updatedGame, updatedGameErr] = updateGamePlayerFire(
     roomId,
     playerId,
-    direction
+    bearing
   );
   if (updatedGameErr) {
     return returnServiceResponse<GameSerialized>(updatedGameErr);

@@ -1,8 +1,5 @@
 import { useCallback, useEffect, useRef, type RefObject } from 'react';
-
-// Matches backend
-const TARGET_FPS = 60;
-const FRAME_TIME = 1000 / TARGET_FPS;
+import { FRAME_TIME } from './useGetGameState';
 
 type KeyEvent = {
   key: string;

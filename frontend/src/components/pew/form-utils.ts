@@ -1,4 +1,4 @@
-import type { ValidationError } from './game-api';
+import type { ValidationError } from './api-models';
 
 export function mapAPIErrorsToForm(validationErrors: ValidationError[] | undefined, formApi: any): boolean {
   if (!validationErrors || validationErrors.length === 0) {

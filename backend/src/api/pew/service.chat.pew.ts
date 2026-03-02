@@ -35,8 +35,8 @@ export function addChat(
   const newChat: GameChat = {
     chatId: generateMessageId(),
     playerId: player.id,
-    playerName: player.playerName,
-    playerColour: player.playerColour,
+    playerName: player.name,
+    playerColour: player.colour,
     content: content,
     timestamp: Date.now(),
     isSystem: isSystem,

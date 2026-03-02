@@ -59,7 +59,7 @@ export const joinRoomController = (body: RoomJoinRequestModel) => {
 
   // existing player?
   const existingPlayer = game.players.find(
-    (p) => p.playerDeviceId === playerDeviceId
+    (p) => p.deviceId === playerDeviceId
   );
 
   // id provided but not player, potentially deleted? Return create new player
@@ -75,8 +75,8 @@ export const joinRoomController = (body: RoomJoinRequestModel) => {
 
   // Name or colour changed, remove existing and return create new player
   if (
-    existingPlayer.playerName !== playerName ||
-    existingPlayer.playerColour !== playerColour
+    existingPlayer.name !== playerName ||
+    existingPlayer.colour !== playerColour
   ) {
     game.deletePlayer(existingPlayer.id);
     return returnCreateNewPlayerResponse(

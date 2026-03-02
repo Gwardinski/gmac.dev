@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import z from 'zod';
+import { BACKEND_URL, type APIResponse } from './api-models';
 import type { Level } from './client-copies';
 import { COLORS_SCHEMA } from './client-copies';
-import { BACKEND_URL, type APIResponse } from './game-api';
 
 export const joinGameSchema = z.object({
   roomName: z.string().min(3, 'Room name must be at least 3 characters.').max(20, 'Room name must be at most 20 characters.'),

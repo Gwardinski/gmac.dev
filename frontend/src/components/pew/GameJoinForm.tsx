@@ -8,7 +8,8 @@ import { getRouteApi } from '@tanstack/react-router';
 import { useState } from 'react';
 import { COLORS, colorToHex, type Color } from './client-copies';
 import { mapAPIErrorsToForm } from './form-utils';
-import { joinGameSchema, useJoinRoom, type JoinRoomResponse } from './useJoinRoom';
+import { useGameActions } from './useGetGameState';
+import { joinGameSchema, useJoinRoom } from './useJoinRoom';
 
 const savedPlayerName = localStorage.getItem('player-name') || '';
 const savedPlayerColor = (localStorage.getItem('player-color') as Color) || 'RED';
@@ -17,15 +18,13 @@ const savedRoomName = localStorage.getItem('room-name') || '';
 
 const route = getRouteApi('/pew/');
 
-interface GameJoinFormProps {
-  onJoinSuccess: (response: JoinRoomResponse) => void;
-}
-
 function createNewPlayerDeviceId() {
   return `device-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 }
 
-export function GameJoinForm({ onJoinSuccess }: GameJoinFormProps) {
+export function GameJoinForm() {
+  const { onJoinSuccess } = useGameActions();
+
   const { mutate, isPending } = useJoinRoom();
   const [globalError, setGlobalError] = useState<string>('');
 

@@ -15,37 +15,37 @@ export class SystemEventClass {
 
   public playerJoinEvent(player: PlayerClass) {
     this.onEvent({
-      content: `${player.playerName} joined the game`,
+      content: `${player.name} joined the game`,
       playerId: player.id,
-      playerName: player.playerName,
-      playerColour: player.playerColour,
+      playerName: player.name,
+      playerColour: player.colour,
     });
   }
 
   public playerRejoinEvent(player: PlayerClass) {
     this.onEvent({
-      content: `${player.playerName} re-joined the game!`,
+      content: `${player.name} re-joined the game!`,
       playerId: player.id,
-      playerName: player.playerName,
-      playerColour: player.playerColour,
+      playerName: player.name,
+      playerColour: player.colour,
     });
   }
 
   public playerLeaveEvent(player: PlayerClass) {
     this.onEvent({
-      content: `${player.playerName} left the game`,
+      content: `${player.name} left the game`,
       playerId: player.id,
-      playerName: player.playerName,
-      playerColour: player.playerColour,
+      playerName: player.name,
+      playerColour: player.colour,
     });
   }
 
   public playerDeathEvent(killer: PlayerClass, victim: PlayerClass) {
     this.onEvent({
-      content: `${killer.playerName} killed ${victim.playerName}`,
+      content: `${killer.name} killed ${victim.name}`,
       playerId: killer.id,
-      playerName: killer.playerName,
-      playerColour: killer.playerColour,
+      playerName: killer.name,
+      playerColour: killer.colour,
     });
   }
 
@@ -60,7 +60,7 @@ export class SystemEventClass {
 
   public itemPickedUpEvent(player: PlayerClass, item: ItemClass) {
     this.onEvent({
-      content: `${player.playerName} picked up ${item.itemName}`,
+      content: `${player.name} picked up ${item.itemName}`,
       playerId: "system",
       playerName: "System",
       playerColour: "YELLOW",
