@@ -1,6 +1,9 @@
 import type { Bearing, Color, Level } from '.';
 
 export const PLAYER_SIZE = 16;
+
+export type MovementKey = 'w' | 'a' | 's' | 'd';
+export type FireKey = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
 type CornerPosition = { x: number; y: number };
 type PlayerPositions = {
   x: number;
@@ -10,6 +13,12 @@ type PlayerPositions = {
   bottomLeft: CornerPosition;
   bottomRight: CornerPosition;
   bearing: Bearing | undefined;
+};
+type PlayerTickCallbackProps = {
+  _deltaMs: number;
+  movementKeys: Set<MovementKey>;
+  fireKeys: Set<FireKey>;
+  onFireCallback: (bearing: Bearing) => void;
 };
 
 // Game State Players
@@ -30,7 +39,7 @@ export type Player = {
 };
 
 // Active Player (For Client Rendering)
-// Simplified copy of server Player class
+// Client copy of server Player class
 export class PlayerClient {
   constructor(
     public id: string,
@@ -62,6 +71,7 @@ export class PlayerClient {
   public bottomRight: CornerPosition;
 
   // set from player server data
+  public level: Level = [];
   public inDeathCycle: boolean = false;
   public isDestroyed: boolean = false;
   public isSpawning: boolean = false;
@@ -79,7 +89,71 @@ export class PlayerClient {
     };
   }
 
-  public updatePosition(bearing: Bearing, level: Level) {
+  public syncStatusWithServer(serverPlayer: Player): PlayerClient {
+    this.isDestroyed = serverPlayer.isDestroyed ?? false;
+    this.isSpawning = serverPlayer.isSpawning ?? false;
+    this.isInvincible = serverPlayer.isInvincible ?? false;
+
+    // on death, spawn at server position (spawn point)
+    // TODO: should also return & check for an "overwrite" flag, for if server should overwrite client position
+    // i.e. if client moves too far from previous position (cheat detection)
+    if (this.isDestroyed || this.isSpawning) {
+      this._setPlayerClientPosition(serverPlayer.x, serverPlayer.y);
+    }
+
+    return this;
+  }
+
+  // used only by Other Players
+  public syncPositionWithServer(x: number, y: number) {
+    this._setPlayerClientPosition(x, y);
+  }
+
+  public onGameTick({ movementKeys, fireKeys, onFireCallback }: PlayerTickCallbackProps) {
+    this._detectMovementInput(movementKeys);
+    this._detectFireInput(fireKeys, onFireCallback);
+  }
+
+  private _detectFireInput(fireKeys: Set<FireKey>, onFireCallback: (bearing: Bearing) => void) {
+    if (this.isSpawning || this.isDestroyed) return;
+
+    const bearing = (() => {
+      let dx = 0;
+      let dy = 0;
+      fireKeys.forEach((k) => {
+        if (k === 'ArrowUp') dy -= 1;
+        if (k === 'ArrowDown') dy += 1;
+        if (k === 'ArrowLeft') dx -= 1;
+        if (k === 'ArrowRight') dx += 1;
+      });
+      if (dx === 0 && dy === 0) return null;
+      return Math.round((Math.atan2(dy, dx) * (180 / Math.PI) + 360) % 360) as Bearing;
+    })();
+
+    if (bearing === null) {
+      return;
+    }
+    onFireCallback(bearing);
+  }
+
+  private _detectMovementInput(movementKeys: Set<MovementKey>) {
+    if (this.isSpawning) return;
+    let dx = 0;
+    let dy = 0;
+    movementKeys.forEach((k) => {
+      if (k === 'w') dy -= 1;
+      if (k === 's') dy += 1;
+      if (k === 'a') dx -= 1;
+      if (k === 'd') dx += 1;
+    });
+    if (dx === 0 && dy === 0) return;
+    const bearing = (Math.round((Math.atan2(dy, dx) * (180 / Math.PI) + 360) % 360) as Bearing) ?? this.bearing;
+    if (bearing !== undefined) {
+      this._updatePosition(bearing);
+    }
+  }
+
+  private _updatePosition(bearing: Bearing) {
     const rad = (bearing * Math.PI) / 180;
     const xMod = Math.cos(rad) * this.speed;
     const yMod = Math.sin(rad) * this.speed;
@@ -89,10 +163,10 @@ export class PlayerClient {
 
     this.bearing = bearing;
 
-    if (checkWallCollision(newX, newY, level)) {
+    if (checkWallCollision(newX, newY, this.level)) {
       // Wall sliding: try X-only or Y-only move if diagonal hits a wall
-      const tryX = checkWallCollision(this.x + xMod, this.y, level);
-      const tryY = checkWallCollision(this.x, this.y + yMod, level);
+      const tryX = checkWallCollision(this.x + xMod, this.y, this.level);
+      const tryY = checkWallCollision(this.x, this.y + yMod, this.level);
       if (!tryX) {
         newX = this.x + xMod;
         newY = this.y;
@@ -105,11 +179,10 @@ export class PlayerClient {
       }
     }
 
-    this.setPlayerPosition(newX, newY);
+    this._setPlayerClientPosition(newX, newY);
   }
 
-  // public on client to sync with server
-  public setPlayerPosition(x: number, y: number) {
+  private _setPlayerClientPosition(x: number, y: number) {
     this.x = x;
     this.y = y;
     this.topLeft = { x: this.x, y: this.y };

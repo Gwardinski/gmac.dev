@@ -146,7 +146,7 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
 
         case "update-position": {
           const { x, y, bearing } = message.data;
-          const [updatedGame, gameStateErr] = playerSetPosition(
+          const [, gameStateErr] = playerSetPosition(
             roomId,
             playerId,
             x,

@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef } from 'react';
 import { create } from 'zustand';
-import type { Bearing, Bullet, GameState, Level, Message } from './client-copies';
-import { PlayerClient, type Player } from './client-copies/PlayerClient';
+import type { Bullet, GameState, Level, Message } from './client-copies';
+import { PlayerClient, type FireKey, type MovementKey, type Player } from './client-copies/PlayerClient';
 import type { JoinRoomResponse } from './useJoinRoom';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
@@ -25,13 +25,11 @@ type LocalGameState = {
   playerId: string | null;
   level: Level | null;
   status: ConnectionStatus;
-  error: string | null;
   setRoomId: (roomId: string | null) => void;
   setPlayerId: (playerId: string | null) => void;
   setRoom: (roomId: string, playerId: string, level: Level) => void;
   clearRoom: () => void;
   setStatus: (status: ConnectionStatus) => void;
-  setError: (error: string | null) => void;
   playerClient: PlayerClient | null;
   setPlayerClient: (playerClient: PlayerClient | null) => void;
   gameState: GameState;
@@ -55,7 +53,6 @@ export const useLocalGameState = create<LocalGameState>((set) => ({
   playerId: null,
   level: null,
   status: 'disconnected',
-  error: null,
   setRoomId: (roomId) => set({ roomId }),
   setPlayerId: (playerId) => set({ playerId }),
   setRoom: (roomId, playerId, level) => set({ roomId, playerId, level }),
@@ -72,7 +69,6 @@ export const useLocalGameState = create<LocalGameState>((set) => ({
       displayBullets: []
     }),
   setStatus: (status) => set({ status }),
-  setError: (error) => set({ error }),
   playerClient: null,
   setPlayerClient: (playerClient) => set({ playerClient }),
   gameState: { players: [], bullets: [], items: [] },
@@ -108,20 +104,18 @@ export function useGameActions(): GameActions {
 export function useGetGameState() {
   const roomId = useLocalGameState((s) => s.roomId);
   const playerId = useLocalGameState((s) => s.playerId);
-  const playerClient = useLocalGameState((s) => s.playerClient);
   const setGameState = useLocalGameState((s) => s.setGameState);
   const setPlayerClient = useLocalGameState((s) => s.setPlayerClient);
   const clearRoom = useLocalGameState((s) => s.clearRoom);
   const setStatus = useLocalGameState((s) => s.setStatus);
-  const setError = useLocalGameState((s) => s.setError);
   const setChats = useLocalGameState((s) => s.setChats);
   const setRoom = useLocalGameState((s) => s.setRoom);
-  const setOtherPlayers = useLocalGameState((s) => s.setOtherPlayers);
   const setPreviousGameState = useLocalGameState((s) => s.setPreviousGameState);
-  const setServerPlayer = useLocalGameState((s) => s.setServerPlayer);
   const setDisplayBullets = useLocalGameState((s) => s.setDisplayBullets);
 
   const wsRef = useRef<WebSocket | null>(null);
+  const movementKeysRef = useRef<Set<MovementKey>>(new Set());
+  const fireKeysRef = useRef<Set<FireKey>>(new Set());
 
   // Send WebSocket Messages
   const sendMessage = (message: unknown) => {
@@ -148,9 +142,8 @@ export function useGetGameState() {
 
       ws.onopen = async () => {
         setStatus('connected');
-        setError(null);
 
-        // Fetch initial chat history when connecting
+        // Fetch initial chat history on connect
         try {
           const response = await fetch(`${BACKEND_URL}/pew/chats/${roomId}`);
           if (response.ok) {
@@ -169,7 +162,6 @@ export function useGetGameState() {
           const message = JSON.parse(event.data) as WSMessage;
 
           if ('error' in message) {
-            setError(message.error);
             setStatus('error');
             return;
           }
@@ -178,21 +170,25 @@ export function useGetGameState() {
             setPreviousGameState(useLocalGameState.getState().gameState);
             setGameState(message.data);
             setDisplayBullets(message.data.bullets.map((b) => ({ ...b })));
-            const thisPlayer = message.data.players.find((p) => p.id === playerId);
-            _createLocalPlayerClient(thisPlayer);
-            _syncPlayerClientWithPlayerServer(thisPlayer);
-            _syncOtherPlayers(message.data.players);
-            setError(null);
+            const playerServerData = message.data.players.find((p) => p.id === playerId);
+            const { playerClient: currentPlayerClient } = useLocalGameState.getState();
+            // Create Local PlayerClient when required, ensure status variables are synced with server
+            if (!currentPlayerClient && playerServerData) {
+              _createLocalPlayerClient(playerServerData);
+            }
+            if (playerServerData) {
+              _syncPlayerClientWithServer(playerServerData);
+            }
+            // Ensure other PlayerClients exist and stay in sync with server flags
+            _syncOtherPlayerClientsWithServer(message.data.players);
           }
 
           if (message.type === 'new-chat') {
             const { chats: currentChats } = useLocalGameState.getState();
             setChats([...currentChats, message.data]);
-            setError(null);
           }
         } catch (err) {
           console.error('Error parsing WebSocket message:', err);
-          setError('Failed to parse message from server');
         }
       };
 
@@ -206,7 +202,6 @@ export function useGetGameState() {
       // Connection error
       ws.onerror = (event) => {
         console.error('WebSocket error:', event);
-        setError('WebSocket connection error');
         setStatus('error');
       };
     }, 100);
@@ -222,118 +217,9 @@ export function useGetGameState() {
     };
   }, [roomId, playerId]);
 
-  function _createLocalPlayerClient(player: Player | undefined) {
-    if (!playerId || !player || playerClient) return;
-    const { id, name, colour, x, y, speed, isDestroyed, isSpawning, isInvincible, bearing } = player;
-    const newPlayerClient = new PlayerClient(id, name, colour, x, y, speed, bearing);
-    newPlayerClient.isDestroyed = isDestroyed;
-    newPlayerClient.isSpawning = isSpawning;
-    newPlayerClient.isInvincible = isInvincible;
-    setPlayerClient(newPlayerClient);
-  }
-
-  function _syncPlayerClientWithPlayerServer(serverPlayer: Player | undefined) {
-    if (!playerId || !playerClient || !serverPlayer) return;
-    const { isDestroyed, isSpawning, isInvincible, x, y, bearing } = serverPlayer;
-    const snapToServer = (isSpawning ?? false) || (isDestroyed ?? false);
-    const useX = snapToServer ? x : playerClient.x;
-    const useY = snapToServer ? y : playerClient.y;
-    const useBearing = snapToServer ? bearing : playerClient.bearing;
-    if (!snapToServer && isDestroyed === playerClient.isDestroyed && isSpawning === playerClient.isSpawning && isInvincible === playerClient.isInvincible) return;
-
-    const updatedPlayerClient = new PlayerClient(playerClient.id, playerClient.name, playerClient.colour, useX, useY, playerClient.speed, useBearing ?? undefined);
-    updatedPlayerClient.isDestroyed = isDestroyed ?? false;
-    updatedPlayerClient.isSpawning = isSpawning ?? false;
-    updatedPlayerClient.isInvincible = isInvincible ?? false;
-    setPlayerClient(updatedPlayerClient);
-  }
-
-  function _syncOtherPlayers(serverPlayers: Player[]) {
-    if (!serverPlayers || serverPlayers.length === 0) return;
-    const { otherPlayers: prevOthers, serverPlayer: prevServer } = useLocalGameState.getState();
-    const updatedOtherPlayers = serverPlayers
-      .filter((p) => p.id !== playerId)
-      .map((p) => {
-        const prev = prevOthers.find((o) => o.id === p.id);
-        const snapOnDeath = (p.isDestroyed ?? false) || (p.isSpawning ?? false);
-        const x = !snapOnDeath && prev !== undefined ? prev.x : p.x;
-        const y = !snapOnDeath && prev !== undefined ? prev.y : p.y;
-        const client = new PlayerClient(p.id, p.name, p.colour, x, y, p.speed, p.bearing);
-        client.isDestroyed = p.isDestroyed ?? false;
-        client.isSpawning = p.isSpawning ?? false;
-        client.isInvincible = p.isInvincible ?? false;
-        return client;
-      });
-    setOtherPlayers(updatedOtherPlayers);
-    const thisPlayer = serverPlayers.find((p) => p.id === playerId);
-    if (!thisPlayer) return;
-    const snapOnDeath = (thisPlayer.isDestroyed ?? false) || (thisPlayer.isSpawning ?? false);
-    const x = !snapOnDeath && prevServer?.id === thisPlayer.id ? prevServer.x : thisPlayer.x;
-    const y = !snapOnDeath && prevServer?.id === thisPlayer.id ? prevServer.y : thisPlayer.y;
-    const serverPlayer = new PlayerClient(thisPlayer.id, thisPlayer.name, thisPlayer.colour, x, y, thisPlayer.speed, thisPlayer.bearing);
-    serverPlayer.isDestroyed = thisPlayer.isDestroyed ?? false;
-    serverPlayer.isSpawning = thisPlayer.isSpawning ?? false;
-    serverPlayer.isInvincible = thisPlayer.isInvincible ?? false;
-    setServerPlayer(serverPlayer);
-  }
-
-  _useEngineTick((deltaMs) => {
-    const { otherPlayers, level: lvl, serverPlayer, gameState, displayBullets } = useLocalGameState.getState();
-    if (!lvl) return;
-    const dist = BULLET_SPEED * (deltaMs / 1000) * 60;
-    const advancedBullets: Bullet[] = displayBullets.map((b) => {
-      const rad = (b.bearing * Math.PI) / 180;
-      return {
-        ...b,
-        x: b.x + Math.cos(rad) * dist,
-        y: b.y + Math.sin(rad) * dist
-      };
-    });
-    setDisplayBullets(advancedBullets);
-    const updatePositionTowardServer = (player: PlayerClient, serverP: Player) => {
-      if ((serverP.isDestroyed ?? false) || (serverP.isSpawning ?? false)) {
-        player.setPlayerPosition(serverP.x, serverP.y);
-      } else {
-        const x = player.x + (serverP.x - player.x) * LERP_FACTOR;
-        const y = player.y + (serverP.y - player.y) * LERP_FACTOR;
-        player.setPlayerPosition(x, y);
-      }
-    };
-    if (serverPlayer) {
-      const serverP = gameState.players.find((p) => p.id === serverPlayer.id);
-      if (serverP) updatePositionTowardServer(serverPlayer, serverP);
-    }
-    otherPlayers.forEach((otherPlayer) => {
-      const serverP = gameState.players.find((p) => p.id === otherPlayer.id);
-      if (serverP) updatePositionTowardServer(otherPlayer, serverP);
-    });
-  });
-
-  const updatePlayerClientPosition = useCallback(
-    (bearing: Bearing, level: Level) => {
-      if (!playerClient) return false;
-      playerClient.updatePosition(bearing, level);
-      const next = new PlayerClient(playerClient.id, playerClient.name, playerClient.colour, playerClient.x, playerClient.y, playerClient.speed, bearing);
-      next.isDestroyed = playerClient.isDestroyed;
-      next.isSpawning = playerClient.isSpawning;
-      next.isInvincible = playerClient.isInvincible;
-      setPlayerClient(next);
-      sendMessage({
-        type: 'update-position',
-        data: { x: playerClient.x, y: playerClient.y, bearing }
-      });
-      return true;
-    },
-    [playerClient, sendMessage, setPlayerClient]
-  );
-
-  const updatePlayerClientFire = useCallback(
-    (bearing: Bearing) => {
-      if (!playerClient) return false;
-      sendMessage({ type: 'fire', data: { bearing } });
-    },
-    [playerClient]
-  );
+  /*
+    Join / Leave / Chat handlers
+  */
 
   const onJoinSuccess = useCallback(
     ({ roomId, playerId, level }: JoinRoomResponse) => {
@@ -358,11 +244,165 @@ export function useGetGameState() {
     });
   };
 
+  /*
+    Player Sync Handlers
+    Create New PlayerClient when required
+    use to set status variables: isDestroyed, isSpawning, isInvincible
+    for movement see tick functions
+   */
+
+  // Create Local PlayerClient
+  function _createLocalPlayerClient(player: Player | undefined) {
+    const state = useLocalGameState.getState();
+    if (!player || !state.playerId || state.playerClient) return;
+    const { id, name, colour, x, y, speed, isDestroyed, isSpawning, isInvincible, bearing } = player;
+    const newPlayerClient = new PlayerClient(id, name, colour, x, y, speed, bearing);
+    newPlayerClient.isDestroyed = isDestroyed;
+    newPlayerClient.isSpawning = isSpawning;
+    newPlayerClient.isInvincible = isInvincible;
+    newPlayerClient.level = state.level ?? [];
+    setPlayerClient(newPlayerClient);
+  }
+
+  // Sync Local PlayerClient with Server
+  // note: this approach of having to overwrite existing state with a new version is very un-oop
+  // would ideally just single line of `playerClient.syncStatusWithServerPlayer(serverPlayer)`
+  function _syncPlayerClientWithServer(serverPlayer: Player) {
+    const { playerClient } = useLocalGameState.getState();
+    if (!playerClient) return;
+    // Mutate the existing instance in place so references stay stable
+    playerClient.syncStatusWithServer(serverPlayer);
+  }
+
+  // Sync Other PlayerClients with Server (create if missing, update flags if existing)
+  function _syncOtherPlayerClientsWithServer(serverPlayers: Player[]) {
+    const state = useLocalGameState.getState();
+    const { otherPlayers, playerId, setOtherPlayers, level } = state;
+
+    const existingById = new Map(otherPlayers.map((p) => [p.id, p]));
+    const updatedOtherPlayers: PlayerClient[] = [];
+
+    serverPlayers.forEach((sp) => {
+      if (sp.id === playerId) return;
+      const existing = existingById.get(sp.id);
+      if (existing) {
+        existing.syncStatusWithServer(sp);
+        updatedOtherPlayers.push(existing);
+      } else {
+        const client = new PlayerClient(sp.id, sp.name, sp.colour, sp.x, sp.y, sp.speed, sp.bearing);
+        client.isDestroyed = sp.isDestroyed ?? false;
+        client.isSpawning = sp.isSpawning ?? false;
+        client.isInvincible = sp.isInvincible ?? false;
+        client.level = level ?? [];
+        updatedOtherPlayers.push(client);
+      }
+    });
+
+    setOtherPlayers(updatedOtherPlayers);
+  }
+
+  /*
+    Input handlers
+  */
+
+  const registerMovementKey = useCallback((key: MovementKey, isPressed: boolean) => {
+    if (isPressed) {
+      movementKeysRef.current.add(key);
+    } else {
+      movementKeysRef.current.delete(key);
+    }
+  }, []);
+
+  const registerAimKey = useCallback((key: FireKey, isPressed: boolean) => {
+    if (isPressed) {
+      fireKeysRef.current.add(key);
+    } else {
+      fireKeysRef.current.delete(key);
+    }
+  }, []);
+
+  /*
+    Tick functions
+  */
+
+  function tickUpdateBulletsOnScreen(deltaMs: number) {
+    const { displayBullets } = useLocalGameState.getState();
+    const dist = BULLET_SPEED * (deltaMs / 1000) * 60;
+    const advancedBullets: Bullet[] = displayBullets.map((b) => {
+      const rad = (b.bearing * Math.PI) / 180;
+      return {
+        ...b,
+        x: b.x + Math.cos(rad) * dist,
+        y: b.y + Math.sin(rad) * dist
+      };
+    });
+    setDisplayBullets(advancedBullets);
+  }
+
+  function tickUpdatePositionTowardServer(clientData: PlayerClient, serverData: Player) {
+    if (serverData.isDestroyed || serverData.isSpawning) {
+      clientData.syncPositionWithServer(serverData.x, serverData.y);
+    } else {
+      const x = clientData.x + (serverData.x - clientData.x) * LERP_FACTOR;
+      const y = clientData.y + (serverData.y - clientData.y) * LERP_FACTOR;
+      clientData.syncPositionWithServer(x, y);
+    }
+  }
+
+  const tickSendPlayerClientPosition = useCallback(() => {
+    const { playerClient: currentPlayerClient } = useLocalGameState.getState();
+    if (!currentPlayerClient || currentPlayerClient.bearing === undefined) return false;
+    return sendMessage({
+      type: 'update-position',
+      data: { x: currentPlayerClient.x, y: currentPlayerClient.y, bearing: currentPlayerClient.bearing }
+    });
+  }, [sendMessage]);
+
+  // Debounced Server Updates, via tick
+  // const updatesPerSecond = 30;
+  // const serverUpdaterCounter = useRef(0);
+  // function tickSendUpdateToServer(deltaMs: number) {
+  //   serverUpdaterCounter.current += deltaMs;
+  //   if (serverUpdaterCounter.current >= 1000 / updatesPerSecond) {
+  //     serverUpdaterCounter.current = 0;
+  //   }
+  // }
+
+  // Main Game Loop - Called 60 times per second using _useEngineTick
+  const onGameTick = useCallback(
+    (deltaMs: number) => {
+      const { otherPlayers, level: lvl, gameState, roomId: rid, playerId: pid, playerClient } = useLocalGameState.getState();
+      if (!lvl || !rid || !pid || !playerClient) return;
+
+      playerClient.onGameTick({
+        _deltaMs: deltaMs,
+        movementKeys: movementKeysRef.current,
+        fireKeys: fireKeysRef.current,
+        onFireCallback: (bearing) => {
+          sendMessage({ type: 'fire', data: { bearing } });
+        }
+      });
+
+      tickUpdateBulletsOnScreen(deltaMs);
+      tickSendPlayerClientPosition();
+      // tickSendUpdateToServer(deltaMs);
+
+      otherPlayers.forEach((otherPlayer) => {
+        const serverP = gameState.players.find((p) => p.id === otherPlayer.id);
+        if (serverP) tickUpdatePositionTowardServer(otherPlayer, serverP);
+      });
+    },
+    [setDisplayBullets, tickSendPlayerClientPosition]
+  );
+
+  _useEngineTick(onGameTick);
+
   return {
     sendMessage,
     sendChat,
-    updatePlayerClientPosition,
-    updatePlayerClientFire,
+    registerMovementKey,
+    registerAimKey,
+    onGameTick,
     onJoinSuccess,
     onLeave
   };
