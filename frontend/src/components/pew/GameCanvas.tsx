@@ -42,6 +42,11 @@ export const GameCanvas = ({ canvasRef }: GameCanvasProps) => {
         return;
       }
 
+      // Use monospaced font and built-in centering for consistent labels
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+
       const { gameState, level: lvl, playerId: pid, playerClient, otherPlayers, serverPlayer, displayBullets, debugEnabled } = useLocalGameState.getState();
       const { items } = gameState;
 
@@ -127,7 +132,8 @@ function drawPlayerServerPosition(ctx: CanvasRenderingContext2D, serverPlayer: P
   ctx.fillStyle = colorToHex(serverPlayer.colour);
   ctx.fillRect(serverPlayer.x, serverPlayer.y, TILE_SIZE, TILE_SIZE);
   ctx.fillStyle = 'white';
-  ctx.fillText(serverPlayer.name, serverPlayer.x, serverPlayer.y + 32);
+  const textX = serverPlayer.x + TILE_SIZE / 2;
+  ctx.fillText(serverPlayer.name, textX, serverPlayer.y + 32);
   ctx.restore();
 }
 
@@ -204,7 +210,8 @@ function drawNormalPlayer(ctx: CanvasRenderingContext2D, { playerName, playerCol
   ctx.fillStyle = colorToHex(playerColour);
   ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
   ctx.fillStyle = 'white';
-  ctx.fillText(playerName, x, y + 32);
+  const textX = x + TILE_SIZE / 2;
+  ctx.fillText(playerName, textX, y + 24);
 }
 
 function drawDyingPlayer(ctx: CanvasRenderingContext2D, { playerColour, x, y, dyingFrame = 0 }: DrawPlayerProps) {
@@ -230,7 +237,8 @@ function drawSpawningPlayer(ctx: CanvasRenderingContext2D, { playerName, playerC
   ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
   ctx.globalAlpha = 1.0;
   ctx.fillStyle = 'white';
-  ctx.fillText(playerName, x, y + 32);
+  const textX = x + TILE_SIZE / 2;
+  ctx.fillText(playerName, textX, y + 24);
 }
 
 function drawInvinciblePlayer(ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y }: DrawPlayerProps) {
@@ -240,7 +248,8 @@ function drawInvinciblePlayer(ctx: CanvasRenderingContext2D, { playerName, playe
   ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
   ctx.globalAlpha = 1.0;
   ctx.fillStyle = 'white';
-  ctx.fillText(playerName, x, y + 32);
+  const textX = x + TILE_SIZE / 2;
+  ctx.fillText(playerName, textX, y + 24);
 }
 
 function drawSpawnPoint(ctx: CanvasRenderingContext2D, _x: number, _y: number) {
@@ -266,6 +275,8 @@ function drawItem(ctx: CanvasRenderingContext2D, x: number, y: number, itemName:
   ctx.fillStyle = 'yellow';
   ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
   ctx.fillStyle = 'white';
-  ctx.fillText(itemName, x - (itemName.length * 8) / itemName.length, y + 32);
+  const textX = x + TILE_SIZE / 2;
+  ctx.font = '12px monospace';
+  ctx.fillText(itemName.toUpperCase(), textX, y + 28);
   ctx.globalAlpha = 1.0;
 }
