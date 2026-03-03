@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef } from 'react';
 import { create } from 'zustand';
 import type { Bullet, GameState, Level, Message } from './client-copies';
-import { PlayerClient, type FireKey, type MovementKey, type Player } from './client-copies/PlayerClient';
+import { PLAYER_SIZE, PlayerClient, type FireKey, type MovementKey, type Player } from './client-copies/PlayerClient';
 import type { JoinRoomResponse } from './useJoinRoom';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
@@ -11,6 +11,7 @@ export const TARGET_FPS = 60;
 export const FRAME_TIME = 1000 / TARGET_FPS;
 
 const LERP_FACTOR = 0.15;
+const MAX_SMOOTH_DISTANCE = PLAYER_SIZE * 4;
 const BULLET_SPEED = 10;
 const WS_URL = BACKEND_URL.replace('http', 'ws');
 
@@ -340,18 +341,33 @@ export function useGetGameState() {
   }
 
   function tickUpdatePositionTowardServer(clientData: PlayerClient, serverData: Player) {
+    // Snap on Death / Spawn
     if (serverData.isDestroyed || serverData.isSpawning) {
       clientData.syncPositionWithServer(serverData.x, serverData.y);
-    } else {
-      const x = clientData.x + (serverData.x - clientData.x) * LERP_FACTOR;
-      const y = clientData.y + (serverData.y - clientData.y) * LERP_FACTOR;
-      clientData.syncPositionWithServer(x, y);
+      return;
     }
+
+    const dx = serverData.x - clientData.x;
+    const dy = serverData.y - clientData.y;
+    const distSq = dx * dx + dy * dy;
+
+    // Snap on lag spike (teleporters?..)
+    if (distSq > MAX_SMOOTH_DISTANCE * MAX_SMOOTH_DISTANCE) {
+      clientData.syncPositionWithServer(serverData.x, serverData.y);
+      return;
+    }
+
+    // Normal movement smoothed with lerp
+    const x = clientData.x + dx * LERP_FACTOR;
+    const y = clientData.y + dy * LERP_FACTOR;
+    clientData.syncPositionWithServer(x, y);
   }
 
   const tickSendPlayerClientPosition = useCallback(() => {
     const { playerClient: currentPlayerClient } = useLocalGameState.getState();
-    if (!currentPlayerClient || currentPlayerClient.bearing === undefined) return false;
+    if (!currentPlayerClient || currentPlayerClient.bearing === undefined || currentPlayerClient.isDestroyed || currentPlayerClient.isSpawning) {
+      return false;
+    }
     return sendMessage({
       type: 'update-position',
       data: { x: currentPlayerClient.x, y: currentPlayerClient.y, bearing: currentPlayerClient.bearing }

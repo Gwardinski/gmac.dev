@@ -7,6 +7,9 @@ export function useGameInput(canvasRef: RefObject<HTMLCanvasElement | null>) {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (document.activeElement !== canvasRef.current) return;
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault();
+      }
       const k = e.key.toLowerCase();
       if (k === 'w' || k === 'a' || k === 's' || k === 'd') registerMovementKey(k as 'w' | 'a' | 's' | 'd', true);
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {

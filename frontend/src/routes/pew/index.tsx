@@ -54,9 +54,9 @@ function GameContent() {
       {!hasRoom && <GameRoomsActive />}
       {hasRoom && (
         <div className="flex w-full flex-col items-center gap-4">
-          {status === 'connecting' && <p className="text-center text-amber-500">Connecting…</p>}
-          {status === 'disconnected' && <p className="text-center text-amber-500">Disconnected. Reconnecting…</p>}
-          {status === 'error' && <p className="text-center text-red-500">Connection failed. Try again or leave.</p>}
+          {status === 'connecting' && <p className="text-center text-amber-500">Establishing battlefield control, stand by...</p>}
+          {status === 'disconnected' && <p className="text-center text-amber-500">Disconnected. Refresh page, and re-join game.</p>}
+          {status === 'error' && <p className="text-center text-red-500">Connection failed. Refresh Page.</p>}
           {status === 'connected' && (
             <div className="flex flex-wrap items-stretch gap-4">
               <GameBoard />

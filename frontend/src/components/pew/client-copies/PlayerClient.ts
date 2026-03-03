@@ -21,7 +21,8 @@ type PlayerTickCallbackProps = {
   onFireCallback: (bearing: Bearing) => void;
 };
 
-// Game State Players
+// Game State Players,
+// as returned from API via game-state
 export type Player = {
   id: string;
   name: string;
@@ -38,8 +39,8 @@ export type Player = {
   isInvincible: boolean;
 };
 
-// Active Player (For Client Rendering)
-// Client copy of server Player class
+// Client Player, for client rendering and movement logic
+// similar to server-side PlayerClass
 export class PlayerClient {
   constructor(
     public id: string,
@@ -95,8 +96,8 @@ export class PlayerClient {
     this.isInvincible = serverPlayer.isInvincible ?? false;
 
     // on death, spawn at server position (spawn point)
-    // TODO: should also return & check for an "overwrite" flag, for if server should overwrite client position
-    // i.e. if client moves too far from previous position (cheat detection)
+    // TODO: api should also return an "overwrite" flag, for if server should overwrite client position
+    // i.e. if client moves too far from last known position than what is possible given current move speed (cheat detection. overkill but why not)
     if (this.isDestroyed || this.isSpawning) {
       this._setPlayerClientPosition(serverPlayer.x, serverPlayer.y);
     }
