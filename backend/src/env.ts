@@ -1,6 +1,7 @@
 import z from "zod";
 
 const envSchema = z.object({
+  // DATABASE_URL: z.string(),
   NOTE_TITLE: z.string(),
   NOTE_CONTENT: z.string(),
   CODE: z.string(),

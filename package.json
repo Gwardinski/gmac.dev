@@ -6,6 +6,5 @@
     "front": "cd frontend && pnpm dev",
     "back": "cd backend && pnpm dev",
     "build": "cd frontend && pnpm build"
-  },
-  "dependencies": {}
+  }
 }

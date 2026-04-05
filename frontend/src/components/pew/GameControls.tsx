@@ -1,4 +1,4 @@
-import { Kbd } from '../ui/kbd';
+import { Kbd } from '@/components/gmac.ui';
 
 export const GameControls = () => {
   return (

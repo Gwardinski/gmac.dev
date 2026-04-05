@@ -1,5 +1,5 @@
-import { BugIcon } from 'lucide-react';
-import { Button } from '../ui';
+import { IconBug } from '@tabler/icons-react';
+import { IconButton } from '../gmac.ui';
 import { useLocalGameState } from './useGetGameState';
 
 export const GameDebugButton = () => {
@@ -8,9 +8,9 @@ export const GameDebugButton = () => {
 
   return (
     <span className="flex items-center gap-2">
-      <Button size="icon" onClick={() => setDebugEnabled(!debugEnabled)} variant={debugEnabled ? 'glass-danger' : 'glass'}>
-        <BugIcon />
-      </Button>
+      <IconButton onClick={() => setDebugEnabled(!debugEnabled)} variant={debugEnabled ? 'outline' : 'ghost'} theme={debugEnabled ? 'red' : 'gray'}>
+        <IconBug />
+      </IconButton>
       {debugEnabled && <p className="text-xs text-black dark:text-white">Debug Mode</p>}
     </span>
   );

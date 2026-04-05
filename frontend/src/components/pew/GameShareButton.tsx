@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button } from '../ui';
+import { Button } from '../gmac.ui';
 
 export const GameShareButton = () => {
   const savedRoomName = localStorage.getItem('room-name') || '';

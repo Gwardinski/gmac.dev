@@ -1,3 +1,4 @@
+import { H1, H1Description } from '@/components/gmac.ui';
 import { Page, PageHeader, PageHeading, PageSection } from '@/components/layout';
 import { GameBoard } from '@/components/pew/GameBoard';
 import { GameChat } from '@/components/pew/GameChat';
@@ -9,7 +10,6 @@ import { GameRoomsActive } from '@/components/pew/GameRoomsActive';
 import { GameScore } from '@/components/pew/GameScore';
 import { GameShareButton } from '@/components/pew/GameShareButton';
 import { GameStateProvider, useLocalGameState } from '@/components/pew/useGetGameState';
-import { H1, H1Description } from '@/components/ui/typography';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/pew/')({

@@ -1,14 +1,13 @@
-import { IconMoon, IconSun } from "@tabler/icons-react";
-import { useTheme } from "./theme-provider";
-import { Button } from "./ui";
+import { IconMoon, IconSun } from '@tabler/icons-react';
+import { IconButton } from './gmac.ui';
+import { useTheme } from './theme-provider';
 
 export const ThemeToggle: React.FC = () => {
   const { theme, setTheme } = useTheme();
-  const isDark = theme === "dark";
+  const isDark = theme === 'dark';
   return (
-    <Button size="icon" onClick={() => setTheme(isDark ? "light" : "dark")}>
-      {isDark && <IconSun />}
-      {!isDark && <IconMoon />}
-    </Button>
+    <IconButton variant="ghost" theme="blue" onClick={() => setTheme(isDark ? 'light' : 'dark')}>
+      {isDark ? <IconSun /> : <IconMoon />}
+    </IconButton>
   );
 };

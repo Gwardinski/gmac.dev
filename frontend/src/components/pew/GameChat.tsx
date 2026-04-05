@@ -1,6 +1,6 @@
 import { useForm } from '@tanstack/react-form';
 import z from 'zod';
-import { Input } from '../ui';
+import { Input } from '../gmac.ui';
 import { colorToHex } from './client-copies';
 import { useGameActions, useLocalGameState } from './useGetGameState';
 

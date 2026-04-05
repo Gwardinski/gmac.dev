@@ -1,4 +1,4 @@
-import { H3 } from '../ui';
+import { H3 } from '../gmac.ui';
 import { useFetchRooms } from './useFetchRooms';
 
 export const GameRoomsActive = () => {

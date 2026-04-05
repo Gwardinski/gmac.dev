@@ -1,19 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
-import {
-  Page,
-  PageHeader,
-  PageHeading,
-  PageSection,
-} from "@/components/layout";
-import { H1, H1Description, H2 } from "@/components/ui/typography";
-import { Button } from "@/components/ui";
-import { useState } from "react";
+import { Button, H1, H1Description, H2 } from '@/components/gmac.ui';
+import { Page, PageHeader, PageHeading, PageSection } from '@/components/layout';
+import { createFileRoute } from '@tanstack/react-router';
+import { useState } from 'react';
 
-export const Route = createFileRoute("/coinflip/")({
-  component: RouteComponent,
+export const Route = createFileRoute('/coinflip/')({
+  component: RouteComponent
 });
 
-type VALUE = "HEADS" | "TAILS";
+type VALUE = 'HEADS' | 'TAILS';
 
 function RouteComponent() {
   const [result, setResult] = useState<VALUE>();
@@ -23,7 +17,7 @@ function RouteComponent() {
     const random = Math.random();
     setIsFlipping(true);
     setTimeout(() => {
-      setResult(random < 0.5 ? "HEADS" : "TAILS");
+      setResult(random < 0.5 ? 'HEADS' : 'TAILS');
       setIsFlipping(false);
     }, 800);
   }

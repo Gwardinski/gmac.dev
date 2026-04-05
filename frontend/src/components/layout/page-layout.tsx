@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@/components/gmac.ui';
 
 export function Page({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return <section className={cn('flex h-full w-full flex-col gap-12 pb-40', className)} {...props} />;
@@ -9,7 +9,7 @@ export function PageHeader({ className, ...props }: React.HTMLAttributes<HTMLDiv
 }
 
 export function PageHeading({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('flex flex-col gap-2 rounded-lg glass px-5 pt-4 pb-6 dark:dark-glass', className)} {...props} />;
+  return <div className={cn('flex flex-col gap-2 rounded-lg glass px-5 py-4 dark:dark-glass', className)} {...props} />;
 }
 
 export function PageHeaderAccordion({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
@@ -21,7 +21,7 @@ export function PageSection({ className, ...props }: React.HTMLAttributes<HTMLDi
 }
 
 export function PageSectionHeader({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return <header className={cn('flex min-h-10 flex-col justify-between gap-2 rounded-lg glass px-5 pt-4 pb-6 dark:dark-glass', className)} {...props} />;
+  return <header className={cn('flex min-h-10 flex-col justify-between gap-2 rounded-lg glass px-5 py-4 dark:dark-glass', className)} {...props} />;
 }
 
 export function PageBanner({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {

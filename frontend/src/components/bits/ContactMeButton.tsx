@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Button } from "../ui";
+import { useState } from 'react';
+import { Button } from '../gmac.ui';
 
 export const ContactMeButton = () => {
   const [showText, setShowText] = useState(false);
@@ -7,18 +7,18 @@ export const ContactMeButton = () => {
   const [hidden, setHidden] = useState(false);
 
   function toggleDrop() {
-    const contactButton = document.getElementById("contact-button");
-    const buttonWrapper = document.getElementById("button-wrapper");
+    const contactButton = document.getElementById('contact-button');
+    const buttonWrapper = document.getElementById('button-wrapper');
 
     if (!contactButton || !buttonWrapper || broken) return;
 
     setShowText(true);
-    contactButton.classList.add("break");
+    contactButton.classList.add('break');
 
     setTimeout(() => {
       setBroken(true);
-      contactButton.classList.add("breakMore");
-      buttonWrapper.classList.add("fall-off-screen");
+      contactButton.classList.add('breakMore');
+      buttonWrapper.classList.add('fall-off-screen');
     }, 400);
 
     setTimeout(() => {
@@ -69,11 +69,7 @@ export const ContactMeButton = () => {
       <div className="relative hidden items-center px-4 lg:flex">
         {!hidden && (
           <div id="button-wrapper" className="absolute right-0 z-10">
-            <Button
-              id="contact-button"
-              className="min-w-48"
-              onClick={toggleDrop}
-            >
+            <Button id="contact-button" variant="ghost" theme="blue" className="min-w-48" onClick={toggleDrop}>
               Get in Touch!
             </Button>
           </div>

@@ -1,9 +1,26 @@
 import { DocumentationLink, GithubLink } from '@/components/DocText';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  Button,
+  Card,
+  CardBody,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Dialog,
+  DialogContent,
+  H1,
+  H1Description,
+  H2,
+  H2Description,
+  P1,
+  PL
+} from '@/components/gmac.ui';
 import { Page, PageBanner, PageBannerHeader, PageHeader, PageHeaderAccordion, PageHeading, PageSection, PageSectionHeader } from '@/components/layout';
-import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { H1, H1Description, H2, H2Description, P, PL } from '@/components/ui/typography';
 import { PLAYGROUNDS, type Playground } from '@/data/playgrounds';
 import { PROJECTS, type Project } from '@/data/projects';
 import { TECH_TAGS, type TECH_TAG } from '@/data/types';
@@ -48,31 +65,31 @@ function App() {
         <PageHeading>
           <H1>gmac.dev</H1>
           <H1Description className="font-mono">Portfolio | Playground | Scratch Pad</H1Description>
-          <P className="font-mono">Gordon Macintyre | Developer | Scotland 🏴󠁧󠁢󠁳󠁣󠁴󠁿</P>
+          <P1 className="font-mono">Gordon Macintyre | Developer | Scotland 🏴󠁧󠁢󠁳󠁣󠁴󠁿</P1>
         </PageHeading>
 
         <PageHeaderAccordion>
-          <Accordion type="single" collapsible defaultValue="description">
+          <Accordion>
             <AccordionItem value="description">
               <AccordionTrigger>Site TechStack</AccordionTrigger>
               <AccordionContent className="flex flex-col gap-2 pb-6">
                 <GithubLink href="https://github.com/Gwardinski/gmac.dev" text="Source Code" />
                 <div className="grid grid-cols-1 gap-2 pt-2 md:grid-cols-2 lg:grid-cols-3">
                   <div className="flex flex-col gap-2">
-                    <p className="pb-2 font-mono">Frontend</p>
+                    <P1 className="pb-2 font-mono">Frontend</P1>
                     <DocumentationLink href="https://vitejs.dev/" text="Vite / React" icon={IconBrandVite} />
                     <DocumentationLink href="https://tanstack.com/router" text="Tanstack Router" icon={IconBrandReact} />
                     <DocumentationLink href="https://tailwindcss.com" text="Tailwind" icon={IconBrandTailwind} />
                     <DocumentationLink href="https://ui.shadcn.com/" text="shadcn/ui" icon={IconPalette} />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <p className="pb-2 font-mono">Backend</p>
+                    <P1 className="pb-2 font-mono">Backend</P1>
                     <DocumentationLink href="https://bun.sh/" text="Bun" icon={IconBurger} />
                     <DocumentationLink href="https://elysiajs.com/" text="Elysia" icon={IconApi} />
                     <DocumentationLink href="https://elysiajs.com/patterns/websocket.html#websocket" text="WebSocket" icon={IconPlugConnected} />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <p className="pb-2 font-mono">Infra</p>
+                    <P1 className="pb-2 font-mono">Infra</P1>
                     <DocumentationLink href="https://railway.app/" text="Railway" icon={IconTrain} />
                     <DocumentationLink href="https://www.cloudflare.com/en-gb/" text="Cloudflare" icon={IconBrandCloudflare} />
                   </div>
@@ -90,7 +107,7 @@ function App() {
         <ul className="flex flex-wrap gap-2">
           {TECH_TAG_SORTED.map((tag) => (
             <li key={tag}>
-              <Button key={tag} variant={selectedTags.includes(tag) ? 'default' : 'glass'} onClick={() => handleTagClick(tag)}>
+              <Button key={tag} variant={selectedTags.includes(tag) ? 'primary' : 'glass'} onClick={() => handleTagClick(tag)}>
                 {tag}
               </Button>
             </li>
@@ -143,7 +160,9 @@ const ProjectCard: React.FC<{
   return (
     <Card
       key={project.title}
-      className={`relative glass dark:dark-glass ${project.inProgress || project.offline ? 'group' : ''}`}
+      variant="glass"
+      theme="gray"
+      className={`relative ${project.inProgress || project.offline ? 'group' : ''}`}
       style={{ '--card-opacity': '1' } as React.CSSProperties}>
       {project.inProgress && (
         <div className="invisible absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 rounded-lg opacity-0 backdrop-blur-2xl backdrop-opacity-100 transition-all duration-300 group-hover:visible group-hover:opacity-100">
@@ -163,25 +182,25 @@ const ProjectCard: React.FC<{
         {project.offline && <IconGhost className="absolute top-5 right-5 ml-auto size-8" />}
         <CardDescription>{project.subTitle}</CardDescription>
       </CardHeader>
-      <CardContent className={`flex flex-wrap gap-2 transition-opacity duration-300 ${locked ? 'group-hover:opacity-0' : ''}`}>
+      <CardBody className={`flex flex-wrap gap-2 transition-opacity duration-300 ${locked ? 'group-hover:opacity-0' : ''}`}>
         {project.tags
           ?.sort((a, b) => a.localeCompare(b))
           .map((tag) => (
-            <Button key={tag} variant={selectedTags.includes(tag) ? 'default' : 'glass'} onClick={() => onTagClick(tag)} size="sm">
+            <Button key={tag} variant={selectedTags.includes(tag) ? 'primary' : 'glass'} onClick={() => onTagClick(tag)} size="sm">
               {tag}
             </Button>
           ))}
         {project.deprecated_tags
           ?.sort((a, b) => a.localeCompare(b))
           .map((tag) => (
-            <Button key={tag} variant={selectedTags.includes(tag) ? 'default' : 'glass'} onClick={() => onTagClick(tag)} size="sm" disabled>
+            <Button key={tag} variant={selectedTags.includes(tag) ? 'primary' : 'glass'} onClick={() => onTagClick(tag)} size="sm" disabled>
               <s>{tag}</s>
             </Button>
           ))}
-      </CardContent>
-      <CardContent className={`mt-auto transition-opacity duration-300 ${locked ? 'group-hover:opacity-0' : ''}`}>
-        <P className="italic">{project.description}</P>
-      </CardContent>
+      </CardBody>
+      <CardBody className={`mt-auto transition-opacity duration-300 ${locked ? 'group-hover:opacity-0' : ''}`}>
+        <P1 className="italic">{project.description}</P1>
+      </CardBody>
       <CardFooter className={`mt-auto transition-opacity duration-300 ${locked ? 'group-hover:opacity-0' : ''}`}>
         <a href={project.link} target="_blank" rel="noopener noreferrer" className={`flex-1 ${locked ? 'pointer-events-none group-hover:pointer-events-none' : ''}`}>
           <Button className="w-full">
@@ -219,25 +238,25 @@ const PlaygroundCard: React.FC<{
         <CardTitle>{playground.title}</CardTitle>
         <CardDescription>{playground.subTitle}</CardDescription>
       </CardHeader>
-      <CardContent className={`flex flex-wrap gap-2 transition-opacity duration-300`}>
+      <CardBody className={`flex flex-wrap gap-2 transition-opacity duration-300`}>
         {playground.tags
           ?.sort((a, b) => a.localeCompare(b))
           .map((tag) => (
-            <Button key={tag} size="sm" variant={selectedTags.includes(tag) ? 'default' : 'glass'} onClick={() => onTagClick(tag)}>
+            <Button key={tag} size="sm" variant={selectedTags.includes(tag) ? 'primary' : 'glass'} onClick={() => onTagClick(tag)}>
               {tag}
             </Button>
           ))}
         {playground.deprecated_tags
           ?.sort((a, b) => a.localeCompare(b))
           .map((tag) => (
-            <Button key={tag} variant={selectedTags.includes(tag) ? 'default' : 'glass'} onClick={() => onTagClick(tag)} size="sm" disabled>
+            <Button key={tag} variant={selectedTags.includes(tag) ? 'primary' : 'glass'} onClick={() => onTagClick(tag)} size="sm" disabled>
               <s>{tag}</s>
             </Button>
           ))}
-      </CardContent>
-      <CardContent>
+      </CardBody>
+      <CardBody>
         <p>{playground.description}</p>
-      </CardContent>
+      </CardBody>
       <CardFooter className="mt-auto">
         <Link to={playground.link} className="flex-1">
           <Button className="w-full">

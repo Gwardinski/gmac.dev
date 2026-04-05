@@ -1,11 +1,11 @@
-import { Button } from '../ui';
+import { Button } from '../gmac.ui';
 import { useGameActions } from './useGetGameState';
 
 export const GameLeaveButton = () => {
   const { onLeave } = useGameActions();
 
   return (
-    <Button onClick={onLeave} className="w-[180px]" variant="glass-danger">
+    <Button onClick={onLeave} className="w-[180px]" variant="glass" theme="red">
       Leave Game
     </Button>
   );
