@@ -3,6 +3,7 @@ import { useForm } from '@tanstack/react-form';
 import { getRouteApi } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Card, CardBody, CardFooter, RadioGroup, RadioGroupItem } from '../gmac.ui';
+import { useVariantState } from '../VariantToggle';
 import { COLORS, colorToHex, type Color } from './client-copies';
 import { mapAPIErrorsToForm } from './form-utils';
 import { useGameActions } from './useGetGameState';
@@ -20,6 +21,7 @@ function createNewPlayerDeviceId() {
 }
 
 export function GameJoinForm() {
+  const { variant } = useVariantState();
   const { onJoinSuccess } = useGameActions();
 
   const { mutate, isPending } = useJoinRoom();
@@ -73,7 +75,7 @@ export function GameJoinForm() {
   });
 
   return (
-    <Card className="w-full sm:max-w-md">
+    <Card variant={variant} className="w-full sm:max-w-md">
       <CardBody>
         <form
           id="game-join-form"

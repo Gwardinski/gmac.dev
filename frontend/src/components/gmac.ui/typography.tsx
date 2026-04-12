@@ -40,12 +40,12 @@ interface TextProps extends React.HTMLAttributes<HTMLParagraphElement>, VariantP
 
 // Page Description
 export function H1Description({ className, ...props }: TextProps) {
-  return <p className={cn('text-base tracking-wider text-zinc-800 dark:text-zinc-300', className)} {...props} />;
+  return <p className={cn('text-base tracking-wider text-gray-800 dark:text-gray-300', className)} {...props} />;
 }
 
 // Section Description
 export function H2Description({ className, ...props }: TextProps) {
-  return <p className={cn('text-md text-zinc-700 dark:text-zinc-300', className)} {...props} />;
+  return <p className={cn('text-md text-gray-700 dark:text-gray-300', className)} {...props} />;
 }
 
 export function Text({ className, size, weight, theme, ...props }: TextProps) {
@@ -80,7 +80,7 @@ export const headingTypeOptions = ['h1', 'h2', 'h3', 'h4', 'h5'] as const;
 export type HeadingTypeOption = (typeof headingTypeOptions)[number];
 
 const headingTypeClasses = {
-  h1: 'text-3xl font-semibold text-gray-900 dark:text-gray-50',
+  h1: 'text-4xl font-semibold text-gray-900 dark:text-gray-50',
   h2: 'text-2xl font-semibold text-gray-900 dark:text-gray-50',
   h3: 'text-xl font-semibold text-gray-900 dark:text-gray-50',
   h4: 'text-lg font-semibold text-gray-900 dark:text-gray-50',

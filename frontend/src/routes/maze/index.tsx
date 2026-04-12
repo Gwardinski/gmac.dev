@@ -1,5 +1,6 @@
-import { Button, H1, H1Description, H2, Tabs, TabsContent, TabsList, TabsTrigger, cn } from '@/components/gmac.ui';
-import { Page, PageHeader, PageHeading, PageSection } from '@/components/layout';
+import { Button, Card, CardBody, CardHeader, H1, H1Description, H2, Tabs, TabsContent, TabsList, TabsTrigger, cn } from '@/components/gmac.ui';
+import { Page } from '@/components/layout';
+import { useVariantState } from '@/components/VariantToggle';
 import { createFileRoute } from '@tanstack/react-router';
 import { differenceInMilliseconds } from 'date-fns';
 import { useEffect, useRef, useState } from 'react';
@@ -10,6 +11,7 @@ export const Route = createFileRoute('/maze/')({
 });
 
 function RouteComponent() {
+  const { variant } = useVariantState();
   const tab1 = useTabStore((state) => state.tab1);
   const setTab1 = useTabStore((state) => state.setTab1);
   const [gameCompleted, setGameCompleted] = useState(false);
@@ -72,28 +74,27 @@ function RouteComponent() {
 
   return (
     <Page>
-      <PageHeader>
-        <PageHeading>
+      <Card as="header" variant={variant}>
+        <CardHeader column>
           <H1>Maze Game</H1>
           <H1Description>Work-in-Progress. A simple mouse dexterity game with scoreboard</H1Description>
-        </PageHeading>
-      </PageHeader>
+        </CardHeader>
+      </Card>
 
-      <PageSection>
-        <Tabs defaultValue={tab1} onValueChange={setTab1}>
-          <TabsList variant="glass" theme="gray" className="mb-4">
-            <TabsTrigger value="1">Game</TabsTrigger>
-            <TabsTrigger value="2">Scoreboard</TabsTrigger>
-          </TabsList>
-          <TabsContent value="1">
-            <section className="relative flex flex-col items-center justify-center gap-8 rounded-xl glass px-8 pt-8 pb-32 dark:dark-glass">
-              <div className="z-10 flex w-full max-w-5xl items-center justify-center gap-4">
-                <H2 className="mr-auto">Time: {seconds}</H2>
-                <Stat hasCollected={hasButton1}>Switch 1: {hasButton1 ? 'On' : 'Off'}</Stat>
-                <Stat hasCollected={hasButton2}>Switch 2: {hasButton2 ? 'On' : 'Off'}</Stat>
-                <Stat hasCollected={hasButton3}>Switch 3: {hasButton3 ? 'On' : 'Off'}</Stat>
-                <Stat hasCollected={hasButton1 && hasButton2 && hasButton3}>Exit: {hasButton1 && hasButton2 && hasButton3 ? 'Open' : 'Closed'}</Stat>
-              </div>
+      <Tabs defaultValue={tab1} onValueChange={setTab1}>
+        <TabsList variant={variant === 'solid' ? 'solid' : 'glass'}>
+          <TabsTrigger value="1">Game</TabsTrigger>
+          <TabsTrigger value="2">Scoreboard</TabsTrigger>
+        </TabsList>
+        <TabsContent value="1">
+          <Card as="section" variant={variant} className="relative">
+            <CardHeader>
+              <H2 className="mr-auto">Time: {seconds}</H2>
+              <Stat hasCollected={hasButton1}>Switch 1: {hasButton1 ? 'On' : 'Off'}</Stat>
+              <Stat hasCollected={hasButton2}>Switch 2: {hasButton2 ? 'On' : 'Off'}</Stat>
+              <Stat hasCollected={hasButton3}>Switch 3: {hasButton3 ? 'On' : 'Off'}</Stat>
+              <Stat hasCollected={hasButton1 && hasButton2 && hasButton3}>Exit: {hasButton1 && hasButton2 && hasButton3 ? 'Open' : 'Closed'}</Stat>
+
               {gameCompleted && (
                 <div className="absolute top-0 z-10 flex h-full w-full flex-col items-center justify-center gap-1">
                   <div className="flex animate-bounce flex-col text-center">
@@ -102,8 +103,12 @@ function RouteComponent() {
                   </div>
                 </div>
               )}
+            </CardHeader>
 
-              <div className={`${isRunning ? 'hover:cursor-move' : 'hover:cursor-crosshair'} relative flex w-fit flex-col items-center justify-center`} onMouseLeave={resetGame}>
+            <CardBody>
+              <div
+                className={`${isRunning ? 'hover:cursor-move' : 'hover:cursor-crosshair'} relative mx-auto flex w-fit flex-col items-center justify-center`}
+                onMouseLeave={resetGame}>
                 {bricks.map((row, i) => (
                   <div key={i} className="flex w-full items-center justify-center gap-0">
                     {row.map((cell, j) => (
@@ -134,11 +139,11 @@ function RouteComponent() {
                   />
                 )}
               </div>
-            </section>
-          </TabsContent>
-          <TabsContent value="2">TODO</TabsContent>
-        </Tabs>
-      </PageSection>
+            </CardBody>
+          </Card>
+        </TabsContent>
+        <TabsContent value="2">TODO</TabsContent>
+      </Tabs>
     </Page>
   );
 }

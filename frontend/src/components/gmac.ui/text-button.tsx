@@ -49,13 +49,13 @@ export const textButtonThemeOptions = ['gray', 'blue', 'green', 'yellow', 'orang
 export type TextButtonTheme = (typeof textButtonThemeOptions)[number];
 
 const textButtonThemeClasses = {
-  gray: 'text-gray-900 dark:text-gray-50',
-  blue: 'text-blue-700 dark:text-blue-500',
-  green: 'text-green-700 dark:text-green-500',
-  yellow: 'text-yellow-700 dark:text-yellow-500',
-  orange: 'text-orange-700 dark:text-orange-500',
-  red: 'text-red-700 dark:text-red-500',
-  purple: 'text-purple-700 dark:text-purple-500'
+  gray: 'text-gray-800 dark:text-gray-100',
+  blue: 'text-blue-600 dark:text-blue-400',
+  green: 'text-green-600 dark:text-green-400',
+  yellow: 'text-yellow-600 dark:text-yellow-400',
+  orange: 'text-orange-600 dark:text-orange-400',
+  red: 'text-red-600 dark:text-red-400',
+  purple: 'text-purple-600 dark:text-purple-400'
 } satisfies Record<TextButtonTheme, string>;
 
 export const textButtonVariants = cva(

@@ -69,7 +69,7 @@ export const ContactMeButton = () => {
       <div className="relative hidden items-center px-4 lg:flex">
         {!hidden && (
           <div id="button-wrapper" className="absolute right-0 z-10">
-            <Button id="contact-button" variant="ghost" theme="blue" className="min-w-48" onClick={toggleDrop}>
+            <Button id="contact-button" variant="glass" className="min-w-48" onClick={toggleDrop}>
               Get in Touch!
             </Button>
           </div>

@@ -1,5 +1,6 @@
 export const TECH_TAGS = [
   'AI / LLM',
+  'Base UI',
   'Angular',
   'Bun',
   'C#',
@@ -23,6 +24,7 @@ export const TECH_TAGS = [
   'React Native',
   'React',
   'Redis',
+  'Radix',
   'Remix',
   'Shadcn/UI',
   'Socket.io',

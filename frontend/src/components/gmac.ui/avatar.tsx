@@ -29,7 +29,8 @@ const AvatarButton = forwardRef<
       type={type}
       className={cn(
         'inline-flex cursor-pointer rounded-full border-0 bg-transparent p-0',
-        'focus-visible:ring-4 focus-visible:ring-gray-400/50 focus-visible:outline-hidden dark:focus-visible:ring-gray-500/50',
+        'focus-visible:ring-4 focus-visible:outline-hidden',
+        avatarShellFocusRingClasses(variant, theme),
         'disabled:cursor-default disabled:opacity-50',
         'transition-opacity hover:opacity-90',
         className
@@ -56,7 +57,8 @@ const AvatarLink = forwardRef<
       ref={ref}
       className={cn(
         'inline-flex cursor-pointer rounded-full',
-        'focus-visible:ring-4 focus-visible:ring-gray-400/50 focus-visible:outline-hidden dark:focus-visible:ring-gray-500/50',
+        'focus-visible:ring-4 focus-visible:outline-hidden',
+        avatarShellFocusRingClasses(variant, theme),
         'transition-opacity hover:opacity-90',
         className
       )}
@@ -111,8 +113,8 @@ const avatarSizeClasses = {
 } satisfies Record<AvatarSize, string>;
 
 const avatarVariantClasses = {
-  solid: 'border',
-  outline: 'border'
+  solid: 'text-white border ',
+  outline: ' border bg-transparent dark:bg-transparent '
 } satisfies Record<AvatarVariantOption, string>;
 
 const avatarThemeClasses = {
@@ -125,91 +127,198 @@ const avatarThemeClasses = {
   purple: ''
 } satisfies Record<ButtonTheme, string>;
 
-export const avatarVariants = cva('group/avatar relative flex shrink-0 overflow-hidden rounded-full font-medium select-none', {
-  variants: {
-    size: avatarSizeClasses,
-    variant: avatarVariantClasses,
-    theme: avatarThemeClasses
-  },
-  compoundVariants: [
-    // solid
-    {
+const avatarShellFocusRingSolid = {
+  gray: 'focus-visible:ring-gray-500/50 dark:focus-visible:ring-gray-600/50',
+  blue: 'focus-visible:ring-blue-500/50 dark:focus-visible:ring-blue-600/50',
+  green: 'focus-visible:ring-green-500/50 dark:focus-visible:ring-green-600/50',
+  yellow: 'focus-visible:ring-yellow-500/50 dark:focus-visible:ring-yellow-600/50',
+  orange: 'focus-visible:ring-orange-500/50 dark:focus-visible:ring-orange-600/50',
+  red: 'focus-visible:ring-red-500/50 dark:focus-visible:ring-red-600/50',
+  purple: 'focus-visible:ring-purple-500/50 dark:focus-visible:ring-purple-600/50'
+} satisfies Record<ButtonTheme, string>;
+
+const avatarShellFocusRingOutline = {
+  gray: 'focus-visible:ring-gray-800/50 dark:focus-visible:ring-gray-100/50',
+  blue: 'focus-visible:ring-blue-600/50 dark:focus-visible:ring-blue-400/50',
+  green: 'focus-visible:ring-green-600/50 dark:focus-visible:ring-green-400/50',
+  yellow: 'focus-visible:ring-yellow-600/50 dark:focus-visible:ring-yellow-400/50',
+  orange: 'focus-visible:ring-orange-600/50 dark:focus-visible:ring-orange-400/50',
+  red: 'focus-visible:ring-red-600/50 dark:focus-visible:ring-red-400/50',
+  purple: 'focus-visible:ring-purple-600/50 dark:focus-visible:ring-purple-400/50'
+} satisfies Record<ButtonTheme, string>;
+
+function avatarShellFocusRingClasses(variant: 'solid' | 'outline' | null | undefined, theme: ButtonTheme | null | undefined) {
+  const t = theme ?? 'gray';
+  return variant === 'outline' ? avatarShellFocusRingOutline[t] : avatarShellFocusRingSolid[t];
+}
+
+export const avatarVariants = cva(
+  'group/avatar relative flex shrink-0 overflow-hidden rounded-full font-medium select-none transition-colors focus-visible:outline-hidden focus-visible:ring-4',
+  {
+    variants: {
+      size: avatarSizeClasses,
+      variant: avatarVariantClasses,
+      theme: avatarThemeClasses
+    },
+    compoundVariants: [
+      // solid — matches Button primary
+      {
+        variant: 'solid',
+        theme: 'blue',
+        class: `bg-blue-500 hover:bg-blue-600 active:bg-blue-700
+              border-blue-500 hover:border-blue-600 active:border-blue-700
+              focus-visible:ring-blue-500/50
+              dark:bg-blue-600 dark:hover:bg-blue-700 dark:active:bg-blue-800
+              dark:border-blue-600 dark:hover:border-blue-700 dark:active:border-blue-800
+              dark:focus-visible:ring-blue-600/50
+              [&_[data-slot=avatar-image]]:mix-blend-normal`
+      },
+      {
+        variant: 'solid',
+        theme: 'green',
+        class: `bg-green-500 hover:bg-green-600 active:bg-green-700
+              border-green-500 hover:border-green-600 active:border-green-700
+              focus-visible:ring-green-500/50
+              dark:bg-green-600 dark:hover:bg-green-700 dark:active:bg-green-800
+              dark:border-green-600 dark:hover:border-green-700 dark:active:border-green-800
+              dark:focus-visible:ring-green-600/50
+              [&_[data-slot=avatar-image]]:mix-blend-normal`
+      },
+      {
+        variant: 'solid',
+        theme: 'yellow',
+        class: `bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700
+              border-yellow-500 hover:border-yellow-600 active:border-yellow-700
+              focus-visible:ring-yellow-500/50
+              dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:active:bg-yellow-800
+              dark:border-yellow-600 dark:hover:border-yellow-700 dark:active:border-yellow-800
+              dark:focus-visible:ring-yellow-600/50
+              text-black dark:text-black
+              [&_[data-slot=avatar-image]]:mix-blend-normal`
+      },
+      {
+        variant: 'solid',
+        theme: 'orange',
+        class: `bg-orange-500 hover:bg-orange-600 active:bg-orange-700
+              border-orange-500 hover:border-orange-600 active:border-orange-700
+              focus-visible:ring-orange-500/50
+              dark:bg-orange-600 dark:hover:bg-orange-700 dark:active:bg-orange-800
+              dark:border-orange-600 dark:hover:border-orange-700 dark:active:border-orange-800
+              dark:focus-visible:ring-orange-600/50
+              [&_[data-slot=avatar-image]]:mix-blend-normal`
+      },
+      {
+        variant: 'solid',
+        theme: 'red',
+        class: `bg-red-500 hover:bg-red-600 active:bg-red-700
+              border-red-500 hover:border-red-600 active:border-red-700
+              focus-visible:ring-red-500/50
+              dark:bg-red-600 dark:hover:bg-red-700 dark:active:bg-red-800
+              dark:border-red-600 dark:hover:border-red-700 dark:active:border-red-800
+              dark:focus-visible:ring-red-600/50
+              [&_[data-slot=avatar-image]]:mix-blend-normal`
+      },
+      {
+        variant: 'solid',
+        theme: 'purple',
+        class: `bg-purple-500 hover:bg-purple-600 active:bg-purple-700
+              border-purple-500 hover:border-purple-600 active:border-purple-700
+              focus-visible:ring-purple-500/50
+              dark:bg-purple-600 dark:hover:bg-purple-700 dark:active:bg-purple-800
+              dark:border-purple-600 dark:hover:border-purple-700 dark:active:border-purple-800
+              dark:focus-visible:ring-purple-600/50
+              [&_[data-slot=avatar-image]]:mix-blend-normal`
+      },
+      {
+        variant: 'solid',
+        theme: 'gray',
+        class: `bg-gray-800 hover:bg-gray-900 active:bg-gray-950
+              border-gray-800 hover:border-gray-900 active:border-gray-950
+              focus-visible:ring-gray-500/50
+              dark:bg-gray-300 dark:hover:bg-gray-400 dark:active:bg-gray-500
+              dark:border-gray-300 dark:hover:border-gray-400 dark:active:border-gray-500
+              dark:focus-visible:ring-gray-600/50
+              text-white dark:text-black
+              [&_[data-slot=avatar-image]]:mix-blend-normal`
+      },
+      // outline — matches Button outline
+      {
+        variant: 'outline',
+        theme: 'blue',
+        class: `hover:bg-blue-600/10 active:bg-blue-600/20
+              text-blue-600 border-blue-600
+              focus-visible:ring-blue-600/50
+              dark:hover:bg-blue-600/10 dark:active:bg-blue-600/20
+              dark:text-blue-400 dark:border-blue-400
+              dark:focus-visible:ring-blue-400/50`
+      },
+      {
+        variant: 'outline',
+        theme: 'green',
+        class: `hover:bg-green-600/10 active:bg-green-600/20
+              text-green-600 border-green-600
+              focus-visible:ring-green-600/50
+              dark:hover:bg-green-600/10 dark:active:bg-green-600/20
+              dark:text-green-400 dark:border-green-400
+              dark:focus-visible:ring-green-400/50`
+      },
+      {
+        variant: 'outline',
+        theme: 'yellow',
+        class: `hover:bg-yellow-600/10 active:bg-yellow-600/20
+              text-yellow-600 border-yellow-600
+              focus-visible:ring-yellow-600/50
+              dark:hover:bg-yellow-600/10 dark:active:bg-yellow-600/20
+              dark:text-yellow-400 dark:border-yellow-400
+              dark:focus-visible:ring-yellow-400/50`
+      },
+      {
+        variant: 'outline',
+        theme: 'orange',
+        class: `hover:bg-orange-600/10 active:bg-orange-600/20
+              text-orange-600 border-orange-600
+              focus-visible:ring-orange-600/50
+              dark:hover:bg-orange-600/10 dark:active:bg-orange-600/20
+              dark:text-orange-400 dark:border-orange-400
+              dark:focus-visible:ring-orange-400/50`
+      },
+      {
+        variant: 'outline',
+        theme: 'red',
+        class: `hover:bg-red-600/10 active:bg-red-600/20
+              text-red-600 border-red-600
+              focus-visible:ring-red-600/50
+              dark:hover:bg-red-600/10 dark:active:bg-red-600/20
+              dark:text-red-400 dark:border-red-400
+              dark:focus-visible:ring-red-400/50`
+      },
+      {
+        variant: 'outline',
+        theme: 'purple',
+        class: `hover:bg-purple-600/10 active:bg-purple-600/20
+              text-purple-600 border-purple-600
+              focus-visible:ring-purple-600/50
+              dark:hover:bg-purple-600/10 dark:active:bg-purple-600/20
+              dark:text-purple-400 dark:border-purple-400
+              dark:focus-visible:ring-purple-400/50`
+      },
+      {
+        variant: 'outline',
+        theme: 'gray',
+        class: `hover:bg-gray-800/10 active:bg-gray-800/20
+              text-gray-800 border-gray-800
+              focus-visible:ring-gray-800/50
+              dark:hover:bg-gray-100/10 dark:active:bg-gray-100/20
+              dark:text-gray-100 dark:border-gray-100
+              dark:focus-visible:ring-gray-100/50`
+      }
+    ],
+    defaultVariants: {
+      size: 'md',
       variant: 'solid',
-      theme: 'gray',
-      class: 'border-gray-500 bg-gray-500 text-white [&_[data-slot=avatar-image]]:mix-blend-normal'
-    },
-    {
-      variant: 'solid',
-      theme: 'blue',
-      class: 'border-blue-500 bg-blue-500 text-white dark:border-blue-600/80 dark:bg-blue-500/80'
-    },
-    {
-      variant: 'solid',
-      theme: 'green',
-      class: 'border-green-500 bg-green-500 text-white dark:border-green-600/80 dark:bg-green-500/80'
-    },
-    {
-      variant: 'solid',
-      theme: 'yellow',
-      class: 'border-yellow-500 bg-yellow-500 text-white dark:border-yellow-600/80 dark:bg-yellow-500/80'
-    },
-    {
-      variant: 'solid',
-      theme: 'orange',
-      class: 'border-orange-500 bg-orange-500 text-white dark:border-orange-600/80 dark:bg-orange-500/80'
-    },
-    {
-      variant: 'solid',
-      theme: 'red',
-      class: 'border-red-500 bg-red-500 text-white dark:border-red-600/80 dark:bg-red-500/80'
-    },
-    {
-      variant: 'solid',
-      theme: 'purple',
-      class: 'border-purple-500 bg-purple-500 text-white dark:border-purple-600/80 dark:bg-purple-500/80'
-    },
-    // outline
-    {
-      variant: 'outline',
-      theme: 'gray',
-      class: 'border-gray-200 bg-transparent text-gray-700 dark:border-gray-600 dark:text-gray-200'
-    },
-    {
-      variant: 'outline',
-      theme: 'blue',
-      class: 'border-blue-200 bg-transparent text-blue-700 dark:border-blue-600 dark:text-blue-300'
-    },
-    {
-      variant: 'outline',
-      theme: 'green',
-      class: 'border-green-200 bg-transparent text-green-700 dark:border-green-600 dark:text-green-300'
-    },
-    {
-      variant: 'outline',
-      theme: 'yellow',
-      class: 'border-yellow-200 bg-transparent text-yellow-700 dark:border-yellow-600 dark:text-yellow-300'
-    },
-    {
-      variant: 'outline',
-      theme: 'orange',
-      class: 'border-orange-200 bg-transparent text-orange-700 dark:border-orange-600 dark:text-orange-300'
-    },
-    {
-      variant: 'outline',
-      theme: 'red',
-      class: 'border-red-200 bg-transparent text-red-700 dark:border-red-600 dark:text-red-300'
-    },
-    {
-      variant: 'outline',
-      theme: 'purple',
-      class: 'border-purple-200 bg-transparent text-purple-700 dark:border-purple-600 dark:text-purple-300'
+      theme: 'gray'
     }
-  ],
-  defaultVariants: {
-    size: 'md',
-    variant: 'solid',
-    theme: 'gray'
   }
-});
+);
 
 export { Avatar, AvatarButton, AvatarFallback, AvatarImage, AvatarLink };

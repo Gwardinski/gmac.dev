@@ -49,7 +49,7 @@ function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
 // THEMING
 // ------------------------------------------------------------
 
-export const tabsVariantOptions = ['primary', 'outline', 'glass'] as const;
+export const tabsVariantOptions = ['solid', 'outline', 'glass'] as const;
 export type TabsVariantOption = (typeof tabsVariantOptions)[number];
 
 export { buttonThemeOptions as tabsThemeOptions, type ButtonTheme as TabsTheme } from './button';
@@ -65,7 +65,7 @@ const tabsThemeClasses = {
 } satisfies Record<ButtonTheme, string>;
 
 const tabsVariantClasses = {
-  primary: '',
+  solid: '',
   outline: '',
   glass: ''
 } satisfies Record<TabsVariantOption, string>;
@@ -76,14 +76,14 @@ export const tabsListVariants = cva('group/tabs-list inline-flex h-auto w-fit mi
     theme: tabsThemeClasses
   },
   compoundVariants: [
-    // primary — tinted track
-    { variant: 'primary', theme: 'gray', class: 'gap-0.5 bg-gray-100 dark:bg-gray-800' },
-    { variant: 'primary', theme: 'blue', class: 'gap-0.5 bg-blue-500/10 dark:bg-blue-950/50' },
-    { variant: 'primary', theme: 'green', class: 'gap-0.5 bg-green-500/10 dark:bg-green-950/50' },
-    { variant: 'primary', theme: 'yellow', class: 'gap-0.5 bg-yellow-500/15 dark:bg-yellow-950/40' },
-    { variant: 'primary', theme: 'orange', class: 'gap-0.5 bg-orange-500/10 dark:bg-orange-950/50' },
-    { variant: 'primary', theme: 'red', class: 'gap-0.5 bg-red-500/10 dark:bg-red-950/50' },
-    { variant: 'primary', theme: 'purple', class: 'gap-0.5 bg-purple-500/10 dark:bg-purple-950/50' },
+    // solid — tinted track
+    { variant: 'solid', theme: 'gray', class: 'gap-0.5 bg-gray-100 dark:bg-gray-800' },
+    { variant: 'solid', theme: 'blue', class: 'gap-0.5 bg-blue-500/10 dark:bg-blue-950/50' },
+    { variant: 'solid', theme: 'green', class: 'gap-0.5 bg-green-500/10 dark:bg-green-950/50' },
+    { variant: 'solid', theme: 'yellow', class: 'gap-0.5 bg-yellow-500/15 dark:bg-yellow-950/40' },
+    { variant: 'solid', theme: 'orange', class: 'gap-0.5 bg-orange-500/10 dark:bg-orange-950/50' },
+    { variant: 'solid', theme: 'red', class: 'gap-0.5 bg-red-500/10 dark:bg-red-950/50' },
+    { variant: 'solid', theme: 'purple', class: 'gap-0.5 bg-purple-500/10 dark:bg-purple-950/50' },
     // outline — neutral chrome; accent on active tab
     { variant: 'outline', theme: 'gray', class: 'gap-0.5 border border-gray-200 bg-transparent dark:border-gray-700' },
     { variant: 'outline', theme: 'blue', class: 'gap-0.5 border border-gray-200 bg-transparent dark:border-gray-700' },
@@ -93,7 +93,7 @@ export const tabsListVariants = cva('group/tabs-list inline-flex h-auto w-fit mi
     { variant: 'outline', theme: 'red', class: 'gap-0.5 border border-gray-200 bg-transparent dark:border-gray-700' },
     { variant: 'outline', theme: 'purple', class: 'gap-0.5 border border-gray-200 bg-transparent dark:border-gray-700' },
     // glass
-    { variant: 'glass', theme: 'gray', class: 'gap-0.5 backdrop-blur-sm glass-border dark:dark-glass-border bg-zinc-500/5 dark:bg-zinc-800/25' },
+    { variant: 'glass', theme: 'gray', class: 'gap-0.5 backdrop-blur-sm glass-border dark:dark-glass-border bg-gray-500/5 dark:bg-gray-800/25' },
     { variant: 'glass', theme: 'blue', class: 'gap-0.5 backdrop-blur-sm glass-border dark:dark-glass-border bg-blue-500/8 dark:bg-blue-950/30' },
     { variant: 'glass', theme: 'green', class: 'gap-0.5 backdrop-blur-sm glass-border dark:dark-glass-border bg-green-500/8 dark:bg-green-950/30' },
     { variant: 'glass', theme: 'yellow', class: 'gap-0.5 backdrop-blur-sm glass-border dark:dark-glass-border bg-yellow-500/10 dark:bg-yellow-950/30' },
@@ -115,45 +115,45 @@ const tabsTriggerVariants = cva(
       theme: tabsThemeClasses
     },
     compoundVariants: [
-      // primary
+      // solid
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'gray',
         class:
           'text-gray-600 hover:bg-white/80 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700/50 dark:hover:text-gray-50 data-active:bg-gray-500 data-active:text-white data-active:border-gray-500 dark:data-active:bg-gray-500 focus-visible:ring-gray-200 dark:focus-visible:ring-gray-700/40'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'blue',
         class:
           'text-blue-900/80 hover:bg-white/70 hover:text-blue-950 dark:text-blue-200 dark:hover:bg-blue-950/40 dark:hover:text-blue-50 data-active:bg-blue-500 data-active:text-white data-active:border-blue-500 dark:data-active:bg-blue-500 focus-visible:ring-blue-200 dark:focus-visible:ring-blue-700/40'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'green',
         class:
           'text-green-900/80 hover:bg-white/70 hover:text-green-950 dark:text-green-200 dark:hover:bg-green-950/40 dark:hover:text-green-50 data-active:bg-green-500 data-active:text-white data-active:border-green-500 dark:data-active:bg-green-500 focus-visible:ring-green-200 dark:focus-visible:ring-green-700/40'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'yellow',
         class:
           'text-yellow-900 hover:bg-white/70 hover:text-yellow-950 dark:text-yellow-200 dark:hover:bg-yellow-950/40 dark:hover:text-yellow-50 data-active:bg-yellow-500 data-active:text-white data-active:border-yellow-500 dark:data-active:bg-yellow-500 focus-visible:ring-yellow-200 dark:focus-visible:ring-yellow-700/40'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'orange',
         class:
           'text-orange-900/90 hover:bg-white/70 hover:text-orange-950 dark:text-orange-200 dark:hover:bg-orange-950/40 dark:hover:text-orange-50 data-active:bg-orange-500 data-active:text-white data-active:border-orange-500 dark:data-active:bg-orange-500 focus-visible:ring-orange-200 dark:focus-visible:ring-orange-700/40'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'red',
         class:
           'text-red-900/80 hover:bg-white/70 hover:text-red-950 dark:text-red-200 dark:hover:bg-red-950/40 dark:hover:text-red-50 data-active:bg-red-500 data-active:text-white data-active:border-red-500 dark:data-active:bg-red-500 focus-visible:ring-red-200 dark:focus-visible:ring-red-700/40'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'purple',
         class:
           'text-purple-900/90 hover:bg-white/70 hover:text-purple-950 dark:text-purple-200 dark:hover:bg-purple-950/40 dark:hover:text-purple-50 data-active:bg-purple-500 data-active:text-white data-active:border-purple-500 dark:data-active:bg-purple-500 focus-visible:ring-purple-200 dark:focus-visible:ring-purple-700/40'
@@ -206,7 +206,7 @@ const tabsTriggerVariants = cva(
         variant: 'glass',
         theme: 'gray',
         class:
-          'text-gray-700 hover:bg-zinc-500/15 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-zinc-500/20 dark:hover:text-gray-50 data-active:bg-zinc-500/35 data-active:text-gray-900 dark:data-active:bg-zinc-700/55 dark:data-active:text-gray-50 focus-visible:ring-gray-400/60 dark:focus-visible:ring-gray-500/50'
+          'text-gray-700 hover:bg-gray-500/15 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-500/20 dark:hover:text-gray-50 data-active:bg-gray-500/35 data-active:text-gray-900 dark:data-active:bg-gray-700/55 dark:data-active:text-gray-50 focus-visible:ring-gray-400/60 dark:focus-visible:ring-gray-500/50'
       },
       {
         variant: 'glass',

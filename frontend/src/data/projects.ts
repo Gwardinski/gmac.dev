@@ -23,6 +23,14 @@ export const PROJECTS: Project[] = [
     code: 'https://github.com/Gwardinski/gmac.dev'
   },
   {
+    title: 'gmac.ui',
+    subTitle: 'The UI library for my projects.',
+    tags: ['Base UI', 'Radix', 'React', 'TypeScript', 'TailwindCSS', 'Shadcn/UI', 'Zod'],
+    description: 'Write once, copy & paste everywhere.',
+    link: 'https://gmac.dev/ui',
+    code: 'https://github.com/Gwardinski/gmac.dev'
+  },
+  {
     title: 'Pantie Packer',
     subTitle: 'Travel with Confidence',
     tags: ['Vite', 'Cloudflare', 'React', 'TypeScript', 'TailwindCSS', 'Shadcn/UI', 'Railway', 'TanStack Router', 'TanStack Form', 'Zod'],
@@ -74,14 +82,15 @@ export const PROJECTS: Project[] = [
     code: 'https://github.com/Gwardinski/bitzofcoinz_node',
     codeLocked: true,
     offline: true
-  },
-  {
-    title: 'Auth Starter',
-    subTitle: 'A starter project for building a REST API',
-    tags: ['NodeJS', 'Hono', 'PostgreSQL', 'TypeScript', 'DrizzleORM', 'Zod', 'OpenAPI'],
-    description: 'A starter project bootstrapping a REST API. Includes custom built Authentication & Authorization, rather than using an Auth library (Clerk, AuthJS etc).',
-    link: '/projects/project-2',
-    code: '/projects/project-2',
-    inProgress: true
   }
 ];
+
+// {
+//   title: 'Auth Starter',
+//   subTitle: 'A starter project for building a REST API',
+//   tags: ['NodeJS', 'Hono', 'PostgreSQL', 'TypeScript', 'DrizzleORM', 'Zod', 'OpenAPI'],
+//   description: 'A starter project bootstrapping a REST API. Includes custom built Authentication & Authorization, rather than using an Auth library (Clerk, AuthJS etc).',
+//   link: '/projects/project-2',
+//   code: '/projects/project-2',
+//   inProgress: true
+// }

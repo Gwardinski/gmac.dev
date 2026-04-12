@@ -4,7 +4,9 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
+  Badge,
   Button,
+  ButtonAnchor,
   Card,
   CardBody,
   CardDescription,
@@ -20,7 +22,8 @@ import {
   P1,
   PL
 } from '@/components/gmac.ui';
-import { Page, PageBanner, PageBannerHeader, PageHeader, PageHeaderAccordion, PageHeading, PageSection, PageSectionHeader } from '@/components/layout';
+import { Page } from '@/components/layout';
+import { useVariantState } from '@/components/VariantToggle';
 import { PLAYGROUNDS, type Playground } from '@/data/playgrounds';
 import { PROJECTS, type Project } from '@/data/projects';
 import { TECH_TAGS, type TECH_TAG } from '@/data/types';
@@ -49,6 +52,7 @@ export const Route = createFileRoute('/')({
 });
 
 function App() {
+  const { variant } = useVariantState();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState<TECH_TAG[]>([]);
 
@@ -61,15 +65,15 @@ function App() {
 
   return (
     <Page>
-      <PageHeader>
-        <PageHeading>
+      <Card as="header" variant={variant} theme="gray">
+        <CardHeader column>
           <H1>gmac.dev</H1>
           <H1Description className="font-mono">Portfolio | Playground | Scratch Pad</H1Description>
           <P1 className="font-mono">Gordon Macintyre | Developer | Scotland 🏴󠁧󠁢󠁳󠁣󠁴󠁿</P1>
-        </PageHeading>
+        </CardHeader>
 
-        <PageHeaderAccordion>
-          <Accordion>
+        <CardBody>
+          <Accordion className="max-w-2xl">
             <AccordionItem value="description">
               <AccordionTrigger>Site TechStack</AccordionTrigger>
               <AccordionContent className="flex flex-col gap-2 pb-6">
@@ -97,49 +101,53 @@ function App() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        </PageHeaderAccordion>
-      </PageHeader>
+        </CardBody>
+      </Card>
 
-      <PageBanner>
-        <PageBannerHeader>
+      <Card variant={variant} theme="gray">
+        <CardHeader>
           <H2>Buzzwords</H2>
-        </PageBannerHeader>
-        <ul className="flex flex-wrap gap-2">
-          {TECH_TAG_SORTED.map((tag) => (
-            <li key={tag}>
-              <Button key={tag} variant={selectedTags.includes(tag) ? 'primary' : 'glass'} onClick={() => handleTagClick(tag)}>
-                {tag}
-              </Button>
-            </li>
-          ))}
-        </ul>
-      </PageBanner>
+        </CardHeader>
+        <CardBody>
+          <ul className="flex flex-wrap gap-2">
+            {TECH_TAG_SORTED.map((tag) => (
+              <li key={tag}>
+                <Button key={tag} variant={selectedTags.includes(tag) ? 'primary' : 'glass'} onClick={() => handleTagClick(tag)}>
+                  {tag}
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </CardBody>
+      </Card>
 
-      <PageSection>
-        <PageSectionHeader>
+      <Card as="section" variant={variant} theme="gray">
+        <CardHeader column>
           <H2>Projects</H2>
           <H2Description>A collection of projects I've worked on.</H2Description>
-        </PageSectionHeader>
+        </CardHeader>
+        <CardBody>
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3 lg:gap-4">
+            {PROJECTS.map((project) => (
+              <ProjectCard key={project.title} project={project} selectedTags={selectedTags} onClick={() => setIsDialogOpen(true)} onTagClick={handleTagClick} />
+            ))}
+          </div>
+        </CardBody>
+      </Card>
 
-        <div className="grid grid-cols-1 gap-2 px-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-4 lg:px-16">
-          {PROJECTS.map((project) => (
-            <ProjectCard key={project.title} project={project} selectedTags={selectedTags} onClick={() => setIsDialogOpen(true)} onTagClick={handleTagClick} />
-          ))}
-        </div>
-      </PageSection>
-
-      <PageSection>
-        <PageSectionHeader>
+      <Card as="section" variant={variant} theme="gray">
+        <CardHeader column>
           <H2>Playgrounds</H2>
           <H2Description>Various bits & bobs I've been playing with.</H2Description>
-        </PageSectionHeader>
-
-        <div className="grid grid-cols-1 gap-2 px-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-4 lg:px-16">
-          {PLAYGROUNDS.map((playground) => (
-            <PlaygroundCard key={playground.title} playground={playground} onClick={() => setIsDialogOpen(true)} selectedTags={selectedTags} onTagClick={handleTagClick} />
-          ))}
-        </div>
-      </PageSection>
+        </CardHeader>
+        <CardBody>
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3 lg:gap-4">
+            {PLAYGROUNDS.map((playground) => (
+              <PlaygroundCard key={playground.title} playground={playground} onClick={() => setIsDialogOpen(true)} selectedTags={selectedTags} onTagClick={handleTagClick} />
+            ))}
+          </div>
+        </CardBody>
+      </Card>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="p-0">
@@ -156,12 +164,12 @@ const ProjectCard: React.FC<{
   onClick: () => void;
   onTagClick: (tag: TECH_TAG) => void;
 }> = ({ project, selectedTags, onClick, onTagClick }) => {
+  const { variant } = useVariantState();
   const locked = project.inProgress || project.offline;
   return (
     <Card
       key={project.title}
-      variant="glass"
-      theme="gray"
+      variant={variant}
       className={`relative ${project.inProgress || project.offline ? 'group' : ''}`}
       style={{ '--card-opacity': '1' } as React.CSSProperties}>
       {project.inProgress && (
@@ -182,45 +190,41 @@ const ProjectCard: React.FC<{
         {project.offline && <IconGhost className="absolute top-5 right-5 ml-auto size-8" />}
         <CardDescription>{project.subTitle}</CardDescription>
       </CardHeader>
-      <CardBody className={`flex flex-wrap gap-2 transition-opacity duration-300 ${locked ? 'group-hover:opacity-0' : ''}`}>
-        {project.tags
-          ?.sort((a, b) => a.localeCompare(b))
-          .map((tag) => (
-            <Button key={tag} variant={selectedTags.includes(tag) ? 'primary' : 'glass'} onClick={() => onTagClick(tag)} size="sm">
-              {tag}
-            </Button>
-          ))}
-        {project.deprecated_tags
-          ?.sort((a, b) => a.localeCompare(b))
-          .map((tag) => (
-            <Button key={tag} variant={selectedTags.includes(tag) ? 'primary' : 'glass'} onClick={() => onTagClick(tag)} size="sm" disabled>
-              <s>{tag}</s>
-            </Button>
-          ))}
+      <CardBody className={`transition-opacity duration-300 ${locked ? 'group-hover:opacity-0' : ''}`}>
+        <P1>{project.description}</P1>
+        <span className="flex flex-wrap gap-2">
+          {project.tags
+            ?.sort((a, b) => a.localeCompare(b))
+            .map((tag) => (
+              <Badge key={tag} variant={selectedTags.includes(tag) ? 'glass' : 'outline'} onClick={() => onTagClick(tag)}>
+                {tag}
+              </Badge>
+            ))}
+          {project.deprecated_tags
+            ?.sort((a, b) => a.localeCompare(b))
+            .map((tag) => (
+              <Badge key={tag} variant={selectedTags.includes(tag) ? 'glass' : 'outline'} onClick={() => onTagClick(tag)}>
+                <s>{tag}</s>
+              </Badge>
+            ))}
+        </span>
       </CardBody>
-      <CardBody className={`mt-auto transition-opacity duration-300 ${locked ? 'group-hover:opacity-0' : ''}`}>
-        <P1 className="italic">{project.description}</P1>
-      </CardBody>
-      <CardFooter className={`mt-auto transition-opacity duration-300 ${locked ? 'group-hover:opacity-0' : ''}`}>
-        <a href={project.link} target="_blank" rel="noopener noreferrer" className={`flex-1 ${locked ? 'pointer-events-none group-hover:pointer-events-none' : ''}`}>
-          <Button className="w-full">
-            <IconExternalLink />
-            View
-          </Button>
-        </a>
+      <CardFooter className={`transition-opacity duration-300 ${locked ? 'group-hover:opacity-0' : ''}`}>
         {project.codeLocked ? (
-          <Button onClick={onClick} className={`flex-1 ${locked ? 'pointer-events-none group-hover:pointer-events-none' : ''}`}>
+          <Button onClick={onClick} variant="ghost" className={`${locked ? 'pointer-events-none group-hover:pointer-events-none' : ''}`}>
             <IconLock />
             Code
           </Button>
         ) : (
-          <a href={project.code} target="_blank" rel="noopener noreferrer" className={`flex-1 ${locked ? 'pointer-events-none group-hover:pointer-events-none' : ''}`}>
-            <Button className="w-full">
-              <IconBrandGithub />
-              Code
-            </Button>
-          </a>
+          <ButtonAnchor variant="ghost" href={project.code} target="_blank" className={`${locked ? 'pointer-events-none group-hover:pointer-events-none' : ''}`}>
+            <IconBrandGithub />
+            Code
+          </ButtonAnchor>
         )}
+        <ButtonAnchor variant="outline" href={project.link} target="_blank" className={`${locked ? 'pointer-events-none group-hover:pointer-events-none' : ''}`}>
+          <IconExternalLink />
+          View
+        </ButtonAnchor>
       </CardFooter>
     </Card>
   );
@@ -232,30 +236,31 @@ const PlaygroundCard: React.FC<{
   selectedTags: string[];
   onTagClick: (tag: TECH_TAG) => void;
 }> = ({ playground, selectedTags, onTagClick }) => {
+  const { variant } = useVariantState();
   return (
-    <Card>
+    <Card variant={variant} theme="gray">
       <CardHeader>
         <CardTitle>{playground.title}</CardTitle>
         <CardDescription>{playground.subTitle}</CardDescription>
       </CardHeader>
       <CardBody className={`flex flex-wrap gap-2 transition-opacity duration-300`}>
-        {playground.tags
-          ?.sort((a, b) => a.localeCompare(b))
-          .map((tag) => (
-            <Button key={tag} size="sm" variant={selectedTags.includes(tag) ? 'primary' : 'glass'} onClick={() => onTagClick(tag)}>
-              {tag}
-            </Button>
-          ))}
-        {playground.deprecated_tags
-          ?.sort((a, b) => a.localeCompare(b))
-          .map((tag) => (
-            <Button key={tag} variant={selectedTags.includes(tag) ? 'primary' : 'glass'} onClick={() => onTagClick(tag)} size="sm" disabled>
-              <s>{tag}</s>
-            </Button>
-          ))}
-      </CardBody>
-      <CardBody>
         <p>{playground.description}</p>
+        <span className="flex flex-wrap gap-2">
+          {playground.tags
+            ?.sort((a, b) => a.localeCompare(b))
+            .map((tag) => (
+              <Badge key={tag} variant={selectedTags.includes(tag) ? 'primary' : 'glass'} onClick={() => onTagClick(tag)}>
+                {tag}
+              </Badge>
+            ))}
+          {playground.deprecated_tags
+            ?.sort((a, b) => a.localeCompare(b))
+            .map((tag) => (
+              <Badge key={tag} variant={selectedTags.includes(tag) ? 'primary' : 'glass'} onClick={() => onTagClick(tag)}>
+                <s>{tag}</s>
+              </Badge>
+            ))}
+        </span>
       </CardBody>
       <CardFooter className="mt-auto">
         <Link to={playground.link} className="flex-1">

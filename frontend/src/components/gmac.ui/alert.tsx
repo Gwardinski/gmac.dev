@@ -180,7 +180,7 @@ export const alertVariants = cva(
         variant: 'glass',
         theme: 'gray',
         class:
-          'bg-zinc-500/10 text-gray-900 [&_.alert-title]:text-gray-900 [&>.alert-header>svg]:text-gray-900 dark:bg-zinc-800/30 dark:text-gray-50 dark:[&_.alert-title]:text-gray-50 dark:[&>.alert-header>svg]:text-gray-50'
+          'bg-gray-500/10 text-gray-900 [&_.alert-title]:text-gray-900 [&>.alert-header>svg]:text-gray-900 dark:bg-gray-800/30 dark:text-gray-50 dark:[&_.alert-title]:text-gray-50 dark:[&>.alert-header>svg]:text-gray-50'
       },
       {
         variant: 'glass',
