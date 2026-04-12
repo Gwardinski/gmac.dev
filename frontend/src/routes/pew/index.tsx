@@ -1,4 +1,5 @@
-import { Page, PageHeader, PageHeading, PageSection } from '@/components/layout';
+import { Card, CardHeader, H1, H1Description } from '@/components/gmac.ui';
+import { Page } from '@/components/layout';
 import { GameBoard } from '@/components/pew/GameBoard';
 import { GameChat } from '@/components/pew/GameChat';
 import { GameControls } from '@/components/pew/GameControls';
@@ -9,7 +10,7 @@ import { GameRoomsActive } from '@/components/pew/GameRoomsActive';
 import { GameScore } from '@/components/pew/GameScore';
 import { GameShareButton } from '@/components/pew/GameShareButton';
 import { GameStateProvider, useLocalGameState } from '@/components/pew/useGetGameState';
-import { H1, H1Description } from '@/components/ui/typography';
+import { useVariantState } from '@/components/VariantToggle';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/pew/')({
@@ -17,20 +18,22 @@ export const Route = createFileRoute('/pew/')({
 });
 
 function RouteComponent() {
+  const { variant } = useVariantState();
   return (
     <Page>
-      <PageHeader>
-        <PageHeading>
+      <Card as="header" variant={variant} theme="gray">
+        <CardHeader column>
           <H1>Pew</H1>
           <H1Description>Has free access to professional game engines</H1Description>
           <H1Description>uses Javascript</H1Description>
-        </PageHeading>
-      </PageHeader>
-      <PageSection className="flex flex-col items-center justify-center gap-4 font-mono">
+        </CardHeader>
+      </Card>
+
+      <div className="mx-auto flex w-full flex-col items-center justify-center gap-4">
         <GameStateProvider>
           <GameContent />
         </GameStateProvider>
-      </PageSection>
+      </div>
     </Page>
   );
 }

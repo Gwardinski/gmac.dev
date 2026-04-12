@@ -1,23 +1,26 @@
-import { Link } from "@tanstack/react-router";
-import { Button } from "../ui";
-import { AppBackgroundToggle } from "./AppBackground";
-import { ThemeToggle } from "../ThemeToggle";
-import { ContactMeButton } from "../bits";
+import { ThemeToggle } from '../ThemeToggle';
+import { useVariantState, VariantToggle } from '../VariantToggle';
+import { ContactMeButton } from '../bits';
+import { ButtonLink, Card } from '../gmac.ui';
+import { AppBackgroundToggle } from './AppBackground';
 
 export const AppHeader: React.FC = () => {
+  const { variant } = useVariantState();
+
   return (
-    <header className="sticky top-0 z-10 flex h-16 w-full max-w-screen-2xl justify-center">
-      <div className="flex w-full items-center justify-between rounded-xl glass px-5 pt-4 pb-4 dark:dark-glass">
-        <Link to="/">
-          <Button>gmac.dev</Button>
-        </Link>
+    <header className="sticky top-0 z-10 flex w-full max-w-screen-2xl justify-center">
+      <Card variant={variant} theme="gray" as="div" className="flex-row">
+        <ButtonLink to="/" variant={variant}>
+          gmac.dev
+        </ButtonLink>
 
         <div className="ml-auto flex items-center gap-2">
           <ContactMeButton />
           <ThemeToggle />
+          <VariantToggle />
           <AppBackgroundToggle />
         </div>
-      </div>
+      </Card>
     </header>
   );
 };

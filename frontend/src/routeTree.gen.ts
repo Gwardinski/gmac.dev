@@ -11,7 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TestingIndexRouteImport } from './routes/testing/index'
+import { Route as UiIndexRouteImport } from './routes/ui/index'
 import { Route as PewIndexRouteImport } from './routes/pew/index'
 import { Route as MazeIndexRouteImport } from './routes/maze/index'
 import { Route as CoinflipIndexRouteImport } from './routes/coinflip/index'
@@ -26,9 +26,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TestingIndexRoute = TestingIndexRouteImport.update({
-  id: '/testing/',
-  path: '/testing/',
+const UiIndexRoute = UiIndexRouteImport.update({
+  id: '/ui/',
+  path: '/ui/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PewIndexRoute = PewIndexRouteImport.update({
@@ -53,7 +53,7 @@ export interface FileRoutesByFullPath {
   '/coinflip/': typeof CoinflipIndexRoute
   '/maze/': typeof MazeIndexRoute
   '/pew/': typeof PewIndexRoute
-  '/testing/': typeof TestingIndexRoute
+  '/ui/': typeof UiIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -61,7 +61,7 @@ export interface FileRoutesByTo {
   '/coinflip': typeof CoinflipIndexRoute
   '/maze': typeof MazeIndexRoute
   '/pew': typeof PewIndexRoute
-  '/testing': typeof TestingIndexRoute
+  '/ui': typeof UiIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -70,21 +70,14 @@ export interface FileRoutesById {
   '/coinflip/': typeof CoinflipIndexRoute
   '/maze/': typeof MazeIndexRoute
   '/pew/': typeof PewIndexRoute
-  '/testing/': typeof TestingIndexRoute
+  '/ui/': typeof UiIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/coinflip/' | '/maze/' | '/pew/' | '/testing/'
+  fullPaths: '/' | '/about' | '/coinflip/' | '/maze/' | '/pew/' | '/ui/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/coinflip' | '/maze' | '/pew' | '/testing'
-  id:
-    | '__root__'
-    | '/'
-    | '/about'
-    | '/coinflip/'
-    | '/maze/'
-    | '/pew/'
-    | '/testing/'
+  to: '/' | '/about' | '/coinflip' | '/maze' | '/pew' | '/ui'
+  id: '__root__' | '/' | '/about' | '/coinflip/' | '/maze/' | '/pew/' | '/ui/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -93,7 +86,7 @@ export interface RootRouteChildren {
   CoinflipIndexRoute: typeof CoinflipIndexRoute
   MazeIndexRoute: typeof MazeIndexRoute
   PewIndexRoute: typeof PewIndexRoute
-  TestingIndexRoute: typeof TestingIndexRoute
+  UiIndexRoute: typeof UiIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -112,11 +105,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/testing/': {
-      id: '/testing/'
-      path: '/testing'
-      fullPath: '/testing/'
-      preLoaderRoute: typeof TestingIndexRouteImport
+    '/ui/': {
+      id: '/ui/'
+      path: '/ui'
+      fullPath: '/ui/'
+      preLoaderRoute: typeof UiIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pew/': {
@@ -149,7 +142,7 @@ const rootRouteChildren: RootRouteChildren = {
   CoinflipIndexRoute: CoinflipIndexRoute,
   MazeIndexRoute: MazeIndexRoute,
   PewIndexRoute: PewIndexRoute,
-  TestingIndexRoute: TestingIndexRoute,
+  UiIndexRoute: UiIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,15 +1,18 @@
+import cyndaquilGif from '../../assets/cyndaquil.gif';
+import { Card, CardHeader, TextAnchor } from '../gmac.ui';
+import { useVariantState } from '../VariantToggle';
+
 export const AppFooter: React.FC = () => {
+  const { variant } = useVariantState();
   return (
-    <footer className="mt-auto flex flex-col rounded-lg glass px-5 pt-4 pb-4 text-sm dark:dark-glass">
-      <a
-        href="https://github.com/Gwardinski"
-        className="text-zinc-700 hover:underline dark:text-zinc-300"
-      >
-        @Gwardinski
-      </a>
-      <p className="text-zinc-700 dark:text-zinc-300">
-        gordon.macintyre@proton.me
-      </p>
-    </footer>
+    <Card variant={variant} className="mt-auto text-sm">
+      <CardHeader column>
+        <span className="relative flex items-center gap-2">
+          <TextAnchor href="https://github.com/Gwardinski">@Gwardinski</TextAnchor>
+          <img src={cyndaquilGif} alt="" className="absolute -top-2 left-28 h-8 w-8" />
+        </span>
+        <TextAnchor href="mailto:gordon.macintyre@proton.me">gordon.macintyre@proton.me</TextAnchor>
+      </CardHeader>
+    </Card>
   );
 };

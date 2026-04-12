@@ -6,7 +6,7 @@
   "tailwind": {
     "config": "",
     "css": "src/App.css",
-    "baseColor": "zinc",
+    "baseColor": "gray",
     "cssVariables": true,
     "prefix": ""
   },
@@ -17,5 +17,5 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "iconLibrary": "lucide"
+  "iconLibrary": "tabler"
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button } from '../ui';
+import { Button } from '../gmac.ui';
 
 export const GameShareButton = () => {
   const savedRoomName = localStorage.getItem('room-name') || '';
@@ -19,7 +19,7 @@ export const GameShareButton = () => {
   }
 
   return (
-    <Button onClick={onCopy} disabled={isCopied} className="w-[180px]">
+    <Button onClick={onCopy} theme="blue" disabled={isCopied} className="w-[180px]">
       {isCopied ? 'Copied!' : 'Share Room Link'}
     </Button>
   );

@@ -1,11 +1,9 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { RadioGroup, RadioGroupItem } from '@radix-ui/react-radio-group';
+import { Button, Field, FieldError, FieldGroup, FieldLabel, Input } from '@/components/gmac.ui';
 import { useForm } from '@tanstack/react-form';
 import { getRouteApi } from '@tanstack/react-router';
 import { useState } from 'react';
+import { Card, CardBody, CardFooter, RadioGroup, RadioGroupItem } from '../gmac.ui';
+import { useVariantState } from '../VariantToggle';
 import { COLORS, colorToHex, type Color } from './client-copies';
 import { mapAPIErrorsToForm } from './form-utils';
 import { useGameActions } from './useGetGameState';
@@ -23,6 +21,7 @@ function createNewPlayerDeviceId() {
 }
 
 export function GameJoinForm() {
+  const { variant } = useVariantState();
   const { onJoinSuccess } = useGameActions();
 
   const { mutate, isPending } = useJoinRoom();
@@ -76,8 +75,8 @@ export function GameJoinForm() {
   });
 
   return (
-    <Card className="w-full sm:max-w-md">
-      <CardContent>
+    <Card variant={variant} className="w-full sm:max-w-md">
+      <CardBody>
         <form
           id="game-join-form"
           onSubmit={(e) => {
@@ -173,7 +172,7 @@ export function GameJoinForm() {
             />
           </FieldGroup>
         </form>
-      </CardContent>
+      </CardBody>
       <CardFooter>
         <Field>
           <Button type="submit" form="game-join-form" disabled={isPending}>
