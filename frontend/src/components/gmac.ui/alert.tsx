@@ -52,7 +52,7 @@ export function AlertActions({ className, ...props }: React.HTMLAttributes<HTMLD
 // THEMING
 // ------------------------------------------------------------
 
-export const alertVariantOptions = ['primary', 'outline', 'glass'] as const;
+export const alertVariantOptions = ['solid', 'outline', 'glass'] as const;
 export type AlertVariantOption = (typeof alertVariantOptions)[number];
 
 export { buttonThemeOptions as alertThemeOptions, type ButtonTheme as AlertTheme } from './button';
@@ -61,7 +61,7 @@ export const alertWidthOptions = ['full', 'fit'] as const;
 export type AlertWidthOption = (typeof alertWidthOptions)[number];
 
 const alertVariantClasses = {
-  primary: 'border',
+  solid: 'border',
   outline: 'border',
   glass: 'border border-transparent backdrop-blur-sm glass-border dark:dark-glass-border'
 } satisfies Record<AlertVariantOption, string>;
@@ -96,39 +96,39 @@ export const alertVariants = cva(
       width: alertWidthClasses
     },
     compoundVariants: [
-      // primary
+      // solid
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'gray',
         class: 'border-gray-500 bg-gray-500 text-white [&_.alert-title]:text-white [&>.alert-header>svg]:text-white dark:border-gray-600 dark:bg-gray-600'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'blue',
         class: 'border-blue-500 bg-blue-500 text-white [&_.alert-title]:text-white [&>.alert-header>svg]:text-white dark:border-blue-600/80 dark:bg-blue-500/80'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'green',
         class: 'border-green-500 bg-green-500 text-white [&_.alert-title]:text-white [&>.alert-header>svg]:text-white dark:border-green-600/80 dark:bg-green-500/80'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'yellow',
         class: 'border-yellow-500 bg-yellow-500 text-white [&_.alert-title]:text-white [&>.alert-header>svg]:text-white dark:border-yellow-600/80 dark:bg-yellow-500/80'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'orange',
         class: 'border-orange-500 bg-orange-500 text-white [&_.alert-title]:text-white [&>.alert-header>svg]:text-white dark:border-orange-600/80 dark:bg-orange-500/80'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'red',
         class: 'border-red-500 bg-red-500 text-white [&_.alert-title]:text-white [&>.alert-header>svg]:text-white dark:border-red-600/80 dark:bg-red-500/80'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'purple',
         class: 'border-purple-500 bg-purple-500 text-white [&_.alert-title]:text-white [&>.alert-header>svg]:text-white dark:border-purple-600/80 dark:bg-purple-500/80'
       },

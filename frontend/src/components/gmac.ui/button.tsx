@@ -47,7 +47,7 @@ ButtonLink.displayName = 'ButtonLink';
 export const buttonSizeOptions = ['sm', 'md'] as const;
 export type ButtonSize = (typeof buttonSizeOptions)[number];
 
-export const buttonVariantOptions = ['primary', 'outline', 'ghost', 'glass'] as const;
+export const buttonVariantOptions = ['solid', 'outline', 'ghost', 'glass'] as const;
 export type ButtonVariantOption = (typeof buttonVariantOptions)[number];
 
 export const buttonThemeOptions = ['gray', 'blue', 'green', 'yellow', 'orange', 'red', 'purple'] as const;
@@ -59,7 +59,7 @@ const buttonSizeClasses = {
 } satisfies Record<ButtonSize, string>;
 
 const buttonVariantClasses = {
-  primary: 'text-white border ',
+  solid: 'text-white border ',
   outline: ' border bg-transparent dark:bg-transparent ',
   ghost: 'bg-transparent dark:bg-transparent border border-transparent dark:border-transparent',
   glass: 'backdrop-blur dark:backdrop-blur-[32px] glass-border dark:dark-glass-border '
@@ -86,7 +86,7 @@ export const buttonVariants = cva(
       theme: buttonThemeClasses
     },
     compoundVariants: [
-      // PRIMARY
+      // SOLID
       // White text for yellow and (dark) gray
       // Base => Hover => Active
       // Light
@@ -96,7 +96,7 @@ export const buttonVariants = cva(
       // Background: 600 => 700 => 800
       // Border:     600 => 700 => 800
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'blue',
         class: `bg-blue-500 hover:bg-blue-600 active:bg-blue-700
                 border-blue-500 hover:border-blue-600 active:border-blue-700
@@ -106,7 +106,7 @@ export const buttonVariants = cva(
                 dark:focus-visible:ring-blue-600/50`
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'green',
         class: `bg-green-500 hover:bg-green-600 active:bg-green-700
                 border-green-500 hover:border-green-600 active:border-green-700
@@ -116,7 +116,7 @@ export const buttonVariants = cva(
                 dark:focus-visible:ring-green-600/50`
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'yellow',
         class: `bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700
                 border-yellow-500 hover:border-yellow-600 active:border-yellow-700
@@ -127,7 +127,7 @@ export const buttonVariants = cva(
                 text-black dark:text-black`
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'orange',
         class: `bg-orange-500 hover:bg-orange-600 active:bg-orange-700
                 border-orange-500 hover:border-orange-600 active:border-orange-700
@@ -137,7 +137,7 @@ export const buttonVariants = cva(
                 dark:focus-visible:ring-orange-600/50`
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'red',
         class: `bg-red-500 hover:bg-red-600 active:bg-red-700
                 border-red-500 hover:border-red-600 active:border-red-700
@@ -147,7 +147,7 @@ export const buttonVariants = cva(
                 dark:focus-visible:ring-red-600/50`
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'purple',
         class: `bg-purple-500 hover:bg-purple-600 active:bg-purple-700
                 border-purple-500 hover:border-purple-600 active:border-purple-700
@@ -158,7 +158,7 @@ export const buttonVariants = cva(
       },
       // Gray unique colors for "blank" use-case:
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'gray',
         class: `bg-gray-800 hover:bg-gray-900 active:bg-gray-950 
                 border-gray-800 hover:border-gray-900 active:border-gray-950
@@ -359,7 +359,7 @@ export const buttonVariants = cva(
     ],
     defaultVariants: {
       size: 'md',
-      variant: 'primary',
+      variant: 'solid',
       theme: 'gray'
     }
   }

@@ -22,13 +22,13 @@ Badge.displayName = 'Badge';
 // THEMING (subset of Button variants; static — no interactive states)
 // ------------------------------------------------------------
 
-export const badgeVariantOptions = ['primary', 'outline', 'glass'] as const;
+export const badgeVariantOptions = ['solid', 'outline', 'glass'] as const;
 export type BadgeVariantOption = (typeof badgeVariantOptions)[number];
 
 export { buttonThemeOptions as badgeThemeOptions, type ButtonTheme as BadgeThemeOption } from './button';
 
 const badgeVariantClasses = {
-  primary: 'text-white border ',
+  solid: 'text-white border ',
   outline: ' border bg-transparent dark:bg-transparent ',
   glass: 'backdrop-blur dark:backdrop-blur-[32px] glass-border dark:dark-glass-border '
 } satisfies Record<BadgeVariantOption, string>;
@@ -51,39 +51,39 @@ export const badgeVariants = cva(
       theme: badgeThemeClasses
     },
     compoundVariants: [
-      // primary — Button primary at rest (no hover/active/focus)
+      // solid — Button solid at rest (no hover/active/focus)
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'blue',
         class: 'border-blue-500 bg-blue-500 dark:border-blue-600 dark:bg-blue-600 [&_svg]:text-inherit'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'green',
         class: 'border-green-500 bg-green-500 dark:border-green-600 dark:bg-green-600 [&_svg]:text-inherit'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'yellow',
         class: 'border-yellow-500 bg-yellow-500 dark:border-yellow-600 dark:bg-yellow-600 text-black dark:text-black [&_svg]:text-inherit'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'orange',
         class: 'border-orange-500 bg-orange-500 dark:border-orange-600 dark:bg-orange-600 [&_svg]:text-inherit'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'red',
         class: 'border-red-500 bg-red-500 dark:border-red-600 dark:bg-red-600 [&_svg]:text-inherit'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'purple',
         class: 'border-purple-500 bg-purple-500 dark:border-purple-600 dark:bg-purple-600 [&_svg]:text-inherit'
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'gray',
         class: 'border-gray-800 bg-gray-800 dark:border-gray-300 dark:bg-gray-300 text-white dark:text-black [&_svg]:text-inherit'
       },
@@ -161,7 +161,7 @@ export const badgeVariants = cva(
       }
     ],
     defaultVariants: {
-      variant: 'primary',
+      variant: 'solid',
       theme: 'gray'
     }
   }

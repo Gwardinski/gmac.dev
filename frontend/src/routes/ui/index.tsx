@@ -249,7 +249,7 @@ function UIRoute() {
                   </AlertDescription>
                   {theme === 'yellow' && (
                     <AlertActions>
-                      <Button size="sm" type="button" theme={theme} variant={variant === 'glass' ? 'outline' : variant === 'primary' ? 'ghost' : 'primary'}>
+                      <Button size="sm" type="button" theme={theme} variant={variant === 'glass' ? 'outline' : variant === 'solid' ? 'ghost' : 'solid'}>
                         Action
                       </Button>
                     </AlertActions>
@@ -349,10 +349,10 @@ function Controls() {
         <div className="flex flex-col items-start gap-2">
           Site Theme:
           <span className="flex flex-wrap items-center gap-4">
-            <Button variant={theme === 'light' ? 'primary' : 'outline'} onClick={() => setTheme('light')}>
+            <Button variant={theme === 'light' ? 'solid' : 'outline'} onClick={() => setTheme('light')}>
               Light
             </Button>
-            <Button variant={theme === 'dark' ? 'primary' : 'outline'} onClick={() => setTheme('dark')}>
+            <Button variant={theme === 'dark' ? 'solid' : 'outline'} onClick={() => setTheme('dark')}>
               Dark
             </Button>
           </span>
@@ -360,10 +360,10 @@ function Controls() {
         <div className="flex flex-col items-start gap-2">
           Site Variant:
           <span className="flex flex-wrap items-center gap-4">
-            <Button variant={variant === 'solid' ? 'primary' : 'outline'} onClick={() => setVariant('solid')}>
+            <Button variant={variant === 'solid' ? 'solid' : 'outline'} onClick={() => setVariant('solid')}>
               Solid
             </Button>
-            <Button variant={variant === 'glass' ? 'primary' : 'outline'} onClick={() => setVariant('glass')}>
+            <Button variant={variant === 'glass' ? 'solid' : 'outline'} onClick={() => setVariant('glass')}>
               Glass
             </Button>
           </span>
@@ -371,13 +371,13 @@ function Controls() {
         <div className="flex flex-col items-start gap-2">
           Page Cards:
           <span className="flex flex-wrap items-center gap-4">
-            <Button variant={card === 'solid' ? 'primary' : 'outline'} onClick={() => setCard('solid')}>
+            <Button variant={card === 'solid' ? 'solid' : 'outline'} onClick={() => setCard('solid')}>
               Solid
             </Button>
-            <Button variant={card === 'glass' ? 'primary' : 'outline'} onClick={() => setCard('glass')}>
+            <Button variant={card === 'glass' ? 'solid' : 'outline'} onClick={() => setCard('glass')}>
               Glass
             </Button>
-            <Button variant={card === 'outline' ? 'primary' : 'outline'} onClick={() => setCard('outline')}>
+            <Button variant={card === 'outline' ? 'solid' : 'outline'} onClick={() => setCard('outline')}>
               Outline
             </Button>
           </span>

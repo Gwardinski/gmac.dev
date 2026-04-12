@@ -57,7 +57,7 @@ const iconButtonSizeClasses = {
 } satisfies Record<ButtonSize, string>;
 
 const iconButtonVariantClasses = {
-  primary: 'text-white border ',
+  solid: 'text-white border ',
   outline: ' border bg-transparent dark:bg-transparent ',
   ghost: 'bg-transparent dark:bg-transparent border border-transparent dark:border-transparent',
   glass: 'backdrop-blur dark:backdrop-blur-[32px] glass-border dark:dark-glass-border '
@@ -84,9 +84,9 @@ export const iconButtonVariants = cva(
       theme: iconButtonThemeClasses
     },
     compoundVariants: [
-      // PRIMARY — aligned with button.tsx
+      // solid — aligned with button.tsx
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'blue',
         class: `bg-blue-500 hover:bg-blue-600 active:bg-blue-700
                 border-blue-500 hover:border-blue-600 active:border-blue-700
@@ -96,7 +96,7 @@ export const iconButtonVariants = cva(
                 dark:focus-visible:ring-blue-600/50`
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'green',
         class: `bg-green-500 hover:bg-green-600 active:bg-green-700
                 border-green-500 hover:border-green-600 active:border-green-700
@@ -106,7 +106,7 @@ export const iconButtonVariants = cva(
                 dark:focus-visible:ring-green-600/50`
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'yellow',
         class: `bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700
                 border-yellow-500 hover:border-yellow-600 active:border-yellow-700
@@ -117,7 +117,7 @@ export const iconButtonVariants = cva(
                 text-black dark:text-black`
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'orange',
         class: `bg-orange-500 hover:bg-orange-600 active:bg-orange-700
                 border-orange-500 hover:border-orange-600 active:border-orange-700
@@ -127,7 +127,7 @@ export const iconButtonVariants = cva(
                 dark:focus-visible:ring-orange-600/50`
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'red',
         class: `bg-red-500 hover:bg-red-600 active:bg-red-700
                 border-red-500 hover:border-red-600 active:border-red-700
@@ -137,7 +137,7 @@ export const iconButtonVariants = cva(
                 dark:focus-visible:ring-red-600/50`
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'purple',
         class: `bg-purple-500 hover:bg-purple-600 active:bg-purple-700
                 border-purple-500 hover:border-purple-600 active:border-purple-700
@@ -147,7 +147,7 @@ export const iconButtonVariants = cva(
                 dark:focus-visible:ring-purple-600/50`
       },
       {
-        variant: 'primary',
+        variant: 'solid',
         theme: 'gray',
         class: `bg-gray-800 hover:bg-gray-900 active:bg-gray-950 
                 border-gray-800 hover:border-gray-900 active:border-gray-950
@@ -338,7 +338,7 @@ export const iconButtonVariants = cva(
     ],
     defaultVariants: {
       size: 'md',
-      variant: 'primary',
+      variant: 'solid',
       theme: 'gray'
     }
   }

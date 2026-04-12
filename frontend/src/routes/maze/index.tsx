@@ -3,7 +3,7 @@ import { Page } from '@/components/layout';
 import { useVariantState } from '@/components/VariantToggle';
 import { createFileRoute } from '@tanstack/react-router';
 import { differenceInMilliseconds } from 'date-fns';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import { create } from 'zustand';
 
 export const Route = createFileRoute('/maze/')({
@@ -22,7 +22,8 @@ function RouteComponent() {
   const [hasButton2, setHasButton2] = useState(false);
   const [hasButton3, setHasButton3] = useState(false);
 
-  useFollowMouse(hasTorch);
+  const mazePlayAreaRef = useRef<HTMLDivElement>(null);
+  useFollowMouse(hasTorch, mazePlayAreaRef);
   const { seconds, isRunning, startTimer, stopTimer } = useGameTimer();
 
   function onStartGame() {
@@ -107,6 +108,7 @@ function RouteComponent() {
 
             <CardBody>
               <div
+                ref={mazePlayAreaRef}
                 className={`${isRunning ? 'hover:cursor-move' : 'hover:cursor-crosshair'} relative mx-auto flex w-fit flex-col items-center justify-center`}
                 onMouseLeave={resetGame}>
                 {bricks.map((row, i) => (
@@ -207,19 +209,32 @@ const useGameTimer = () => {
   return { seconds, isRunning, startTimer, stopTimer };
 };
 
-const useFollowMouse = (hasTorch: boolean) => {
+const useFollowMouse = (hasTorch: boolean, areaRef: RefObject<HTMLDivElement | null>) => {
   useEffect(() => {
     const pos = document.documentElement;
+    const area = areaRef.current;
+
     if (!hasTorch) {
-      var start = document.getElementById('start');
-      pos.style.setProperty('--x', (start?.offsetLeft ?? 0) + 32 + 'px');
-      pos.style.setProperty('--y', (start?.offsetTop ?? 0) + 32 + 'px');
+      const start = document.getElementById('start');
+      if (area && start) {
+        const ar = area.getBoundingClientRect();
+        const sr = start.getBoundingClientRect();
+        pos.style.setProperty('--x', `${sr.left - ar.left + sr.width / 2}px`);
+        pos.style.setProperty('--y', `${sr.top - ar.top + sr.height / 2}px`);
+      } else if (start) {
+        pos.style.setProperty('--x', `${(start.offsetLeft ?? 0) + 32}px`);
+        pos.style.setProperty('--y', `${(start.offsetTop ?? 0) + 32}px`);
+      }
       return;
     }
 
     const follow = (e: MouseEvent) => {
-      pos.style.setProperty('--x', e.layerX + 'px');
-      pos.style.setProperty('--y', e.layerY + 'px');
+      if (!area) {
+        return;
+      }
+      const rect = area.getBoundingClientRect();
+      pos.style.setProperty('--x', `${e.clientX - rect.left}px`);
+      pos.style.setProperty('--y', `${e.clientY - rect.top}px`);
     };
 
     pos.addEventListener('mousemove', follow);
@@ -227,7 +242,7 @@ const useFollowMouse = (hasTorch: boolean) => {
     return () => {
       pos.removeEventListener('mousemove', follow);
     };
-  }, [hasTorch]);
+  }, [hasTorch, areaRef]);
 
   return {};
 };

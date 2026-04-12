@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Button } from '../gmac.ui';
+import { useVariantState } from '../VariantToggle';
 
 export const ContactMeButton = () => {
+  const { variant } = useVariantState();
   const [showText, setShowText] = useState(false);
   const [broken, setBroken] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -69,7 +71,7 @@ export const ContactMeButton = () => {
       <div className="relative hidden items-center px-4 lg:flex">
         {!hidden && (
           <div id="button-wrapper" className="absolute right-0 z-10">
-            <Button id="contact-button" variant="glass" className="min-w-48" onClick={toggleDrop}>
+            <Button id="contact-button" variant={variant} className="min-w-48" onClick={toggleDrop}>
               Get in Touch!
             </Button>
           </div>

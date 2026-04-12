@@ -50,11 +50,11 @@ export const FormMockExample = () => {
   return (
     <Tabs>
       <TabsList>
-        <TabsTrigger value="primary">Primary</TabsTrigger>
+        <TabsTrigger value="solid">solid</TabsTrigger>
         <TabsTrigger value="glass">Glass</TabsTrigger>
       </TabsList>
-      <TabsContent value="primary">
-        <FormExample variant="primary" />
+      <TabsContent value="solid">
+        <FormExample variant="solid" />
       </TabsContent>
       <TabsContent value="glass">
         <FormExample variant="glass" />
@@ -63,7 +63,7 @@ export const FormMockExample = () => {
   );
 };
 
-const FormExample = ({ variant }: { variant: 'primary' | 'glass' }) => {
+const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const form = useForm({

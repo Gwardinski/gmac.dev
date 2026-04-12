@@ -27,7 +27,7 @@ export const PROJECTS: Project[] = [
     subTitle: 'The UI library for my projects.',
     tags: ['Base UI', 'Radix', 'React', 'TypeScript', 'TailwindCSS', 'Shadcn/UI', 'Zod'],
     description: 'Write once, copy & paste everywhere.',
-    link: 'https://gmac.dev/ui',
+    link: '/ui',
     code: 'https://github.com/Gwardinski/gmac.dev'
   },
   {

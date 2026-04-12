@@ -5,7 +5,7 @@ export const GameLeaveButton = () => {
   const { onLeave } = useGameActions();
 
   return (
-    <Button onClick={onLeave} className="w-[180px]" variant="glass" theme="red">
+    <Button onClick={onLeave} className="w-[180px]" theme="red">
       Leave Game
     </Button>
   );

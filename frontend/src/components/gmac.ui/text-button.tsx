@@ -59,7 +59,7 @@ const textButtonThemeClasses = {
 } satisfies Record<TextButtonTheme, string>;
 
 export const textButtonVariants = cva(
-  `${textVariants({ size: 'md' })} gap-2 min-w-fit w-fit inline-flex items-center underline underline-offset-2 hover:underline-offset-4 rounded-sm _focus-primary
+  `${textVariants({ size: 'md' })} gap-2 min-w-fit w-fit inline-flex items-center underline underline-offset-2 hover:underline-offset-4
    whitespace-nowrap ring-offset-white transition-colors cursor-pointer disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-gray-900`,
   {
     variants: {

@@ -18,6 +18,6 @@ interface VariantState {
 }
 
 export const useVariantState = create<VariantState>((set) => ({
-  variant: 'solid',
+  variant: 'glass',
   setVariant: (variant: 'solid' | 'glass') => set(() => ({ variant }))
 }));

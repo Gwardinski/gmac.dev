@@ -22,7 +22,7 @@ export const AppBackground: React.FC = () => {
   const { theme } = useTheme();
   const { variant } = useVariantState();
 
-  const isOn = useVideoBGStore((state) => state.isOn) && variant === 'glass';
+  const isOn = useVideoBGStore((state) => state.isOn);
 
   return (
     <>
@@ -35,19 +35,31 @@ export const AppBackground: React.FC = () => {
       />
 
       {/* bg video */}
-      {theme === 'dark' && isOn && (
-        <video muted loop autoPlay playsInline id="myVideo" className="fixed top-0 left-0 -z-40 h-screen min-h-screen w-screen object-cover">
+      {theme === 'dark' && (
+        <video
+          muted
+          loop
+          autoPlay
+          playsInline
+          id="myVideo"
+          className={cn('fixed top-0 left-0 -z-40 h-screen min-h-screen w-screen object-cover', variant === 'glass' && isOn ? '' : 'hidden')}>
           <source src={vbg2} type="video/mp4" />
         </video>
       )}
-      {theme === 'light' && isOn && (
-        <video muted loop autoPlay playsInline id="myVideo" className="fixed top-0 left-0 -z-40 h-screen min-h-screen w-screen object-cover">
+      {theme === 'light' && (
+        <video
+          muted
+          loop
+          autoPlay
+          playsInline
+          id="myVideo"
+          className={cn('fixed top-0 left-0 -z-40 h-screen min-h-screen w-screen object-cover', variant === 'glass' && isOn ? '' : 'hidden')}>
           <source src={vbg1} type="video/mp4" />
         </video>
       )}
       {/* bg blur */}
 
-      {variant === 'glass' && <div className="fixed top-0 left-0 -z-30 h-screen min-h-screen w-screen object-cover backdrop-blur-2xl" />}
+      <div className={cn('fixed top-0 left-0 -z-30 h-screen min-h-screen w-screen object-cover backdrop-blur-2xl', variant === 'glass' ? '' : 'hidden')} />
     </>
   );
 };

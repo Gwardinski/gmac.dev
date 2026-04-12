@@ -4,7 +4,7 @@ import { useVariantState } from '../VariantToggle';
 export const GameControls = () => {
   const { variant } = useVariantState();
   return (
-    <Card variant={variant} className="w-fit">
+    <Card variant={variant} className="h-[106px] w-fit">
       <CardHeader>
         <div className="flex flex-col items-center justify-center gap-2">
           <span className="flex flex-wrap gap-1">

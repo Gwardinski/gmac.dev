@@ -16,7 +16,7 @@ function AccordionTrigger({ className, children, ...props }: AccordionPrimitive.
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          'group/accordion-trigger relative flex flex-1 items-start justify-between rounded-lg border border-transparent py-2.5 text-left font-medium transition-all outline-none hover:underline focus-visible:border-blue-500 focus-visible:ring-3 focus-visible:ring-blue-500/50 focus-visible:after:border-blue-500 aria-disabled:pointer-events-none aria-disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-gray-500 dark:**:data-[slot=accordion-trigger-icon]:text-gray-400',
+          'group/accordion-trigger relative flex flex-1 items-center gap-2 rounded-lg border border-transparent py-2.5 text-left font-medium transition-all outline-none hover:underline focus-visible:border-blue-500 focus-visible:ring-3 focus-visible:ring-blue-500/50 focus-visible:after:border-blue-500 aria-disabled:pointer-events-none aria-disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-gray-500 dark:**:data-[slot=accordion-trigger-icon]:text-gray-400',
           className
         )}
         {...props}>
@@ -33,7 +33,7 @@ function AccordionContent({ className, children, ...props }: AccordionPrimitive.
     <AccordionPrimitive.Panel data-slot="accordion-content" className="overflow-hidden data-closed:animate-accordion-up data-open:animate-accordion-down" {...props}>
       <div
         className={cn(
-          'h-(--accordion-panel-height) pt-0 pb-2.5 data-ending-style:h-0 data-starting-style:h-0 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-gray-900 dark:[&_a]:hover:text-gray-50 [&_p:not(:last-child)]:mb-4',
+          'h-(--accordion-panel-height) pt-0 pb-2.5 data-ending-style:h-0 data-starting-style:h-0 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-gray-900 dark:[&_a]:hover:text-gray-50',
           className
         )}>
         {children}

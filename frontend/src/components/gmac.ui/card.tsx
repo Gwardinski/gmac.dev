@@ -50,7 +50,11 @@ function CardHeader({ className, column = false, ...props }: React.ComponentProp
   return (
     <header
       data-slot="card-header"
-      className={cn('flex w-full gap-4 px-4 pb-4 group-has-data-[slot=card-body]:pb-5 [&_svg]:text-purple-500', column ? 'flex-col' : 'flex-row flex-wrap items-center', className)}
+      className={cn(
+        'flex w-full gap-x-4 px-4 pb-4 group-has-data-[slot=card-body]:pb-5 [&_svg]:text-purple-500',
+        column ? 'flex-col' : 'flex-row flex-wrap items-center',
+        className
+      )}
       {...props}
     />
   );
@@ -61,7 +65,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
 }
 
 function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
-  return <P3 data-slot="card-description" className={cn('', className)} {...props} />;
+  return <P3 data-slot="card-description" className={cn('w-full basis-full', className)} {...props} />;
 }
 
 function CardAction({ className, ...props }: React.ComponentProps<'div'>) {
@@ -69,11 +73,17 @@ function CardAction({ className, ...props }: React.ComponentProps<'div'>) {
 }
 
 function CardBody({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot="card-content" className={cn('flex flex-col gap-4 px-4 pb-4', className)} {...props} />;
+  return <div data-slot="card-body" className={cn('flex flex-col gap-4 px-4 pb-4', className)} {...props} />;
 }
 
-function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot="card-footer" className={cn('mt-auto flex items-center justify-end gap-2 rounded-b-xl px-4 pt-4 pb-4', className)} {...props} />;
+function CardFooter({ className, column = false, ...props }: React.ComponentProps<'div'> & { column?: boolean }) {
+  return (
+    <div
+      data-slot="card-footer"
+      className={cn('mt-auto flex items-center justify-end gap-2 rounded-b-xl px-4 pt-4 pb-4', column ? 'w-full flex-col' : 'flex-row justify-end', className)}
+      {...props}
+    />
+  );
 }
 
 // ------------------------------------------------------------

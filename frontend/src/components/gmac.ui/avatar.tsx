@@ -161,7 +161,7 @@ export const avatarVariants = cva(
       theme: avatarThemeClasses
     },
     compoundVariants: [
-      // solid — matches Button primary
+      // solid
       {
         variant: 'solid',
         theme: 'blue',
