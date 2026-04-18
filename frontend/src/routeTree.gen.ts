@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RatiosRouteImport } from './routes/ratios'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UiIndexRouteImport } from './routes/ui/index'
@@ -16,6 +17,11 @@ import { Route as PewIndexRouteImport } from './routes/pew/index'
 import { Route as MazeIndexRouteImport } from './routes/maze/index'
 import { Route as CoinflipIndexRouteImport } from './routes/coinflip/index'
 
+const RatiosRoute = RatiosRouteImport.update({
+  id: '/ratios',
+  path: '/ratios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -50,6 +56,7 @@ const CoinflipIndexRoute = CoinflipIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ratios': typeof RatiosRoute
   '/coinflip/': typeof CoinflipIndexRoute
   '/maze/': typeof MazeIndexRoute
   '/pew/': typeof PewIndexRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ratios': typeof RatiosRoute
   '/coinflip': typeof CoinflipIndexRoute
   '/maze': typeof MazeIndexRoute
   '/pew': typeof PewIndexRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ratios': typeof RatiosRoute
   '/coinflip/': typeof CoinflipIndexRoute
   '/maze/': typeof MazeIndexRoute
   '/pew/': typeof PewIndexRoute
@@ -74,15 +83,31 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/coinflip/' | '/maze/' | '/pew/' | '/ui/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/ratios'
+    | '/coinflip/'
+    | '/maze/'
+    | '/pew/'
+    | '/ui/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/coinflip' | '/maze' | '/pew' | '/ui'
-  id: '__root__' | '/' | '/about' | '/coinflip/' | '/maze/' | '/pew/' | '/ui/'
+  to: '/' | '/about' | '/ratios' | '/coinflip' | '/maze' | '/pew' | '/ui'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/ratios'
+    | '/coinflip/'
+    | '/maze/'
+    | '/pew/'
+    | '/ui/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  RatiosRoute: typeof RatiosRoute
   CoinflipIndexRoute: typeof CoinflipIndexRoute
   MazeIndexRoute: typeof MazeIndexRoute
   PewIndexRoute: typeof PewIndexRoute
@@ -91,6 +116,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/ratios': {
+      id: '/ratios'
+      path: '/ratios'
+      fullPath: '/ratios'
+      preLoaderRoute: typeof RatiosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -139,6 +171,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  RatiosRoute: RatiosRoute,
   CoinflipIndexRoute: CoinflipIndexRoute,
   MazeIndexRoute: MazeIndexRoute,
   PewIndexRoute: PewIndexRoute,
