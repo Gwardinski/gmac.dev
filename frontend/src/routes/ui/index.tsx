@@ -29,6 +29,9 @@ import {
   P1,
   P2,
   P3,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   PS,
   Tabs,
   TabsContent,
@@ -51,7 +54,7 @@ import { PL } from '@/components/gmac.ui/typography';
 import { Page } from '@/components/layout';
 import { useTheme } from '@/components/theme-provider';
 import { useVariantState } from '@/components/VariantToggle';
-import { IconInfoCircle, IconPlus } from '@tabler/icons-react';
+import { IconInfoCircle, IconPlus, IconSettings } from '@tabler/icons-react';
 import { createFileRoute } from '@tanstack/react-router';
 import { create } from 'zustand';
 
@@ -342,48 +345,62 @@ function Controls() {
   const { variant, setVariant } = useVariantState();
   const { card, setCard } = useBackgroundState();
   return (
-    <Card className="fixed right-4 bottom-4 z-30 w-fit max-w-lg">
-      <CardBody>
-        <P1>Switching "Variant" will not affect cards in this page.</P1>
-        <P1>Instead set manually, which allows switching to "Outline" to better see a components "Glass" variant directly on a video background</P1>
-        <div className="flex flex-col items-start gap-2">
-          Site Theme:
-          <span className="flex flex-wrap items-center gap-4">
-            <Button variant={theme === 'light' ? 'solid' : 'outline'} onClick={() => setTheme('light')}>
-              Light
-            </Button>
-            <Button variant={theme === 'dark' ? 'solid' : 'outline'} onClick={() => setTheme('dark')}>
-              Dark
-            </Button>
-          </span>
-        </div>
-        <div className="flex flex-col items-start gap-2">
-          Site Variant:
-          <span className="flex flex-wrap items-center gap-4">
-            <Button variant={variant === 'solid' ? 'solid' : 'outline'} onClick={() => setVariant('solid')}>
-              Solid
-            </Button>
-            <Button variant={variant === 'glass' ? 'solid' : 'outline'} onClick={() => setVariant('glass')}>
-              Glass
-            </Button>
-          </span>
-        </div>
-        <div className="flex flex-col items-start gap-2">
-          Page Cards:
-          <span className="flex flex-wrap items-center gap-4">
-            <Button variant={card === 'solid' ? 'solid' : 'outline'} onClick={() => setCard('solid')}>
-              Solid
-            </Button>
-            <Button variant={card === 'glass' ? 'solid' : 'outline'} onClick={() => setCard('glass')}>
-              Glass
-            </Button>
-            <Button variant={card === 'outline' ? 'solid' : 'outline'} onClick={() => setCard('outline')}>
-              Outline
-            </Button>
-          </span>
-        </div>
-      </CardBody>
-    </Card>
+    <>
+      <Popover defaultOpen>
+        <PopoverTrigger
+          render={
+            <IconButton variant="solid" theme="gray" className="fixed right-4 bottom-4 z-30 w-fit max-w-lg">
+              <IconSettings />
+            </IconButton>
+          }>
+          Open Popover
+        </PopoverTrigger>
+        <PopoverContent>
+          <Card className="max-w-lg lg:w-fit">
+            <CardBody>
+              <P1>Switching "Variant" will not affect cards in this page.</P1>
+              <P1>Instead set manually, which allows switching to "Outline" to better see a components "Glass" variant directly on a video background</P1>
+              <div className="flex flex-col items-start gap-2">
+                Site Theme:
+                <span className="flex flex-wrap items-center gap-4">
+                  <Button variant={theme === 'light' ? 'solid' : 'outline'} onClick={() => setTheme('light')}>
+                    Light
+                  </Button>
+                  <Button variant={theme === 'dark' ? 'solid' : 'outline'} onClick={() => setTheme('dark')}>
+                    Dark
+                  </Button>
+                </span>
+              </div>
+              <div className="flex flex-col items-start gap-2">
+                Site Variant:
+                <span className="flex flex-wrap items-center gap-4">
+                  <Button variant={variant === 'solid' ? 'solid' : 'outline'} onClick={() => setVariant('solid')}>
+                    Solid
+                  </Button>
+                  <Button variant={variant === 'glass' ? 'solid' : 'outline'} onClick={() => setVariant('glass')}>
+                    Glass
+                  </Button>
+                </span>
+              </div>
+              <div className="flex flex-col items-start gap-2">
+                Page Cards:
+                <span className="flex flex-wrap items-center gap-4">
+                  <Button variant={card === 'solid' ? 'solid' : 'outline'} onClick={() => setCard('solid')}>
+                    Solid
+                  </Button>
+                  <Button variant={card === 'glass' ? 'solid' : 'outline'} onClick={() => setCard('glass')}>
+                    Glass
+                  </Button>
+                  <Button variant={card === 'outline' ? 'solid' : 'outline'} onClick={() => setCard('outline')}>
+                    Outline
+                  </Button>
+                </span>
+              </div>
+            </CardBody>
+          </Card>
+        </PopoverContent>
+      </Popover>
+    </>
   );
 }
 

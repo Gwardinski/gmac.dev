@@ -13,6 +13,7 @@ export * from './input-group';
 export * from './kbd';
 export * from './label';
 export * from './notification';
+export * from './popover';
 export * from './radio-group';
 export * from './separator';
 export * from './sheet';
