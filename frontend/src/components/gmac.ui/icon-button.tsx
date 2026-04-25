@@ -303,37 +303,44 @@ export const iconButtonVariants = cva(
       {
         variant: 'glass',
         theme: 'gray',
-        class: 'bg-gray-50/25 hover:bg-gray-50/35 active:bg-gray-50/45 dark:bg-gray-950/25 dark:hover:bg-gray-950/35 dark:active:bg-gray-950/45'
+        class:
+          'bg-gray-50/25 hover:bg-gray-50/35 active:bg-gray-50/45 dark:bg-gray-950/25 dark:hover:bg-gray-950/35 dark:active:bg-gray-950/45 focus-visible:ring-gray-500/50 dark:focus-visible:ring-gray-500/50'
       },
       {
         variant: 'glass',
         theme: 'blue',
-        class: 'bg-blue-50/25 hover:bg-blue-50/35 active:bg-blue-50/45 dark:bg-blue-950/25 dark:hover:bg-blue-950/35 dark:active:bg-blue-950/45'
+        class:
+          'bg-blue-50/25 hover:bg-blue-50/35 active:bg-blue-50/45 dark:bg-blue-950/25 dark:hover:bg-blue-950/35 dark:active:bg-blue-950/45 focus-visible:ring-blue-500/50 dark:focus-visible:ring-blue-500/50'
       },
       {
         variant: 'glass',
         theme: 'green',
-        class: 'bg-green-50/25 hover:bg-green-50/35 active:bg-green-50/45 dark:bg-green-950/25 dark:hover:bg-green-950/35 dark:active:bg-green-950/45'
+        class:
+          'bg-green-50/25 hover:bg-green-50/35 active:bg-green-50/45 dark:bg-green-950/25 dark:hover:bg-green-950/35 dark:active:bg-green-950/45 focus-visible:ring-green-500/50 dark:focus-visible:ring-green-500/50'
       },
       {
         variant: 'glass',
         theme: 'yellow',
-        class: 'bg-yellow-50/25 hover:bg-yellow-50/35 active:bg-yellow-50/45 dark:bg-yellow-950/25 dark:hover:bg-yellow-950/35 dark:active:bg-yellow-950/45'
+        class:
+          'bg-yellow-50/25 hover:bg-yellow-50/35 active:bg-yellow-50/45 dark:bg-yellow-950/25 dark:hover:bg-yellow-950/35 dark:active:bg-yellow-950/45 focus-visible:ring-yellow-500/50 dark:focus-visible:ring-yellow-500/50'
       },
       {
         variant: 'glass',
         theme: 'orange',
-        class: 'bg-orange-50/25 hover:bg-orange-50/35 active:bg-orange-50/45 dark:bg-orange-950/25 dark:hover:bg-orange-950/35 dark:active:bg-orange-950/45'
+        class:
+          'bg-orange-50/25 hover:bg-orange-50/35 active:bg-orange-50/45 dark:bg-orange-950/25 dark:hover:bg-orange-950/35 dark:active:bg-orange-950/45 focus-visible:ring-orange-500/50 dark:focus-visible:ring-orange-500/50'
       },
       {
         variant: 'glass',
         theme: 'red',
-        class: 'bg-red-50/25 hover:bg-red-50/35 active:bg-red-50/45 dark:bg-red-950/25 dark:hover:bg-red-950/35 dark:active:bg-red-950/45'
+        class:
+          'bg-red-50/25 hover:bg-red-50/35 active:bg-red-50/45 dark:bg-red-950/25 dark:hover:bg-red-950/35 dark:active:bg-red-950/45 focus-visible:ring-red-500/50 dark:focus-visible:ring-red-500/50'
       },
       {
         variant: 'glass',
         theme: 'purple',
-        class: 'bg-purple-50/25 hover:bg-purple-50/35 active:bg-purple-50/45 dark:bg-purple-950/25 dark:hover:bg-purple-950/35 dark:active:bg-purple-950/45'
+        class:
+          'bg-purple-50/25 hover:bg-purple-50/35 active:bg-purple-50/45 dark:bg-purple-950/25 dark:hover:bg-purple-950/35 dark:active:bg-purple-950/45 focus-visible:ring-purple-500/50 dark:focus-visible:ring-purple-500/50'
       }
     ],
     defaultVariants: {

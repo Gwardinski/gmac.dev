@@ -60,7 +60,7 @@ function SheetHeader({
       <SheetPrimitive.Close
         data-slot="sheet-close"
         render={
-          <IconButton variant="ghost" className="absolute top-0 right-0" aria-label="Close">
+          <IconButton variant="ghost" className="absolute -top-2 -right-2" aria-label="Close">
             <IconX />
           </IconButton>
         }
@@ -111,14 +111,5 @@ function SheetDescription({
 }: SheetPrimitive.Description.Props & {
   srOnly?: boolean;
 }) {
-  return <SheetPrimitive.Description data-slot="sheet-description" className={cn(textVariants({ theme: 'secondary', size: 'sm' }), srOnly && 'sr-only', className)} {...props} />;
+  return <SheetPrimitive.Description data-slot="sheet-description" className={cn(textVariants({ theme: 'tertiary' }), srOnly && 'sr-only', className)} {...props} />;
 }
-
-// Not required. Use Zustand to trigger the sheet instead.
-// function SheetTrigger({ ...props }: SheetPrimitive.Trigger.Props) {
-//   return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />;
-// }
-
-// function SheetClose({ ...props }: SheetPrimitive.Close.Props) {
-//   return <SheetPrimitive.Close data-slot="sheet-close" {...props} />;
-// }

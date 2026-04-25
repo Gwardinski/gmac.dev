@@ -113,7 +113,7 @@ const cardThemeClasses = {
 
 /** Static surface (border / background / text). Used by `Card`; no hover or focus affordances. */
 export const cardVariants = cva(
-  'group relative flex max-h-fit w-full flex-col rounded-lg border border-gray-300 px-4 pt-4 pb-4 has-data-[slot=card-body]:px-0 has-data-[slot=card-body]:pb-0 has-data-[slot=card-header]:px-0 has-data-[slot=card-header]:pb-0 has-data-[slot=card-image]:pt-0',
+  'group relative flex max-h-fit w-full flex-col rounded-lg border border-gray-300 dark:border-gray-700 px-4 pt-4 pb-4 has-data-[slot=card-body]:px-0 has-data-[slot=card-body]:pb-0 has-data-[slot=card-header]:px-0 has-data-[slot=card-header]:pb-0 has-data-[slot=card-image]:pt-0',
   {
     variants: {
       variant: cardVariantClasses,
@@ -166,12 +166,12 @@ export const cardVariants = cva(
       },
       // glass
       { variant: 'glass', theme: 'gray', class: 'bg-gray-50/25 text-black dark:bg-gray-950/25 dark:text-white' },
-      { variant: 'glass', theme: 'blue', class: 'bg-purple-50/25 text-blue-950 dark:bg-gray-950/25 dark:text-blue-50' },
-      { variant: 'glass', theme: 'green', class: 'bg-purple-50/25 text-green-950 dark:bg-gray-950/25 dark:text-green-50' },
-      { variant: 'glass', theme: 'yellow', class: 'bg-purple-50/25 text-yellow-950 dark:bg-gray-950/25 dark:text-yellow-50' },
-      { variant: 'glass', theme: 'orange', class: 'bg-purple-50/25 text-orange-950 dark:bg-gray-950/25 dark:text-orange-50' },
-      { variant: 'glass', theme: 'red', class: 'bg-purple-50/25 text-red-950 dark:bg-gray-950/25 dark:text-red-50' },
-      { variant: 'glass', theme: 'purple', class: 'bg-purple-50/25 text-purple-950 dark:bg-gray-950/25 dark:text-purple-50' }
+      { variant: 'glass', theme: 'blue', class: 'bg-blue-50/25 text-blue-950 dark:bg-blue-950/25 dark:text-blue-50' },
+      { variant: 'glass', theme: 'green', class: 'bg-green-50/25 text-green-950 dark:bg-green-950/25 dark:text-green-50' },
+      { variant: 'glass', theme: 'yellow', class: 'bg-yellow-50/25 text-yellow-950 dark:bg-yellow-950/25 dark:text-yellow-50' },
+      { variant: 'glass', theme: 'orange', class: 'bg-orange-50/25 text-orange-950 dark:bg-orange-950/25 dark:text-orange-50' },
+      { variant: 'glass', theme: 'red', class: 'bg-red-50/25 text-red-950 dark:bg-red-950/25 dark:text-red-50' },
+      { variant: 'glass', theme: 'purple', class: 'bg-purple-50/25 text-purple-950 dark:bg-purple-950/25 dark:text-purple-50' }
     ],
     defaultVariants: {
       variant: 'solid',
@@ -275,43 +275,43 @@ const cardInteractiveVariants = cva('transition-colors', {
       variant: 'glass',
       theme: 'gray',
       class:
-        'hover:bg-purple-50/35 active:bg-purple-50/40 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-gray-400/60 dark:hover:bg-gray-950/65 dark:active:bg-gray-950/80 dark:focus-visible:ring-gray-500/50'
+        'hover:bg-gray-50/35 active:bg-gray-50/45 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-gray-500/50 dark:hover:bg-gray-950/35 dark:active:bg-gray-950/45 dark:focus-visible:ring-gray-500/50'
     },
     {
       variant: 'glass',
       theme: 'blue',
       class:
-        'hover:bg-purple-50/35 active:bg-purple-50/40 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-blue-400/50 dark:hover:bg-gray-950/65 dark:active:bg-gray-950/80 dark:focus-visible:ring-blue-500/40'
+        'hover:bg-blue-50/35 active:bg-blue-50/45 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-blue-500/50 dark:hover:bg-blue-950/35 dark:active:bg-blue-950/45 dark:focus-visible:ring-blue-500/50'
     },
     {
       variant: 'glass',
       theme: 'green',
       class:
-        'hover:bg-purple-50/35 active:bg-purple-50/40 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-green-400/50 dark:hover:bg-gray-950/65 dark:active:bg-gray-950/80 dark:focus-visible:ring-green-500/40'
+        'hover:bg-green-50/35 active:bg-green-50/45 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-green-500/50 dark:hover:bg-green-950/35 dark:active:bg-green-950/45 dark:focus-visible:ring-green-500/50'
     },
     {
       variant: 'glass',
       theme: 'yellow',
       class:
-        'hover:bg-purple-50/38 active:bg-purple-50/42 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-yellow-400/50 dark:hover:bg-gray-950/65 dark:active:bg-gray-950/80 dark:focus-visible:ring-yellow-500/40'
+        'hover:bg-yellow-50/35 active:bg-yellow-50/45 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-yellow-500/50 dark:hover:bg-yellow-950/35 dark:active:bg-yellow-950/45 dark:focus-visible:ring-yellow-500/50'
     },
     {
       variant: 'glass',
       theme: 'orange',
       class:
-        'hover:bg-purple-50/35 active:bg-purple-50/40 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-orange-400/50 dark:hover:bg-gray-950/65 dark:active:bg-gray-950/80 dark:focus-visible:ring-orange-500/40'
+        'hover:bg-orange-50/35 active:bg-orange-50/45 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-orange-500/50 dark:hover:bg-orange-950/35 dark:active:bg-orange-950/45 dark:focus-visible:ring-orange-500/50'
     },
     {
       variant: 'glass',
       theme: 'red',
       class:
-        'hover:bg-purple-50/35 active:bg-purple-50/40 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-red-400/50 dark:hover:bg-gray-950/65 dark:active:bg-gray-950/80 dark:focus-visible:ring-red-500/40'
+        'hover:bg-red-50/35 active:bg-red-50/45 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-red-500/50 dark:hover:bg-red-950/35 dark:active:bg-red-950/45 dark:focus-visible:ring-red-500/50'
     },
     {
       variant: 'glass',
       theme: 'purple',
       class:
-        'hover:bg-purple-50/35 active:bg-purple-50/40 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-purple-400/50 dark:hover:bg-gray-950/65 dark:active:bg-gray-950/80 dark:focus-visible:ring-purple-500/40'
+        'hover:bg-purple-50/35 active:bg-purple-50/45 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-purple-500/50 dark:hover:bg-purple-950/35 dark:active:bg-purple-950/45 dark:focus-visible:ring-purple-500/50'
     }
   ],
   defaultVariants: {

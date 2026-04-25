@@ -48,7 +48,7 @@ function DialogHeader({
       <DialogPrimitive.Close
         data-slot="dialog-close"
         render={
-          <IconButton variant="ghost" className="absolute top-0 right-0" aria-label="Close">
+          <IconButton variant="ghost" className="absolute -top-2 -right-2" aria-label="Close">
             <IconX />
           </IconButton>
         }
@@ -98,7 +98,7 @@ function DialogDescription({
 }: DialogPrimitive.Description.Props & {
   srOnly?: boolean;
 }) {
-  return <DialogPrimitive.Description data-slot="dialog-description" className={cn(textVariants({ theme: 'secondary', size: 'sm' }), srOnly && 'sr-only', className)} {...props} />;
+  return <DialogPrimitive.Description data-slot="dialog-description" className={cn(textVariants({ theme: 'tertiary', size: 'md' }), srOnly && 'sr-only', className)} {...props} />;
 }
 
 // Not required. Use Zustand to trigger the dialog instead.

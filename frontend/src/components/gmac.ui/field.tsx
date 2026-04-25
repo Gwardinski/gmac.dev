@@ -1,12 +1,10 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import { useMemo } from 'react';
 import { Label } from './label';
-import { Separator } from './separator';
-import { headingVariants, P1, P2 } from './typography';
+import { P2, textVariants } from './typography';
 import { cn } from './utils';
 
 export function Form({ className, ...props }: React.ComponentProps<'form'>) {
-  // noValidate - ignore browser built-in validation
   return <form noValidate className={cn('flex w-full max-w-xl flex-col gap-8', className)} {...props} />;
 }
 
@@ -15,7 +13,11 @@ export function FieldSet({ className, ...props }: React.ComponentProps<'fieldset
 }
 
 export function FieldLegend({ className, ...props }: React.ComponentProps<'legend'>) {
-  return <legend data-slot="field-legend" className={cn(headingVariants({ type: 'h4' }), 'mb-3', className)} {...props} />;
+  return <legend data-slot="field-legend" className={cn(textVariants({ size: 'md', weight: 600 }), 'mb-3', className)} {...props} />;
+}
+
+export function FieldDescription({ className, ...props }: React.ComponentProps<typeof P2>) {
+  return <P2 data-slot="field-description" className={cn(className)} {...props} />;
 }
 
 export function FieldGroup({ className, checkbox = false, ...props }: React.ComponentProps<'div'> & { checkbox?: boolean }) {
@@ -40,11 +42,6 @@ const fieldVariants = cva(
           '[&_[data-slot=field-label]]:flex-auto',
           'has-[>[data-slot=field-content]]:items-start has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-1'
         ],
-        responsive: [
-          'flex-col [&>*]:w-full [&>.sr-only]:w-auto @md/field-group:flex-row @md/field-group:items-center @md/field-group:[&>*]:w-auto',
-          '@md/field-group:[&_[data-slot=field-label]]:flex-auto',
-          '@md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-1'
-        ]
       }
     },
     defaultVariants: {
@@ -53,6 +50,7 @@ const fieldVariants = cva(
   }
 );
 
+// For use inside horizontal Fields
 export function FieldContent({ className, ...props }: React.ComponentProps<'div'>) {
   return <div data-slot="field-content" className={cn('group/field-content flex flex-1 flex-col gap-0.5', className)} {...props} />;
 }
@@ -68,33 +66,6 @@ export function FieldLabel({ className, ...props }: React.ComponentProps<typeof 
       )}
       {...props}
     />
-  );
-}
-
-export function FieldTitle({ className, ...props }: React.ComponentProps<typeof P1>) {
-  return <P1 data-slot="field-label" className={cn(className)} {...props} />;
-}
-
-export function FieldDescription({ className, ...props }: React.ComponentProps<typeof P2>) {
-  return <P2 data-slot="field-description" className={cn(className)} {...props} />;
-}
-
-export function FieldSeparator({
-  children,
-  className,
-  ...props
-}: React.ComponentProps<'div'> & {
-  children?: React.ReactNode;
-}) {
-  return (
-    <div data-slot="field-separator" data-content={!!children} className={cn('relative -my-2 h-5 group-data-[variant=outline]/field-group:-mb-2', className)} {...props}>
-      <Separator className="absolute inset-0 top-1/2" />
-      {children && (
-        <span className="relative mx-auto block w-fit bg-white px-2 text-gray-700 dark:bg-gray-900 dark:text-gray-300" data-slot="field-separator-content">
-          {children}
-        </span>
-      )}
-    </div>
   );
 }
 

@@ -61,7 +61,7 @@ export function P2({ className, ...props }: TextProps) {
 }
 
 export function P3({ className, ...props }: TextProps) {
-  return <Text theme="secondary" size="sm" className={cn(className)} {...props} />;
+  return <Text theme="tertiary" className={cn(className)} {...props} />;
 }
 
 export function PS({ className, ...props }: TextProps) {

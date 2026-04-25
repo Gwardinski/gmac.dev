@@ -6,12 +6,9 @@ import { Alert, AlertDescription, AlertHeader, AlertTitle } from '../alert';
 import { Button } from '../button';
 import { Checkbox } from '../checkbox';
 import { Field, FieldContent, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet, Form } from '../field';
-import { Input } from '../input';
-import { InputAddon, InputGroup, InputGroupButton, InputGroupIconButton, InputGroupText, TextareaAddon } from '../input-group';
+import { Input, InputAddon, InputGroup, InputGroupButton, InputGroupIconButton, InputGroupText, Textarea, TextareaBottom } from '../input-group';
 import { RadioGroup, RadioGroupItem } from '../radio-group';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../tabs';
 import { TextAnchor } from '../text-button';
-import { Textarea } from '../textarea';
 
 const FORM_ID = 'form-example-demo';
 
@@ -25,8 +22,8 @@ type SubscriptionOption = {
 const planOptions: SubscriptionOption[] = [
   { optionId: '0', label: 'Label Option 1 (disabled)', disabled: true },
   { optionId: '1', label: 'Label Option 2' },
-  { optionId: '2', label: 'Label Option 3', description: 'Description Option 3' },
-  { optionId: '3', label: 'Label Option 4', description: 'Description Option 4' }
+  { optionId: '2', label: 'Label Option 3 (disabled)', description: 'Description (disabled)', disabled: true },
+  { optionId: '3', label: 'Label Option 4', description: 'Description' }
 ];
 
 const formExampleSchema = z.object({
@@ -44,26 +41,7 @@ const formExampleSchema = z.object({
   option: z.string().min(1, 'You must select an option to continue.')
 });
 
-const textareaControlClass = 'min-h-0 border-0 shadow-none ring-0 focus-visible:ring-0 dark:bg-transparent';
-
-export const FormMockExample = () => {
-  return (
-    <Tabs>
-      <TabsList>
-        <TabsTrigger value="solid">solid</TabsTrigger>
-        <TabsTrigger value="glass">Glass</TabsTrigger>
-      </TabsList>
-      <TabsContent value="solid">
-        <FormExample variant="solid" />
-      </TabsContent>
-      <TabsContent value="glass">
-        <FormExample variant="glass" />
-      </TabsContent>
-    </Tabs>
-  );
-};
-
-const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
+export const FormExample = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const form = useForm({
@@ -122,21 +100,20 @@ const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
   return (
     <Form
       id={FORM_ID}
-      data-form-variant={variant}
       noValidate
       onSubmit={(e) => {
         e.preventDefault();
         form.handleSubmit();
       }}>
       <FieldSet>
-        <FieldLegend>FieldLegend: Input</FieldLegend>
+        <FieldLegend>FieldLegend</FieldLegend>
         <FieldGroup>
           <form.Field name="username">
             {(field) => {
               const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field>
-                  <FieldLabel htmlFor={`${FORM_ID}-username`}>FieldLabel: Username</FieldLabel>
+                  <FieldLabel htmlFor={`${FORM_ID}-username`}>FieldLabel</FieldLabel>
                   <Input
                     id={`${FORM_ID}-username`}
                     name={field.name}
@@ -144,11 +121,11 @@ const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                     aria-invalid={isInvalid}
-                    placeholder="Hal Jordan"
+                    placeholder="Placeholder"
                     autoComplete="off"
                   />
                   <FieldError errors={field.state.meta.errors} />
-                  <FieldDescription>FieldDescription: Choose a unique username.</FieldDescription>
+                  <FieldDescription>FieldDescription</FieldDescription>
                 </Field>
               );
             }}
@@ -158,7 +135,7 @@ const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
               const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field>
-                  <FieldLabel htmlFor={`${FORM_ID}-password`}>FieldLabel: Password</FieldLabel>
+                  <FieldLabel htmlFor={`${FORM_ID}-password`}>FieldLabel</FieldLabel>
                   <Input
                     id={`${FORM_ID}-password`}
                     name={field.name}
@@ -171,7 +148,7 @@ const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
                     autoComplete="off"
                   />
                   <FieldError errors={field.state.meta.errors} />
-                  <FieldDescription>FieldDescription: Must be at least 8 characters.</FieldDescription>
+                  <FieldDescription>FieldDescription</FieldDescription>
                 </Field>
               );
             }}
@@ -180,18 +157,18 @@ const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
       </FieldSet>
 
       <FieldSet>
-        <FieldLegend>FieldLegend: InputGroup</FieldLegend>
-        <FieldDescription>FieldDescription: InputGroup with addons</FieldDescription>
+        <FieldLegend>FieldLegend</FieldLegend>
+        <FieldDescription>FieldDescription</FieldDescription>
         <FieldGroup>
           <form.Field name="websitePath">
             {(field) => {
               const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field>
-                  <FieldLabel htmlFor={`${FORM_ID}-website`}>Site path</FieldLabel>
+                  <FieldLabel htmlFor={`${FORM_ID}-website`}>FieldLabel</FieldLabel>
                   <InputGroup>
                     <InputAddon>
-                      <InputGroupText>https://</InputGroupText>
+                      <InputGroupText>InputGroupText</InputGroupText>
                     </InputAddon>
                     <Input
                       id={`${FORM_ID}-website`}
@@ -201,7 +178,7 @@ const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       aria-invalid={isInvalid}
-                      placeholder="yoursite.com"
+                      placeholder="Placeholder"
                       autoComplete="off"
                     />
                   </InputGroup>
@@ -215,7 +192,7 @@ const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
               const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field>
-                  <FieldLabel htmlFor={`${FORM_ID}-lookup`}>Lookup</FieldLabel>
+                  <FieldLabel htmlFor={`${FORM_ID}-lookup`}>FieldLabel</FieldLabel>
                   <InputGroup>
                     <InputAddon align="left">
                       <InputGroupText>
@@ -230,10 +207,10 @@ const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       aria-invalid={isInvalid}
-                      placeholder="Search…"
+                      placeholder="Placeholder"
                     />
                     <InputAddon align="right">
-                      <InputGroupButton type="button">Go</InputGroupButton>
+                      <InputGroupButton type="button">InputGroupButton</InputGroupButton>
                     </InputAddon>
                   </InputGroup>
                   <FieldError errors={field.state.meta.errors} />
@@ -245,72 +222,45 @@ const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
       </FieldSet>
 
       <FieldSet>
-        <FieldLegend>Textarea &amp; addons</FieldLegend>
+        <FieldLegend>FieldLegend</FieldLegend>
+        <FieldDescription>FieldDescription</FieldDescription>
         <FieldGroup>
-          <form.Field name="notes">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={`${FORM_ID}-notes`}>Notes</FieldLabel>
-                <InputGroup>
-                  <TextareaAddon align="top">
-                    <InputGroupText>Top addon</InputGroupText>
-                  </TextareaAddon>
-                  <Textarea
-                    id={`${FORM_ID}-notes`}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Notes…"
-                    rows={2}
-                    className={textareaControlClass}
-                  />
-                </InputGroup>
-              </Field>
-            )}
-          </form.Field>
           <form.Field name="reply">
             {(field) => (
               <Field>
-                <FieldLabel htmlFor={`${FORM_ID}-reply`}>Reply</FieldLabel>
-                <InputGroup>
-                  <Textarea
-                    id={`${FORM_ID}-reply`}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Reply…"
-                    rows={2}
-                    className={textareaControlClass}
-                  />
-                  <TextareaAddon align="bottom">
-                    <InputGroupText>Bottom addon</InputGroupText>
-                  </TextareaAddon>
-                </InputGroup>
+                <FieldLabel htmlFor={`${FORM_ID}-reply`}>FieldLabel</FieldLabel>
+                <Textarea
+                  id={`${FORM_ID}-reply`}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Placeholder"
+                  rows={2}
+                />
               </Field>
             )}
           </form.Field>
           <form.Field name="attachmentNote">
             {(field) => (
               <Field>
-                <FieldLabel htmlFor={`${FORM_ID}-attach`}>Attachment hint</FieldLabel>
-                <InputGroup className="h-auto">
+                <FieldLabel htmlFor={`${FORM_ID}-attach`}>FieldLabel</FieldLabel>
+                <InputGroup>
                   <Textarea
                     id={`${FORM_ID}-attach`}
+                    variant="group"
                     name={field.name}
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="With right addon"
+                    placeholder="Placeholder"
                     rows={2}
-                    className={`flex-1 ${textareaControlClass}`}
                   />
-                  <TextareaAddon align="right">
+                  <TextareaBottom>
                     <InputGroupIconButton type="button" theme="gray" variant="ghost" aria-label="Attach">
                       <IconPlus />
                     </InputGroupIconButton>
-                  </TextareaAddon>
+                  </TextareaBottom>
                 </InputGroup>
               </Field>
             )}
@@ -320,7 +270,7 @@ const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
 
       <FieldGroup>
         <FieldSet>
-          <FieldLegend>FieldLegend: Checkboxes</FieldLegend>
+          <FieldLegend>FieldLegend</FieldLegend>
           <FieldDescription>FieldDescription</FieldDescription>
           <FieldGroup checkbox>
             <form.Field name="terms">
@@ -331,7 +281,7 @@ const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
                     <Checkbox id={`${FORM_ID}-tos`} checked={field.state.value} onCheckedChange={(checked) => field.handleChange(checked === true)} aria-invalid={isInvalid} />
                     <FieldContent>
                       <FieldLabel htmlFor={`${FORM_ID}-tos`}>
-                        FieldLabel: I agree to the{' '}
+                        FieldLabel I agree to the{' '}
                         <TextAnchor href="/" target="_blank">
                           TextAnchor
                         </TextAnchor>
@@ -355,9 +305,9 @@ const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
                       aria-invalid={isInvalid}
                     />
                     <FieldContent>
-                      <FieldLabel htmlFor={`${FORM_ID}-checkbox1`}>FieldLabel: I agree to this.</FieldLabel>
+                      <FieldLabel htmlFor={`${FORM_ID}-checkbox1`}>FieldLabel</FieldLabel>
                       <FieldError errors={field.state.meta.errors} />
-                      <FieldDescription>FieldDescription: description of consent.</FieldDescription>
+                      <FieldDescription>FieldDescription</FieldDescription>
                     </FieldContent>
                   </Field>
                 );
@@ -377,7 +327,7 @@ const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
                       aria-disabled={true}
                     />
                     <FieldContent>
-                      <FieldLabel htmlFor={`${FORM_ID}-dis-false`}>Disabled unchecked</FieldLabel>
+                      <FieldLabel htmlFor={`${FORM_ID}-dis-false`}>FieldLabel Disabled unchecked</FieldLabel>
                       <FieldDescription>FieldDescription: When disabled.</FieldDescription>
                     </FieldContent>
                   </Field>
@@ -397,7 +347,10 @@ const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
                       disabled={true}
                       aria-disabled={true}
                     />
-                    <FieldLabel htmlFor={`${FORM_ID}-dis-true`}>Disabled checked (label only)</FieldLabel>
+                    <FieldContent>
+                      <FieldLabel htmlFor={`${FORM_ID}-dis-true`}>FieldLabel Disabled checked</FieldLabel>
+                      <FieldDescription>FieldDescription: When disabled.</FieldDescription>
+                    </FieldContent>
                   </Field>
                 );
               }}
@@ -413,8 +366,8 @@ const FormExample = ({ variant }: { variant: 'solid' | 'glass' }) => {
             const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
             return (
               <FieldSet>
-                <FieldLegend>FieldLegend: Radio</FieldLegend>
-                <FieldDescription>FieldDescription: Radio description.</FieldDescription>
+                <FieldLegend>FieldLegend</FieldLegend>
+                <FieldDescription>FieldDescription</FieldDescription>
                 <RadioGroup name={field.name} value={field.state.value} onValueChange={field.handleChange}>
                   {planOptions.map((opt) => (
                     <Field orientation="horizontal" data-disabled={opt.disabled} key={opt.optionId}>

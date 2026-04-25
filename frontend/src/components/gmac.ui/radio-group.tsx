@@ -11,7 +11,7 @@ function RadioGroupItem({ className, ...props }: RadioPrimitive.Root.Props) {
     <RadioPrimitive.Root
       data-slot="radio-group-item"
       className={cn(
-        'group/radio-group-item peer relative flex aspect-square size-4 shrink-0 rounded-full border border-gray-300 outline-none after:absolute after:-inset-x-3 after:-inset-y-2 focus-visible:border-blue-500 focus-visible:ring-3 focus-visible:ring-blue-500/50 aria-invalid:border-red-700 aria-invalid:ring-3 aria-invalid:ring-red-700/20 aria-invalid:aria-checked:border-blue-600 data-checked:border-blue-600 data-checked:bg-blue-600 data-checked:text-white dark:border-gray-600 dark:bg-gray-800/30 dark:data-checked:bg-blue-600 dark:aria-invalid:border-red-500 dark:aria-invalid:ring-red-500/40 disabled:cursor-not-allowed disabled:opacity-50',
+        'group/radio-group-item peer relative flex aspect-square size-4 shrink-0 rounded-full border border-gray-300 outline-none after:absolute after:-inset-x-3 after:-inset-y-2 focus-visible:border-blue-500 focus-visible:ring-3 focus-visible:ring-blue-500/50 aria-invalid:border-red-700 aria-invalid:ring-3 aria-invalid:ring-red-700/50 aria-invalid:aria-checked:border-blue-600 data-checked:border-blue-600 data-checked:bg-blue-600 data-checked:text-white dark:border-gray-600 dark:bg-gray-800/30 dark:data-checked:bg-blue-600 dark:aria-invalid:border-red-500 dark:aria-invalid:ring-red-500/50 disabled:cursor-not-allowed disabled:opacity-50',
         className
       )}
       {...props}>

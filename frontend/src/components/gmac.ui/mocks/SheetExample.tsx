@@ -3,7 +3,7 @@ import { Button } from '../button';
 import { Sheet, SheetBody, SheetContent, SheetFooter, SheetHeader } from '../sheet';
 import { P1 } from '../typography';
 
-export const SheetMock = () => {
+export const SheetExample = () => {
   const { topOpen, rightOpen, bottomOpen, leftOpen, closeTop, closeRight, closeBottom, closeLeft, openTop, openRight, openBottom, openLeft } = useSheetState();
 
   return (

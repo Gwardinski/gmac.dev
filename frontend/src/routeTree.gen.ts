@@ -8,152 +8,163 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root';
-import { Route as AboutRouteImport } from './routes/about';
-import { Route as CoinflipIndexRouteImport } from './routes/coinflip/index';
-import { Route as IndexRouteImport } from './routes/index';
-import { Route as MazeIndexRouteImport } from './routes/maze/index';
-import { Route as PewIndexRouteImport } from './routes/pew/index';
-import { Route as RatiosRouteImport } from './routes/ratios';
-import { Route as UiIndexRouteImport } from './routes/ui/index';
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as RatiosRouteImport } from './routes/ratios'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as UiIndexRouteImport } from './routes/ui/index'
+import { Route as PewIndexRouteImport } from './routes/pew/index'
+import { Route as MazeIndexRouteImport } from './routes/maze/index'
+import { Route as CoinflipIndexRouteImport } from './routes/coinflip/index'
 
 const RatiosRoute = RatiosRouteImport.update({
   id: '/ratios',
   path: '/ratios',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UiIndexRoute = UiIndexRouteImport.update({
   id: '/ui/',
   path: '/ui/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PewIndexRoute = PewIndexRouteImport.update({
   id: '/pew/',
   path: '/pew/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MazeIndexRoute = MazeIndexRouteImport.update({
   id: '/maze/',
   path: '/maze/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CoinflipIndexRoute = CoinflipIndexRouteImport.update({
   id: '/coinflip/',
   path: '/coinflip/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute;
-  '/about': typeof AboutRoute;
-  '/ratios': typeof RatiosRoute;
-  '/coinflip/': typeof CoinflipIndexRoute;
-  '/maze/': typeof MazeIndexRoute;
-  '/pew/': typeof PewIndexRoute;
-  '/ui/': typeof UiIndexRoute;
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/ratios': typeof RatiosRoute
+  '/coinflip/': typeof CoinflipIndexRoute
+  '/maze/': typeof MazeIndexRoute
+  '/pew/': typeof PewIndexRoute
+  '/ui/': typeof UiIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute;
-  '/about': typeof AboutRoute;
-  '/ratios': typeof RatiosRoute;
-  '/coinflip': typeof CoinflipIndexRoute;
-  '/maze': typeof MazeIndexRoute;
-  '/pew': typeof PewIndexRoute;
-  '/ui': typeof UiIndexRoute;
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/ratios': typeof RatiosRoute
+  '/coinflip': typeof CoinflipIndexRoute
+  '/maze': typeof MazeIndexRoute
+  '/pew': typeof PewIndexRoute
+  '/ui': typeof UiIndexRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  '/': typeof IndexRoute;
-  '/about': typeof AboutRoute;
-  '/ratios': typeof RatiosRoute;
-  '/coinflip/': typeof CoinflipIndexRoute;
-  '/maze/': typeof MazeIndexRoute;
-  '/pew/': typeof PewIndexRoute;
-  '/ui/': typeof UiIndexRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/ratios': typeof RatiosRoute
+  '/coinflip/': typeof CoinflipIndexRoute
+  '/maze/': typeof MazeIndexRoute
+  '/pew/': typeof PewIndexRoute
+  '/ui/': typeof UiIndexRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/' | '/about' | '/coinflip/' | '/maze/' | '/pew/' | '/ui/';
-  fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/about' | '/coinflip' | '/maze' | '/pew' | '/ui';
-  id: '__root__' | '/' | '/about' | '/coinflip/' | '/maze/' | '/pew/' | '/ui/';
-  fullPaths: '/' | '/about' | '/ratios' | '/coinflip/' | '/maze/' | '/pew/' | '/ui/';
-  fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/about' | '/ratios' | '/coinflip' | '/maze' | '/pew' | '/ui';
-  id: '__root__' | '/' | '/about' | '/ratios' | '/coinflip/' | '/maze/' | '/pew/' | '/ui/';
-  fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/ratios'
+    | '/coinflip/'
+    | '/maze/'
+    | '/pew/'
+    | '/ui/'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/about' | '/ratios' | '/coinflip' | '/maze' | '/pew' | '/ui'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/ratios'
+    | '/coinflip/'
+    | '/maze/'
+    | '/pew/'
+    | '/ui/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  AboutRoute: typeof AboutRoute;
-  RatiosRoute: typeof RatiosRoute;
-  CoinflipIndexRoute: typeof CoinflipIndexRoute;
-  MazeIndexRoute: typeof MazeIndexRoute;
-  PewIndexRoute: typeof PewIndexRoute;
-  UiIndexRoute: typeof UiIndexRoute;
+  IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  RatiosRoute: typeof RatiosRoute
+  CoinflipIndexRoute: typeof CoinflipIndexRoute
+  MazeIndexRoute: typeof MazeIndexRoute
+  PewIndexRoute: typeof PewIndexRoute
+  UiIndexRoute: typeof UiIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/ratios': {
-      id: '/ratios';
-      path: '/ratios';
-      fullPath: '/ratios';
-      preLoaderRoute: typeof RatiosRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/ratios'
+      path: '/ratios'
+      fullPath: '/ratios'
+      preLoaderRoute: typeof RatiosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
-      id: '/about';
-      path: '/about';
-      fullPath: '/about';
-      preLoaderRoute: typeof AboutRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
-      id: '/';
-      path: '/';
-      fullPath: '/';
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ui/': {
-      id: '/ui/';
-      path: '/ui';
-      fullPath: '/ui/';
-      preLoaderRoute: typeof UiIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/ui/'
+      path: '/ui'
+      fullPath: '/ui/'
+      preLoaderRoute: typeof UiIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pew/': {
-      id: '/pew/';
-      path: '/pew';
-      fullPath: '/pew/';
-      preLoaderRoute: typeof PewIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/pew/'
+      path: '/pew'
+      fullPath: '/pew/'
+      preLoaderRoute: typeof PewIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/maze/': {
-      id: '/maze/';
-      path: '/maze';
-      fullPath: '/maze/';
-      preLoaderRoute: typeof MazeIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/maze/'
+      path: '/maze'
+      fullPath: '/maze/'
+      preLoaderRoute: typeof MazeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/coinflip/': {
-      id: '/coinflip/';
-      path: '/coinflip';
-      fullPath: '/coinflip/';
-      preLoaderRoute: typeof CoinflipIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/coinflip/'
+      path: '/coinflip'
+      fullPath: '/coinflip/'
+      preLoaderRoute: typeof CoinflipIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -164,6 +175,8 @@ const rootRouteChildren: RootRouteChildren = {
   CoinflipIndexRoute: CoinflipIndexRoute,
   MazeIndexRoute: MazeIndexRoute,
   PewIndexRoute: PewIndexRoute,
-  UiIndexRoute: UiIndexRoute
-};
-export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
+  UiIndexRoute: UiIndexRoute,
+}
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()

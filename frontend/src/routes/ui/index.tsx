@@ -47,8 +47,7 @@ import { badgeThemeOptions, badgeVariantOptions } from '@/components/gmac.ui/bad
 import { buttonSizeOptions, buttonThemeOptions, buttonVariantOptions } from '@/components/gmac.ui/button';
 import { cardThemeOptions, cardVariantOptions } from '@/components/gmac.ui/card';
 import { IconButton, iconButtonSizeOptions, iconButtonThemeOptions, iconButtonVariantOptions } from '@/components/gmac.ui/icon-button';
-import { DialogMock, SheetMock } from '@/components/gmac.ui/mocks';
-import { FormMockExample } from '@/components/gmac.ui/mocks/FormExample';
+import { DialogExample, FormExample, SheetExample } from '@/components/gmac.ui/mocks';
 import { textButtonThemeOptions } from '@/components/gmac.ui/text-button';
 import { PL } from '@/components/gmac.ui/typography';
 import { Page } from '@/components/layout';
@@ -70,8 +69,8 @@ function UIRoute() {
       <Controls />
       <Card as="header" variant={variant} theme="gray">
         <CardHeader column>
-          <H1>gmac.ui (work in progress)</H1>
-          <H1Description>Reference page for components: all available variants, themes, and sizes.</H1Description>
+          <H1>gmac.ui</H1>
+          <H1Description>Component library reference page</H1Description>
         </CardHeader>
       </Card>
 
@@ -275,8 +274,8 @@ function UIRoute() {
                     <TabsTrigger value="one">One</TabsTrigger>
                     <TabsTrigger value="two">Two</TabsTrigger>
                   </TabsList>
-                  <TabsContent value="one">First panel ({theme})</TabsContent>
-                  <TabsContent value="two">Second panel ({theme})</TabsContent>
+                  <TabsContent value="one">First panel</TabsContent>
+                  <TabsContent value="two">Second panel</TabsContent>
                 </Tabs>
               </div>
             ))}
@@ -315,14 +314,13 @@ function UIRoute() {
       </DemoCard>
 
       <DemoCard title="Dialog">
-        <DialogMock />
+        <DialogExample />
       </DemoCard>
       <DemoCard title="Sheet">
-        <SheetMock />
+        <SheetExample />
       </DemoCard>
-
       <DemoCard title="Form">
-        <FormMockExample />
+        <FormExample />
       </DemoCard>
     </Page>
   );
