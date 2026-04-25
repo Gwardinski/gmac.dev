@@ -55,6 +55,7 @@ import { useTheme } from '@/components/theme-provider';
 import { useVariantState } from '@/components/VariantToggle';
 import { IconInfoCircle, IconPlus, IconSettings } from '@tabler/icons-react';
 import { createFileRoute } from '@tanstack/react-router';
+import { useEffect } from 'react';
 import { create } from 'zustand';
 
 export const Route = createFileRoute('/ui/')({
@@ -67,7 +68,7 @@ function UIRoute() {
   return (
     <Page>
       <Controls />
-      <Card as="header" variant={variant} theme="gray">
+      <Card as="header" variant={variant}>
         <CardHeader column>
           <H1>gmac.ui</H1>
           <H1Description>Component library reference page</H1Description>
@@ -328,6 +329,7 @@ function UIRoute() {
 
 function DemoCard({ title, children }: { title: string; children: React.ReactNode }) {
   const { card } = useBackgroundState();
+
   return (
     <Card variant={card}>
       <CardHeader>
@@ -342,6 +344,14 @@ function Controls() {
   const { theme, setTheme } = useTheme();
   const { variant, setVariant } = useVariantState();
   const { card, setCard } = useBackgroundState();
+  const { font, setFont } = useFontState();
+
+  useEffect(() => {
+    document.body.classList.remove('font-roboto', 'font-raleway');
+    if (font === 'roboto') document.body.classList.add('font-roboto');
+    if (font === 'raleway') document.body.classList.add('font-raleway');
+  }, [font]);
+
   return (
     <>
       <Popover defaultOpen>
@@ -356,8 +366,7 @@ function Controls() {
         <PopoverContent>
           <Card className="max-w-lg lg:w-fit">
             <CardBody>
-              <P1>Switching "Variant" will not affect cards in this page.</P1>
-              <P1>Instead set manually, which allows switching to "Outline" to better see a components "Glass" variant directly on a video background</P1>
+              <P1>Site Variant and Page Cards separated to better compare variant types.</P1>
               <div className="flex flex-col items-start gap-2">
                 Site Theme:
                 <span className="flex flex-wrap items-center gap-4">
@@ -394,6 +403,20 @@ function Controls() {
                   </Button>
                 </span>
               </div>
+              <div className="flex flex-col items-start gap-2">
+                Site Font:
+                <span className="flex flex-wrap items-center gap-4">
+                  <Button variant={font === 'jetbrains' ? 'solid' : 'outline'} onClick={() => setFont('jetbrains')}>
+                    JetBrains Mono
+                  </Button>
+                  <Button variant={font === 'roboto' ? 'solid' : 'outline'} onClick={() => setFont('roboto')}>
+                    Roboto
+                  </Button>
+                  <Button variant={font === 'raleway' ? 'solid' : 'outline'} onClick={() => setFont('raleway')}>
+                    Raleway
+                  </Button>
+                </span>
+              </div>
             </CardBody>
           </Card>
         </PopoverContent>
@@ -410,4 +433,16 @@ interface BackgroundState {
 const useBackgroundState = create<BackgroundState>((set) => ({
   card: 'solid',
   setCard: (card: 'solid' | 'glass' | 'outline') => set(() => ({ card }))
+}));
+
+type FontOption = 'jetbrains' | 'roboto' | 'raleway';
+
+interface FontState {
+  font: FontOption;
+  setFont: (font: FontOption) => void;
+}
+
+const useFontState = create<FontState>((set) => ({
+  font: 'jetbrains',
+  setFont: (font: FontOption) => set(() => ({ font }))
 }));

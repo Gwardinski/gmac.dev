@@ -1,5 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Raleway:ital,wght@0,400;0,500;0,700;1,400&family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap');
 @import './components/gmac.ui/_css.css';
 
 body {
-  /* font-family: 'Roboto', monospace; */
+  font-family: 'JetBrains Mono', monospace;
+}
+
+body.font-roboto {
+  font-family: 'Roboto', sans-serif;
+}
+
+body.font-raleway {
+  font-family: 'Raleway', sans-serif;
 }
