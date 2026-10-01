@@ -8,7 +8,19 @@ export const Route = createFileRoute('/coinflip/')({
   component: RouteComponent
 });
 
-type VALUE = 'HEADS' | 'TAILS';
+type VALUE = 'HEADS' | 'TAILS' | 'FELL OFF TABLE' | 'LANDED ON SIDE';
+
+const SIDE_CHANCE = 0.002;
+const FELL_OFF_CHANCE = 0.06;
+// Heads and tails split the rest evenly (46.9% each)
+const HEADS_CHANCE = (1 - SIDE_CHANCE - FELL_OFF_CHANCE) / 2;
+
+function getFlipResult(random: number): VALUE {
+  if (random < SIDE_CHANCE) return 'LANDED ON SIDE';
+  if (random < SIDE_CHANCE + FELL_OFF_CHANCE) return 'FELL OFF TABLE';
+  if (random < SIDE_CHANCE + FELL_OFF_CHANCE + HEADS_CHANCE) return 'HEADS';
+  return 'TAILS';
+}
 
 function RouteComponent() {
   const { variant } = useVariantState();
@@ -19,7 +31,7 @@ function RouteComponent() {
     const random = Math.random();
     setIsFlipping(true);
     setTimeout(() => {
-      setResult(random < 0.5 ? 'HEADS' : 'TAILS');
+      setResult(getFlipResult(random));
       setIsFlipping(false);
     }, 800);
   }

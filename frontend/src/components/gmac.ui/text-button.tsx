@@ -61,7 +61,7 @@ const textButtonThemeClasses = {
 export const textButtonVariants = cva(
   `${textVariants({ size: 'md' })} gap-2 min-w-fit w-fit inline-flex items-center underline underline-offset-2 hover:underline-offset-4
    whitespace-nowrap transition-colors cursor-pointer disabled:pointer-events-none disabled:opacity-50
-   outline-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:rounded`,
+   outline-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:rounded-full`,
   {
     variants: {
       theme: textButtonThemeClasses

@@ -4,7 +4,7 @@ export const TECH_TAGS = [
   'Angular',
   'Bun',
   'C#',
-  'Chakra UI',
+  'Chakra',
   'Cloudflare',
   'Coinbase API',
   'Dart',
@@ -37,7 +37,7 @@ export const TECH_TAGS = [
   'TypeScript',
   'Vercel',
   'Vite',
-  'WebSocket',
+  'WebSockets',
   'Zod',
   'Zustand'
 ] as const;

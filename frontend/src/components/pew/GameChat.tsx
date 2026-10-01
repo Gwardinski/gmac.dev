@@ -54,7 +54,7 @@ export const GameChat = () => {
               <Input
                 type="text"
                 placeholder="..."
-                className="mt-auto w-full rounded-md p-2 text-left"
+                className="mt-auto w-full rounded-lg p-2 text-left"
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
               />

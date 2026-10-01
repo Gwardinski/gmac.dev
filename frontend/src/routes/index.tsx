@@ -1,4 +1,3 @@
-import { DocumentationLink, GithubLink } from '@/components/DocText';
 import {
   Accordion,
   AccordionContent,
@@ -23,7 +22,7 @@ import {
   P1,
   PL
 } from '@/components/gmac.ui';
-import { Page } from '@/components/layout';
+import { DocumentationLink, GithubLink, Page } from '@/components/layout';
 import { useVariantState } from '@/components/VariantToggle';
 import { PLAYGROUNDS, type Playground } from '@/data/playgrounds';
 import { PROJECTS, type Project } from '@/data/projects';
@@ -69,8 +68,8 @@ function App() {
       <Card as="header" variant={variant}>
         <CardHeader column>
           <H1>gmac.dev</H1>
-          <H1Description className="font-mono">Portfolio | Playground | Scratch Pad</H1Description>
-          <P1 className="font-mono">Gordon Macintyre | Developer | Scotland 🏴󠁧󠁢󠁳󠁣󠁴󠁿</P1>
+          <H1Description className="">Portfolio | Playground | Scratch Pad</H1Description>
+          <P1 className="">Gordon Macintyre | Developer | Scotland 🏴󠁧󠁢󠁳󠁣󠁴󠁿</P1>
         </CardHeader>
 
         <CardBody>
@@ -81,20 +80,20 @@ function App() {
                 <GithubLink href="https://github.com/Gwardinski/gmac.dev" text="Source Code" />
                 <div className="grid grid-cols-1 gap-2 pt-4 md:grid-cols-2 lg:grid-cols-3">
                   <div className="flex flex-col gap-2">
-                    <P1 className="font-mono">Frontend:</P1>
+                    <P1 className="">Frontend:</P1>
                     <DocumentationLink href="https://vitejs.dev/" text="Vite / React" icon={IconBrandVite} />
                     <DocumentationLink href="https://tanstack.com/router" text="Tanstack Router" icon={IconBrandReact} />
                     <DocumentationLink href="https://tailwindcss.com" text="Tailwind" icon={IconBrandTailwind} />
                     <DocumentationLink href="https://ui.shadcn.com/" text="shadcn/ui" icon={IconPalette} />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <P1 className="font-mono">Backend:</P1>
+                    <P1 className="">Backend:</P1>
                     <DocumentationLink href="https://bun.sh/" text="Bun" icon={IconBurger} />
                     <DocumentationLink href="https://elysiajs.com/" text="Elysia" icon={IconApi} />
                     <DocumentationLink href="https://elysiajs.com/patterns/websocket.html#websocket" text="WebSocket" icon={IconPlugConnected} />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <P1 className="font-mono">Infra:</P1>
+                    <P1 className="">Infra:</P1>
                     <DocumentationLink href="https://railway.app/" text="Railway" icon={IconTrain} />
                     <DocumentationLink href="https://www.cloudflare.com/en-gb/" text="Cloudflare" icon={IconBrandCloudflare} />
                   </div>

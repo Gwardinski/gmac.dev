@@ -20,8 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    // shadcn/ui
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }

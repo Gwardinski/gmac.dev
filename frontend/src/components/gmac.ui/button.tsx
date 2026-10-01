@@ -54,8 +54,8 @@ export const buttonThemeOptions = ['gray', 'blue', 'green', 'yellow', 'orange', 
 export type ButtonTheme = (typeof buttonThemeOptions)[number];
 
 const buttonSizeClasses = {
-  sm: 'text-sm px-4 gap-2 rounded-lg min-h-9',
-  md: 'text-sm px-6 gap-2 rounded-lg min-h-10'
+  sm: 'text-sm px-4 gap-2 rounded-full min-h-9',
+  md: 'text-sm px-6 gap-2 rounded-full min-h-10'
 } satisfies Record<ButtonSize, string>;
 
 const buttonVariantClasses = {
@@ -113,7 +113,8 @@ export const buttonVariants = cva(
                 focus-visible:ring-green-500/50
                 dark:bg-green-600 dark:hover:bg-green-700 dark:active:bg-green-800
                 dark:border-green-600 dark:hover:border-green-700 dark:active:border-green-800
-                dark:focus-visible:ring-green-600/50`
+                dark:focus-visible:ring-green-600/50
+                text-gray-950 dark:text-gray-950`
       },
       {
         variant: 'solid',
@@ -124,7 +125,7 @@ export const buttonVariants = cva(
                 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:active:bg-yellow-800
                 dark:border-yellow-600 dark:hover:border-yellow-700 dark:active:border-yellow-800
                 dark:focus-visible:ring-yellow-600/50
-                text-black dark:text-black`
+                text-gray-950 dark:text-gray-950`
       },
       {
         variant: 'solid',
@@ -160,13 +161,13 @@ export const buttonVariants = cva(
       {
         variant: 'solid',
         theme: 'gray',
-        class: `bg-gray-800 hover:bg-gray-900 active:bg-gray-950 
-                border-gray-800 hover:border-gray-900 active:border-gray-950
+        class: `bg-gray-800 hover:bg-gray-950 active:bg-gray-950 
+                border-gray-800 hover:border-gray-950 active:border-gray-950
                 focus-visible:ring-gray-500/50
                 dark:bg-gray-300 dark:hover:bg-gray-400 dark:active:bg-gray-500
                 dark:border-gray-300 dark:hover:border-gray-400 dark:active:border-gray-500
                 dark:focus-visible:ring-gray-600/50
-                text-white dark:text-black`
+                text-white dark:text-gray-950`
       },
       // OUTLINE
       // Base => Hover => Active

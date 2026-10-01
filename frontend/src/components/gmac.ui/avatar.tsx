@@ -193,7 +193,7 @@ export const avatarVariants = cva(
               dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:active:bg-yellow-800
               dark:border-yellow-600 dark:hover:border-yellow-700 dark:active:border-yellow-800
               dark:focus-visible:ring-yellow-600/50
-              text-black dark:text-black
+              text-gray-900 dark:text-gray-900
               [&_[data-slot=avatar-image]]:mix-blend-normal`
       },
       {
@@ -238,7 +238,7 @@ export const avatarVariants = cva(
               dark:bg-gray-300 dark:hover:bg-gray-400 dark:active:bg-gray-500
               dark:border-gray-300 dark:hover:border-gray-400 dark:active:border-gray-500
               dark:focus-visible:ring-gray-600/50
-              text-white dark:text-black
+              text-white dark:text-gray-900
               [&_[data-slot=avatar-image]]:mix-blend-normal`
       },
       // outline — matches Button outline
@@ -256,20 +256,20 @@ export const avatarVariants = cva(
         variant: 'outline',
         theme: 'green',
         class: `hover:bg-green-600/10 active:bg-green-600/20
-              text-green-600 border-green-600
+              text-gray-900 border-green-600
               focus-visible:ring-green-600/50
               dark:hover:bg-green-600/10 dark:active:bg-green-600/20
-              dark:text-green-400 dark:border-green-400
+              dark:text-gray-900 dark:border-green-400
               dark:focus-visible:ring-green-400/50`
       },
       {
         variant: 'outline',
         theme: 'yellow',
         class: `hover:bg-yellow-600/10 active:bg-yellow-600/20
-              text-yellow-600 border-yellow-600
+              text-gray-900 border-yellow-600
               focus-visible:ring-yellow-600/50
               dark:hover:bg-yellow-600/10 dark:active:bg-yellow-600/20
-              dark:text-yellow-400 dark:border-yellow-400
+              dark:text-gray-900 dark:border-yellow-400
               dark:focus-visible:ring-yellow-400/50`
       },
       {

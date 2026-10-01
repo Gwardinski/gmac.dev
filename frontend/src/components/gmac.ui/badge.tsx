@@ -44,7 +44,7 @@ const badgeThemeClasses = {
 } satisfies Record<ButtonTheme, string>;
 
 export const badgeVariants = cva(
-  'inline-flex h-6 max-h-6 max-w-fit min-w-fit flex-row items-center gap-1 rounded-full px-2 text-sm font-medium uppercase transition-colors [&_svg]:shrink-0',
+  'inline-flex h-6 max-h-6 max-w-fit min-w-fit flex-row items-center gap-1 rounded-lg px-2 text-sm font-medium uppercase transition-colors [&_svg]:shrink-0',
   {
     variants: {
       variant: badgeVariantClasses,
@@ -65,7 +65,7 @@ export const badgeVariants = cva(
       {
         variant: 'solid',
         theme: 'yellow',
-        class: 'border-yellow-500 bg-yellow-500 dark:border-yellow-600 dark:bg-yellow-600 text-black dark:text-black [&_svg]:text-inherit'
+        class: 'border-yellow-500 bg-yellow-500 dark:border-yellow-600 dark:bg-yellow-600 text-gray-900 dark:text-gray-900 [&_svg]:text-inherit'
       },
       {
         variant: 'solid',
@@ -85,7 +85,7 @@ export const badgeVariants = cva(
       {
         variant: 'solid',
         theme: 'gray',
-        class: 'border-gray-800 bg-gray-800 dark:border-gray-300 dark:bg-gray-300 text-white dark:text-black [&_svg]:text-inherit'
+        class: 'border-gray-800 bg-gray-800 dark:border-gray-300 dark:bg-gray-300 text-white dark:text-gray-900 [&_svg]:text-inherit'
       },
       // outline — Button outline at rest (no hover/active/focus)
       {

@@ -41,7 +41,7 @@ export function AlertTitle({ className, ...props }: React.HTMLAttributes<HTMLHea
 }
 
 export function AlertDescription({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
-  return <P3 className={cn('alert-description', className)} {...props} />;
+  return <P3 className={cn('alert-description text-inherit', className)} {...props} />;
 }
 
 export function AlertActions({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
@@ -52,7 +52,7 @@ export function AlertActions({ className, ...props }: React.HTMLAttributes<HTMLD
 // THEMING
 // ------------------------------------------------------------
 
-export const alertVariantOptions = ['solid', 'outline', 'glass'] as const;
+export const alertVariantOptions = ['solid', 'secondary', 'glass'] as const;
 export type AlertVariantOption = (typeof alertVariantOptions)[number];
 
 export { buttonThemeOptions as alertThemeOptions, type ButtonTheme as AlertTheme } from './button';
@@ -62,7 +62,7 @@ export type AlertWidthOption = (typeof alertWidthOptions)[number];
 
 const alertVariantClasses = {
   solid: 'border',
-  outline: 'border',
+  secondary: 'border',
   glass: 'border border-transparent backdrop-blur-sm glass-border dark:dark-glass-border'
 } satisfies Record<AlertVariantOption, string>;
 
@@ -83,7 +83,7 @@ const alertWidthClasses = {
 
 export const alertVariants = cva(
   [
-    'relative w-fit rounded-xl px-4 pt-3.5 pb-4 flex flex-col items-start gap-1',
+    'relative w-fit rounded-lg px-4 pt-3.5 pb-4 flex flex-col items-start gap-1',
     '[&>button]:ml-auto [&>button]:mt-2',
     '[&>svg]:absolute [&_svg]:size-5 [&>svg]:left-3 [&>svg]:top-[18px]',
     '[&>.alert-header:has(svg)+.alert-description]:pl-8',
@@ -110,12 +110,12 @@ export const alertVariants = cva(
       {
         variant: 'solid',
         theme: 'green',
-        class: 'border-green-500 bg-green-500 text-white [&_.alert-title]:text-white [&>.alert-header>svg]:text-white dark:border-green-600/80 dark:bg-green-500/80'
+        class: 'border-green-500 bg-green-500 text-gray-900 [&_.alert-title]:text-gray-900 [&_.alert-description]:text-gray-900 [&>.alert-header>svg]:text-gray-900 dark:border-green-600/80 dark:bg-green-500/80'
       },
       {
         variant: 'solid',
         theme: 'yellow',
-        class: 'border-yellow-500 bg-yellow-500 text-white [&_.alert-title]:text-white [&>.alert-header>svg]:text-white dark:border-yellow-600/80 dark:bg-yellow-500/80'
+        class: 'border-yellow-500 bg-yellow-500 text-gray-900 [&_.alert-title]:text-gray-900 [&_.alert-description]:text-gray-900 [&>.alert-header>svg]:text-gray-900 dark:border-yellow-600/80 dark:bg-yellow-500/80'
       },
       {
         variant: 'solid',
@@ -132,48 +132,48 @@ export const alertVariants = cva(
         theme: 'purple',
         class: 'border-purple-500 bg-purple-500 text-white [&_.alert-title]:text-white [&>.alert-header>svg]:text-white dark:border-purple-600/80 dark:bg-purple-500/80'
       },
-      // outline
+      // secondary — solid at /40 with themed text
       {
-        variant: 'outline',
+        variant: 'secondary',
         theme: 'gray',
         class:
-          'border-gray-200  text-gray-900 [&_.alert-title]:text-gray-900 [&>.alert-header>svg]:text-gray-900 dark:border-gray-600 dark:text-gray-100 dark:[&_.alert-title]:text-gray-100 dark:[&>.alert-header>svg]:text-gray-100'
+          'border-gray-500/40 bg-gray-500/40 text-gray-900 [&_.alert-title]:text-gray-900 [&>.alert-header>svg]:text-gray-900 dark:border-gray-600/40 dark:bg-gray-600/40 dark:text-gray-50 dark:[&_.alert-title]:text-gray-50 dark:[&>.alert-header>svg]:text-gray-50'
       },
       {
-        variant: 'outline',
+        variant: 'secondary',
         theme: 'blue',
         class:
-          'border-blue-200 text-blue-800 [&_.alert-title]:text-blue-800 [&>.alert-header>svg]:text-blue-800 dark:border-blue-700 dark:text-blue-200 dark:[&_.alert-title]:text-blue-200 dark:[&>.alert-header>svg]:text-blue-200'
+          'border-blue-500/40 bg-blue-500/40 text-blue-700 [&_.alert-title]:text-blue-700 [&>.alert-header>svg]:text-blue-700 dark:border-blue-600/40 dark:bg-blue-600/40 dark:text-blue-50 dark:[&_.alert-title]:text-blue-50 dark:[&>.alert-header>svg]:text-blue-50'
       },
       {
-        variant: 'outline',
+        variant: 'secondary',
         theme: 'green',
         class:
-          'border-green-200 text-green-800 [&_.alert-title]:text-green-800 [&>.alert-header>svg]:text-green-800 dark:border-green-700 dark:text-green-200 dark:[&_.alert-title]:text-green-200 dark:[&>.alert-header>svg]:text-green-200'
+          'border-green-500/40 bg-green-500/40 text-green-700 [&_.alert-title]:text-green-700 [&>.alert-header>svg]:text-green-700 dark:border-green-600/40 dark:bg-green-600/40 dark:text-green-50 dark:[&_.alert-title]:text-green-50 dark:[&>.alert-header>svg]:text-green-50'
       },
       {
-        variant: 'outline',
+        variant: 'secondary',
         theme: 'yellow',
         class:
-          'border-yellow-200 text-yellow-900 [&_.alert-title]:text-yellow-900 [&>.alert-header>svg]:text-yellow-900 dark:border-yellow-700 dark:text-yellow-200 dark:[&_.alert-title]:text-yellow-200 dark:[&>.alert-header>svg]:text-yellow-200'
+          'border-yellow-500/40 bg-yellow-500/40 text-yellow-700 [&_.alert-title]:text-yellow-700 [&>.alert-header>svg]:text-yellow-700 dark:border-yellow-600/40 dark:bg-yellow-600/40 dark:text-yellow-50 dark:[&_.alert-title]:text-yellow-50 dark:[&>.alert-header>svg]:text-yellow-50'
       },
       {
-        variant: 'outline',
+        variant: 'secondary',
         theme: 'orange',
         class:
-          'border-orange-200 text-orange-900 [&_.alert-title]:text-orange-900 [&>.alert-header>svg]:text-orange-900 dark:border-orange-700 dark:text-orange-200 dark:[&_.alert-title]:text-orange-200 dark:[&>.alert-header>svg]:text-orange-200'
+          'border-orange-500/40 bg-orange-500/40 text-orange-700 [&_.alert-title]:text-orange-700 [&>.alert-header>svg]:text-orange-700 dark:border-orange-600/40 dark:bg-orange-600/40 dark:text-orange-50 dark:[&_.alert-title]:text-orange-50 dark:[&>.alert-header>svg]:text-orange-50'
       },
       {
-        variant: 'outline',
+        variant: 'secondary',
         theme: 'red',
         class:
-          'border-red-200 text-red-800 [&_.alert-title]:text-red-800 [&>.alert-header>svg]:text-red-800 dark:border-red-700 dark:text-red-200 dark:[&_.alert-title]:text-red-200 dark:[&>.alert-header>svg]:text-red-200'
+          'border-red-500/40 bg-red-500/40 text-red-700 [&_.alert-title]:text-red-700 [&>.alert-header>svg]:text-red-700 dark:border-red-600/40 dark:bg-red-600/40 dark:text-red-50 dark:[&_.alert-title]:text-red-50 dark:[&>.alert-header>svg]:text-red-50'
       },
       {
-        variant: 'outline',
+        variant: 'secondary',
         theme: 'purple',
         class:
-          'border-purple-200 text-purple-900 [&_.alert-title]:text-purple-900 [&>.alert-header>svg]:text-purple-900 dark:border-purple-700 dark:text-purple-200 dark:[&_.alert-title]:text-purple-200 dark:[&>.alert-header>svg]:text-purple-200'
+          'border-purple-500/40 bg-purple-500/40 text-purple-700 [&_.alert-title]:text-purple-700 [&>.alert-header>svg]:text-purple-700 dark:border-purple-600/40 dark:bg-purple-600/40 dark:text-purple-50 dark:[&_.alert-title]:text-purple-50 dark:[&>.alert-header>svg]:text-purple-50'
       },
       // glass
       {
@@ -220,7 +220,7 @@ export const alertVariants = cva(
       }
     ],
     defaultVariants: {
-      variant: 'outline',
+      variant: 'secondary',
       theme: 'gray',
       width: 'fit'
     }

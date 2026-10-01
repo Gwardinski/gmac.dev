@@ -10,7 +10,7 @@ export function InputGroup({ className, variant = 'group', ...props }: React.Com
 }
 
 const inputGroupVariants = cva(
-  `group/input-group relative flex h-10 w-full max-w-xl min-w-0 items-center rounded-lg border border-gray-300 transition-colors outline-none 
+  `group/input-group relative flex h-10 w-full max-w-xl min-w-0 items-center rounded-full border border-gray-300 transition-colors outline-none has-[>textarea]:rounded-lg has-[>[data-align=top]]:rounded-lg has-[>[data-align=bottom]]:rounded-lg 
   has-disabled:bg-gray-300 has-disabled:opacity-50 has-[[data-slot=input-group-control]:focus-visible]:border-blue-500 
   has-[[data-slot][aria-invalid=true]]:border-red-700 has-[[data-slot][aria-invalid=true]]:ring-[3px] has-[[data-slot][aria-invalid=true]]:ring-red-700/50 has-[>[data-align=bottom]]:h-auto 
   has-[>[data-align=bottom]]:flex-col has-[>[data-align=top]]:h-auto has-[>[data-align=top]]:flex-col has-[>textarea]:h-auto 
@@ -21,7 +21,7 @@ const inputGroupVariants = cva(
     variants: {
       variant: {
         group: `has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] has-[[data-slot=input-group-control]:focus-visible]:ring-blue-500/50`,
-        search: `rounded-xl has-[[data-slot=input-group-control]:focus-visible]:ring-[1px] has-[[data-slot=input-group-control]:focus-visible]:ring-blue-500/50 [&_button]:rounded-xl`
+        search: `rounded-full has-[[data-slot=input-group-control]:focus-visible]:ring-[1px] has-[[data-slot=input-group-control]:focus-visible]:ring-blue-500/50 [&_button]:rounded-full`
       }
     },
     defaultVariants: {
@@ -45,7 +45,7 @@ const inputVariants = cva(
   {
     variants: {
       variant: {
-        default: `border border-gray-300 rounded-lg 
+        default: `border border-gray-300 rounded-full 
           focus-visible:border-blue-500 focus-visible:ring-[3px] focus-visible:ring-blue-500/50 
           aria-invalid:border-red-700 aria-invalid:ring-[3px] aria-invalid:ring-red-700/50 
           dark:border-gray-700 dark:aria-invalid:border-red-500 dark:aria-invalid:ring-red-500/50`,

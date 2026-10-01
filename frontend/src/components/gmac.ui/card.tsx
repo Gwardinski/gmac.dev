@@ -121,7 +121,7 @@ export const cardVariants = cva(
     },
     compoundVariants: [
       // solid
-      { variant: 'solid', theme: 'gray', class: 'border-gray-200 bg-gray-50 text-black dark:bg-gray-950 dark:text-white' },
+      { variant: 'solid', theme: 'gray', class: 'border-gray-200 bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-white' },
       { variant: 'solid', theme: 'blue', class: 'border-blue-500 bg-blue-500 text-white dark:border-blue-900 dark:bg-blue-950' },
       { variant: 'solid', theme: 'green', class: 'border-green-500 bg-green-500 text-white dark:border-green-900 dark:bg-green-950' },
       { variant: 'solid', theme: 'yellow', class: 'border-yellow-500 bg-yellow-500 text-white dark:border-yellow-900 dark:bg-yellow-950' },
@@ -165,7 +165,7 @@ export const cardVariants = cva(
         class: 'border-purple-200 bg-transparent text-purple-900 dark:border-purple-700 dark:text-purple-200'
       },
       // glass
-      { variant: 'glass', theme: 'gray', class: 'bg-gray-50/25 text-black dark:bg-gray-950/25 dark:text-white' },
+      { variant: 'glass', theme: 'gray', class: 'bg-gray-50/25 text-gray-900 dark:bg-gray-950/25 dark:text-white' },
       { variant: 'glass', theme: 'blue', class: 'bg-blue-50/25 text-blue-950 dark:bg-blue-950/25 dark:text-blue-50' },
       { variant: 'glass', theme: 'green', class: 'bg-green-50/25 text-green-950 dark:bg-green-950/25 dark:text-green-50' },
       { variant: 'glass', theme: 'yellow', class: 'bg-yellow-50/25 text-yellow-950 dark:bg-yellow-950/25 dark:text-yellow-50' },

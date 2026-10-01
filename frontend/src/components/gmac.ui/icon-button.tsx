@@ -52,8 +52,8 @@ export {
 } from './button';
 
 const iconButtonSizeClasses = {
-  sm: 'rounded-lg h-9 w-9 min-w-9 min-h-9 max-h-9 max-w-9 shrink-0 p-0 [&>svg]:size-4',
-  md: 'rounded-lg h-10 w-10 min-w-10 min-h-10 max-h-10 max-w-10 shrink-0 p-0 [&>svg]:size-[1.125rem]'
+  sm: 'rounded-full h-9 w-9 min-w-9 min-h-9 max-h-9 max-w-9 shrink-0 p-0 [&>svg]:size-4',
+  md: 'rounded-full h-10 w-10 min-w-10 min-h-10 max-h-10 max-w-10 shrink-0 p-0 [&>svg]:size-[1.125rem]'
 } satisfies Record<ButtonSize, string>;
 
 const iconButtonVariantClasses = {
@@ -114,7 +114,7 @@ export const iconButtonVariants = cva(
                 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:active:bg-yellow-800
                 dark:border-yellow-600 dark:hover:border-yellow-700 dark:active:border-yellow-800
                 dark:focus-visible:ring-yellow-600/50
-                text-black dark:text-black`
+                text-gray-950 dark:text-gray-950`
       },
       {
         variant: 'solid',
@@ -149,13 +149,13 @@ export const iconButtonVariants = cva(
       {
         variant: 'solid',
         theme: 'gray',
-        class: `bg-gray-800 hover:bg-gray-900 active:bg-gray-950 
-                border-gray-800 hover:border-gray-900 active:border-gray-950
+        class: `bg-gray-800 hover:bg-gray-950 active:bg-gray-950 
+                border-gray-800 hover:border-gray-950 active:border-gray-950
                 focus-visible:ring-gray-500/50
                 dark:bg-gray-300 dark:hover:bg-gray-400 dark:active:bg-gray-500
                 dark:border-gray-300 dark:hover:border-gray-400 dark:active:border-gray-500
                 dark:focus-visible:ring-gray-600/50
-                text-white dark:text-black`
+                text-white dark:text-gray-950`
       },
       // OUTLINE
       {
@@ -233,70 +233,70 @@ export const iconButtonVariants = cva(
         variant: 'ghost',
         theme: 'blue',
         class: `hover:bg-blue-600/10 active:bg-blue-600/20
-                text-blue-600
+                text-gray-950 hover:text-blue-600 focus-visible:text-blue-600 active:text-blue-600
                 focus-visible:ring-blue-600/50
                 dark:hover:bg-blue-600/10 dark:active:bg-blue-600/20
-                dark:text-blue-400
+                dark:text-white dark:hover:text-blue-400 dark:focus-visible:text-blue-400 dark:active:text-blue-400
                 dark:focus-visible:ring-blue-400/50`
       },
       {
         variant: 'ghost',
         theme: 'green',
         class: `hover:bg-green-600/10 active:bg-green-600/20
-                text-green-600
+                text-gray-950 hover:text-green-600 focus-visible:text-green-600 active:text-green-600
                 focus-visible:ring-green-600/50
                 dark:hover:bg-green-600/10 dark:active:bg-green-600/20
-                dark:text-green-400
+                dark:text-white dark:hover:text-green-400 dark:focus-visible:text-green-400 dark:active:text-green-400
                 dark:focus-visible:ring-green-400/50`
       },
       {
         variant: 'ghost',
         theme: 'yellow',
         class: `hover:bg-yellow-600/10 active:bg-yellow-600/20
-                text-yellow-600
+                text-gray-950 hover:text-yellow-600 focus-visible:text-yellow-600 active:text-yellow-600
                 focus-visible:ring-yellow-600/50
                 dark:hover:bg-yellow-600/10 dark:active:bg-yellow-600/20
-                dark:text-yellow-400
+                dark:text-white dark:hover:text-yellow-400 dark:focus-visible:text-yellow-400 dark:active:text-yellow-400
                 dark:focus-visible:ring-yellow-400/50`
       },
       {
         variant: 'ghost',
         theme: 'orange',
         class: `hover:bg-orange-600/10 active:bg-orange-600/20
-                text-orange-600
+                text-gray-950 hover:text-orange-600 focus-visible:text-orange-600 active:text-orange-600
                 focus-visible:ring-orange-600/50
                 dark:hover:bg-orange-600/10 dark:active:bg-orange-600/20
-                dark:text-orange-400
+                dark:text-white dark:hover:text-orange-400 dark:focus-visible:text-orange-400 dark:active:text-orange-400
                 dark:focus-visible:ring-orange-400/50`
       },
       {
         variant: 'ghost',
         theme: 'red',
         class: `hover:bg-red-600/10 active:bg-red-600/20
-                text-red-600
+                text-gray-950 hover:text-red-600 focus-visible:text-red-600 active:text-red-600
                 focus-visible:ring-red-600/50
                 dark:hover:bg-red-600/10 dark:active:bg-red-600/20
-                dark:text-red-400
+                dark:text-white dark:hover:text-red-400 dark:focus-visible:text-red-400 dark:active:text-red-400
                 dark:focus-visible:ring-red-400/50`
       },
       {
         variant: 'ghost',
         theme: 'purple',
         class: `hover:bg-purple-600/10 active:bg-purple-600/20
-                text-purple-600
+                text-gray-950 hover:text-purple-600 focus-visible:text-purple-600 active:text-purple-600
                 focus-visible:ring-purple-600/50
                 dark:hover:bg-purple-600/10 dark:active:bg-purple-600/20
-                dark:text-purple-400
+                dark:text-white dark:hover:text-purple-400 dark:focus-visible:text-purple-400 dark:active:text-purple-400
                 dark:focus-visible:ring-purple-400/50`
       },
       {
         variant: 'ghost',
         theme: 'gray',
         class: `hover:bg-gray-800/10 active:bg-gray-800/20
-                text-gray-800 
+                text-gray-950 hover:text-gray-800 focus-visible:text-gray-800 active:text-gray-800
                 focus-visible:ring-gray-800/50
                 dark:hover:bg-gray-600/10 dark:active:bg-gray-600/20
-                dark:text-gray-100 
+                dark:text-white dark:hover:text-gray-100 dark:focus-visible:text-gray-100 dark:active:text-gray-100
                 dark:focus-visible:ring-gray-100/50`
       },
       // glass

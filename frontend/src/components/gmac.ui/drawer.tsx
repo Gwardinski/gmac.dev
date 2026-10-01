@@ -1,4 +1,4 @@
-import { Dialog as SheetPrimitive } from '@base-ui/react/dialog';
+import { Dialog as DrawerPrimitive } from '@base-ui/react/dialog';
 import { IconX } from '@tabler/icons-react';
 import type { ComponentProps } from 'react';
 import { IconButton } from './icon-button';
@@ -9,23 +9,23 @@ import { cn } from './utils';
 // EXPORTED COMPONENTS
 // ------------------------------------------------------------
 
-function Sheet({ ...props }: SheetPrimitive.Root.Props) {
-  return <SheetPrimitive.Root data-slot="sheet" {...props} />;
+function Drawer({ ...props }: DrawerPrimitive.Root.Props) {
+  return <DrawerPrimitive.Root data-slot="drawer" {...props} />;
 }
 
-function SheetContent({
+function DrawerContent({
   className,
   children,
   side = 'right',
   ...props
-}: SheetPrimitive.Popup.Props & {
+}: DrawerPrimitive.Popup.Props & {
   side?: 'top' | 'right' | 'bottom' | 'left';
 }) {
   return (
-    <SheetPortal>
-      <SheetOverlay />
-      <SheetPrimitive.Popup
-        data-slot="sheet-content"
+    <DrawerPortal>
+      <DrawerOverlay />
+      <DrawerPrimitive.Popup
+        data-slot="drawer-content"
         data-side={side}
         className={cn(
           'fixed z-50 flex flex-col gap-4 overflow-hidden bg-white p-4 text-sm text-gray-900 ring-1 ring-gray-300/50 transition duration-200 ease-in-out outline-none data-ending-style:opacity-0 data-starting-style:opacity-0 dark:bg-gray-900 dark:text-gray-50 dark:ring-gray-600/50',
@@ -37,12 +37,12 @@ function SheetContent({
         )}
         {...props}>
         {children}
-      </SheetPrimitive.Popup>
-    </SheetPortal>
+      </DrawerPrimitive.Popup>
+    </DrawerPortal>
   );
 }
 
-function SheetHeader({
+function DrawerHeader({
   className,
   title,
   description,
@@ -54,11 +54,11 @@ function SheetHeader({
   descriptionSrOnly?: boolean;
 }) {
   return (
-    <header data-slot="sheet-header" className={cn('relative flex min-w-0 shrink-0 flex-col items-start justify-start pr-10 text-left', className)} {...props}>
-      <SheetTitle className={headingVariants({ type: 'h4' })}>{title}</SheetTitle>
-      <SheetDescription srOnly={descriptionSrOnly}>{description}</SheetDescription>
-      <SheetPrimitive.Close
-        data-slot="sheet-close"
+    <header data-slot="drawer-header" className={cn('relative flex min-w-0 shrink-0 flex-col items-start justify-start pr-10 text-left', className)} {...props}>
+      <DrawerTitle className={headingVariants({ type: 'h4' })}>{title}</DrawerTitle>
+      <DrawerDescription srOnly={descriptionSrOnly}>{description}</DrawerDescription>
+      <DrawerPrimitive.Close
+        data-slot="drawer-close"
         render={
           <IconButton variant="ghost" className="absolute -top-2 -right-2" aria-label="Close">
             <IconX />
@@ -69,28 +69,28 @@ function SheetHeader({
   );
 }
 
-function SheetBody({ className, ...props }: ComponentProps<'div'>) {
-  return <div data-slot="sheet-body" className={cn('flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto no-scrollbar', className)} {...props} />;
+function DrawerBody({ className, ...props }: ComponentProps<'div'>) {
+  return <div data-slot="drawer-body" className={cn('flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto no-scrollbar', className)} {...props} />;
 }
 
-function SheetFooter({ className, ...props }: ComponentProps<'div'>) {
-  return <div data-slot="sheet-footer" className={cn('mt-auto flex shrink-0 flex-row justify-end gap-2', className)} {...props} />;
+function DrawerFooter({ className, ...props }: ComponentProps<'div'>) {
+  return <div data-slot="drawer-footer" className={cn('mt-auto flex shrink-0 flex-row justify-end gap-2', className)} {...props} />;
 }
 
-export { Sheet, SheetBody, SheetContent, SheetFooter, SheetHeader };
+export { Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader };
 
 // ------------------------------------------------------------
 // INTERNAL COMPONENTS
 // ------------------------------------------------------------
 
-function SheetPortal({ ...props }: SheetPrimitive.Portal.Props) {
-  return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />;
+function DrawerPortal({ ...props }: DrawerPrimitive.Portal.Props) {
+  return <DrawerPrimitive.Portal data-slot="drawer-portal" {...props} />;
 }
 
-function SheetOverlay({ className, ...props }: SheetPrimitive.Backdrop.Props) {
+function DrawerOverlay({ className, ...props }: DrawerPrimitive.Backdrop.Props) {
   return (
-    <SheetPrimitive.Backdrop
-      data-slot="sheet-overlay"
+    <DrawerPrimitive.Backdrop
+      data-slot="drawer-overlay"
       className={cn(
         'fixed inset-0 isolate z-50 bg-black/10 duration-100 data-closed:animate-out data-closed:fade-out-0 data-open:animate-in data-open:fade-in-0 supports-backdrop-filter:backdrop-blur-xs',
         className
@@ -100,16 +100,16 @@ function SheetOverlay({ className, ...props }: SheetPrimitive.Backdrop.Props) {
   );
 }
 
-function SheetTitle({ className, ...props }: SheetPrimitive.Title.Props) {
-  return <SheetPrimitive.Title data-slot="sheet-title" className={cn('cn-font-heading text-base leading-none font-medium', className)} {...props} />;
+function DrawerTitle({ className, ...props }: DrawerPrimitive.Title.Props) {
+  return <DrawerPrimitive.Title data-slot="drawer-title" className={cn('cn-font-heading text-base leading-none font-medium', className)} {...props} />;
 }
 
-function SheetDescription({
+function DrawerDescription({
   className,
   srOnly = false,
   ...props
-}: SheetPrimitive.Description.Props & {
+}: DrawerPrimitive.Description.Props & {
   srOnly?: boolean;
 }) {
-  return <SheetPrimitive.Description data-slot="sheet-description" className={cn(textVariants({ theme: 'tertiary' }), srOnly && 'sr-only', className)} {...props} />;
+  return <DrawerPrimitive.Description data-slot="drawer-description" className={cn(textVariants({ theme: 'tertiary' }), srOnly && 'sr-only', className)} {...props} />;
 }

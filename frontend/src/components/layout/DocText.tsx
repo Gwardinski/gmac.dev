@@ -7,7 +7,7 @@ export const DocumentationLink: React.FC<{
   text: string;
   icon?: React.ForwardRefExoticComponent<IconProps & React.RefAttributes<SVGSVGElement>>;
 }> = ({ href, text, icon = IconExternalLink }) => (
-  <a href={href} target="_blank" className="flex w-fit items-center justify-center gap-3 font-mono hover:underline">
+  <a href={href} target="_blank" className="flex w-fit items-center justify-center gap-3  hover:underline">
     {createElement(icon, { className: 'size-6 min-w-6' })} {text}
   </a>
 );
@@ -16,7 +16,7 @@ export const VideoLink: React.FC<{
   href: string;
   text: string;
 }> = ({ href, text }) => (
-  <a href={href} target="_blank" className="flex w-fit items-center justify-center gap-3 font-mono hover:underline">
+  <a href={href} target="_blank" className="flex w-fit items-center justify-center gap-3  hover:underline">
     <IconBrandYoutube className="size-6 min-w-6 text-red-600 dark:text-red-500" /> {text}
   </a>
 );
@@ -25,7 +25,7 @@ export const GithubLink: React.FC<{
   href: string;
   text: string;
 }> = ({ href, text }) => (
-  <a href={href} target="_blank" className="flex w-fit items-center justify-center gap-3 font-mono hover:underline">
+  <a href={href} target="_blank" className="flex w-fit items-center justify-center gap-3  hover:underline">
     <IconBrandGithub className="size-6 min-w-6" /> {text}
   </a>
 );
@@ -71,4 +71,4 @@ export const TodoText: React.FC<{
   </div>
 );
 
-export const CodeSnippet: React.FC<HTMLAttributes<HTMLHeadingElement>> = (props) => <code className="flex rounded-md bg-gray-300 px-1 py-0.5 dark:bg-gray-700" {...props} />;
+export const CodeSnippet: React.FC<HTMLAttributes<HTMLHeadingElement>> = (props) => <code className="flex rounded-lg bg-gray-300 px-1 py-0.5 dark:bg-gray-700" {...props} />;
