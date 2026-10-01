@@ -68,7 +68,7 @@ export const ContactMeButton = () => {
           }
         `}
       </style>
-      <div className="relative hidden items-center px-4 lg:flex">
+      <div className="relative items-center px-4 flex">
         {!hidden && (
           <div id="button-wrapper" className="absolute right-0 z-10">
             <Button id="contact-button" variant={variant} className="min-w-48" onClick={toggleDrop}>
@@ -76,7 +76,7 @@ export const ContactMeButton = () => {
             </Button>
           </div>
         )}
-        {showText && <p className="tracking-wide">Gainfully Employed 👍</p>}
+        {showText && <p className="tracking-wide text-sm md:text-base">Gainfully Employed 👍</p>}
       </div>
     </>
   );

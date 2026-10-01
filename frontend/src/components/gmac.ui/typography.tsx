@@ -80,11 +80,11 @@ export const headingTypeOptions = ['h1', 'h2', 'h3', 'h4', 'h5'] as const;
 export type HeadingTypeOption = (typeof headingTypeOptions)[number];
 
 const headingTypeClasses = {
-  h1: 'text-4xl font-semibold text-gray-900 dark:text-gray-50',
-  h2: 'text-2xl font-semibold text-gray-900 dark:text-gray-50',
-  h3: 'text-xl font-semibold text-gray-900 dark:text-gray-50',
-  h4: 'text-lg font-semibold text-gray-900 dark:text-gray-50',
-  h5: 'text-base font-bold text-gray-900 dark:text-gray-50'
+  h1: 'text-2xl md:text-4xl font-semibold text-gray-900 dark:text-gray-50',
+  h2: 'text-xl md:text-2xl font-semibold text-gray-900 dark:text-gray-50',
+  h3: 'text-lg md:text-xl font-semibold text-gray-900 dark:text-gray-50',
+  h4: 'text-base md:text-lg font-semibold text-gray-900 dark:text-gray-50',
+  h5: 'md:text-base font-bold text-gray-900 dark:text-gray-50'
 } satisfies Record<HeadingTypeOption, string>;
 
 export const headingVariants = cva('', {

@@ -80,7 +80,7 @@ function CardFooter({ className, column = false, ...props }: React.ComponentProp
   return (
     <div
       data-slot="card-footer"
-      className={cn('mt-auto flex items-center justify-end gap-2 rounded-b-xl px-4 pt-4 pb-4', column ? 'w-full flex-col' : 'flex-row justify-end', className)}
+      className={cn('mt-auto flex items-center justify-end gap-2 rounded-b-lg px-4 pt-4 pb-4', column ? 'w-full flex-col' : 'flex-row justify-end', className)}
       {...props}
     />
   );
