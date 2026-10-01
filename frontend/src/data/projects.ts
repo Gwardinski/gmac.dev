@@ -51,7 +51,7 @@ export const PROJECTS: Project[] = [
       'TailwindCSS',
       'Shadcn/UI',
       'Railway',
-      'WebSocket',
+      'WebSockets',
       'Socket.io',
       'Elysia',
       'Bun',

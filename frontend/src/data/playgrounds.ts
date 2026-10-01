@@ -14,7 +14,7 @@ export const PLAYGROUNDS: Playground[] = [
   {
     title: 'Pew',
     subTitle: 'Work-in-Progress.',
-    tags: ['React', 'TypeScript', 'TailwindCSS', 'Bun', 'WebSocket', 'Elysia'],
+    tags: ['React', 'TypeScript', 'TailwindCSS', 'Bun', 'WebSockets', 'Elysia'],
     description: 'Work-in-Progress. Fun with web sockets',
     link: '/pew',
     code: '',
@@ -23,7 +23,7 @@ export const PLAYGROUNDS: Playground[] = [
   {
     title: 'Maze',
     subTitle: 'Work-in-Progress.',
-    tags: ['React', 'TypeScript', 'TailwindCSS', 'Bun', 'WebSocket', 'Elysia', 'Redis'],
+    tags: ['React', 'TypeScript', 'TailwindCSS', 'Bun', 'WebSockets', 'Elysia', 'Redis'],
     description: 'Work-in-Progress. A simple mouse dexterity game with scoreboard',
     link: '/maze',
     code: ''
