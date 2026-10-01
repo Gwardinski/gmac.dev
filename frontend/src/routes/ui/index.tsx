@@ -45,7 +45,7 @@ import { alertThemeOptions, alertVariantOptions } from '@/components/gmac.ui/ale
 import { AvatarButton, avatarSizeOptions, avatarThemeOptions, avatarVariantOptions } from '@/components/gmac.ui/avatar';
 import { badgeThemeOptions, badgeVariantOptions } from '@/components/gmac.ui/badge';
 import { buttonSizeOptions, buttonThemeOptions, buttonVariantOptions } from '@/components/gmac.ui/button';
-import { cardThemeOptions, cardVariantOptions } from '@/components/gmac.ui/card';
+import { cardOutlineThemeOptions, cardThemeOptions, cardVariantOptions } from '@/components/gmac.ui/card';
 import { IconButton, iconButtonSizeOptions, iconButtonThemeOptions, iconButtonVariantOptions } from '@/components/gmac.ui/icon-button';
 import { DialogExample, DrawerExample, FormExample } from '@/components/gmac.ui/mocks';
 import { textButtonThemeOptions } from '@/components/gmac.ui/text-button';
@@ -284,7 +284,7 @@ function UIRoute() {
               <div key={variant} className="flex flex-col gap-2">
                 <H4>{variant}</H4>
                 <div className="flex flex-col gap-4 lg:flex-row lg:flex-wrap">
-                  {cardThemeOptions.map((theme) => (
+                  {(variant === 'outline' ? cardOutlineThemeOptions : cardThemeOptions).map((theme) => (
                     <Card key={theme} variant={variant} theme={theme} className="w-full max-w-sm">
                       <CardHeader>
                         <CardTitle>
@@ -321,7 +321,7 @@ function UIRoute() {
                       </AlertDescription>
                       {theme === 'yellow' && (
                         <AlertActions>
-                          <Button size="sm" type="button" theme={'yellow'} variant={variant === 'glass' ? 'outline' : variant === 'solid' ? 'solid' : 'outline'}>
+                          <Button size="sm" type="button" theme={'yellow'} variant={variant === 'solid' ? 'solid' : 'outline'}>
                             Action
                           </Button>
                         </AlertActions>

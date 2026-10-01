@@ -92,6 +92,9 @@ function CardFooter({ className, column = false, ...props }: React.ComponentProp
 
 export { buttonThemeOptions as cardThemeOptions, type ButtonTheme as CardTheme } from './button';
 
+/** `outline` is only styled for these themes. */
+export const cardOutlineThemeOptions = ['gray', 'blue', 'green', 'red'] as const satisfies readonly ButtonTheme[];
+
 export const cardVariantOptions = ['solid', 'outline', 'glass'] as const;
 export type CardVariantOption = (typeof cardVariantOptions)[number];
 
@@ -123,8 +126,8 @@ export const cardVariants = cva(
       // solid
       { variant: 'solid', theme: 'gray', class: 'border-gray-200 bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-white' },
       { variant: 'solid', theme: 'blue', class: 'border-blue-500 bg-blue-500 text-white dark:border-blue-900 dark:bg-blue-950' },
-      { variant: 'solid', theme: 'green', class: 'border-green-500 bg-green-500 text-white dark:border-green-900 dark:bg-green-950' },
-      { variant: 'solid', theme: 'yellow', class: 'border-yellow-500 bg-yellow-500 text-white dark:border-yellow-900 dark:bg-yellow-950' },
+      { variant: 'solid', theme: 'green', class: 'border-green-500 bg-green-500 text-gray-950 dark:border-green-900 dark:bg-green-950 dark:text-white' },
+      { variant: 'solid', theme: 'yellow', class: 'border-yellow-500 bg-yellow-500 text-gray-950 dark:border-yellow-900 dark:bg-yellow-950 dark:text-white' },
       { variant: 'solid', theme: 'orange', class: 'border-orange-500 bg-orange-500 text-white dark:border-orange-900 dark:bg-orange-950' },
       { variant: 'solid', theme: 'red', class: 'border-red-500 bg-red-500 text-white dark:border-red-900 dark:bg-red-950' },
       { variant: 'solid', theme: 'purple', class: 'border-purple-500 bg-purple-500 text-white dark:border-purple-900 dark:bg-purple-950' },
@@ -146,23 +149,8 @@ export const cardVariants = cva(
       },
       {
         variant: 'outline',
-        theme: 'yellow',
-        class: 'border-yellow-200 bg-transparent text-yellow-900 dark:border-yellow-700 dark:text-yellow-200'
-      },
-      {
-        variant: 'outline',
-        theme: 'orange',
-        class: 'border-orange-200 bg-transparent text-orange-900 dark:border-orange-700 dark:text-orange-200'
-      },
-      {
-        variant: 'outline',
         theme: 'red',
         class: 'border-red-200 bg-transparent text-red-800 dark:border-red-700 dark:text-red-200'
-      },
-      {
-        variant: 'outline',
-        theme: 'purple',
-        class: 'border-purple-200 bg-transparent text-purple-900 dark:border-purple-700 dark:text-purple-200'
       },
       // glass
       { variant: 'glass', theme: 'gray', class: 'bg-gray-50/25 text-gray-900 dark:bg-gray-950/25 dark:text-white' },
@@ -249,27 +237,9 @@ const cardInteractiveVariants = cva('transition-colors', {
     },
     {
       variant: 'outline',
-      theme: 'yellow',
-      class:
-        'hover:border-yellow-400 active:border-yellow-700 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-yellow-200 focus-visible:border-yellow-500 disabled:cursor-default disabled:text-gray-500 disabled:border-gray-300 dark:hover:border-yellow-500 dark:active:border-yellow-500 dark:focus-visible:ring-yellow-700/40 dark:disabled:bg-transparent dark:disabled:text-gray-500 dark:disabled:border-gray-700/40'
-    },
-    {
-      variant: 'outline',
-      theme: 'orange',
-      class:
-        'hover:border-orange-400 active:border-orange-700 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-orange-200 focus-visible:border-orange-500 disabled:cursor-default disabled:text-gray-500 disabled:border-gray-300 dark:hover:border-orange-500 dark:active:border-orange-500 dark:focus-visible:ring-orange-700/40 dark:disabled:bg-transparent dark:disabled:text-gray-500 dark:disabled:border-gray-700/40'
-    },
-    {
-      variant: 'outline',
       theme: 'red',
       class:
         'hover:border-red-400 active:border-red-700 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-red-200 focus-visible:border-red-500 disabled:cursor-default disabled:text-gray-500 disabled:border-gray-300 dark:hover:border-red-500 dark:active:border-red-500 dark:focus-visible:ring-red-700/40 dark:disabled:bg-transparent dark:disabled:text-gray-500 dark:disabled:border-gray-700/40'
-    },
-    {
-      variant: 'outline',
-      theme: 'purple',
-      class:
-        'hover:border-purple-400 active:border-purple-700 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-purple-200 focus-visible:border-purple-500 disabled:cursor-default disabled:text-gray-500 disabled:border-gray-300 dark:hover:border-purple-500 dark:active:border-purple-500 dark:focus-visible:ring-purple-700/40 dark:disabled:bg-transparent dark:disabled:text-gray-500 dark:disabled:border-gray-700/40'
     },
     {
       variant: 'glass',

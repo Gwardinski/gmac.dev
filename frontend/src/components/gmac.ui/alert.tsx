@@ -52,7 +52,7 @@ export function AlertActions({ className, ...props }: React.HTMLAttributes<HTMLD
 // THEMING
 // ------------------------------------------------------------
 
-export const alertVariantOptions = ['solid', 'secondary', 'glass'] as const;
+export const alertVariantOptions = ['solid', 'secondary'] as const;
 export type AlertVariantOption = (typeof alertVariantOptions)[number];
 
 export { buttonThemeOptions as alertThemeOptions, type ButtonTheme as AlertTheme } from './button';
@@ -62,8 +62,7 @@ export type AlertWidthOption = (typeof alertWidthOptions)[number];
 
 const alertVariantClasses = {
   solid: 'border',
-  secondary: 'border',
-  glass: 'border border-transparent backdrop-blur-sm glass-border dark:dark-glass-border'
+  secondary: 'border'
 } satisfies Record<AlertVariantOption, string>;
 
 const alertThemeClasses = {
@@ -174,49 +173,6 @@ export const alertVariants = cva(
         theme: 'purple',
         class:
           'border-purple-500/40 bg-purple-500/40 text-purple-700 [&_.alert-title]:text-purple-700 [&>.alert-header>svg]:text-purple-700 dark:border-purple-600/40 dark:bg-purple-600/40 dark:text-purple-50 dark:[&_.alert-title]:text-purple-50 dark:[&>.alert-header>svg]:text-purple-50'
-      },
-      // glass
-      {
-        variant: 'glass',
-        theme: 'gray',
-        class:
-          'bg-gray-500/10 text-gray-900 [&_.alert-title]:text-gray-900 [&>.alert-header>svg]:text-gray-900 dark:bg-gray-800/30 dark:text-gray-50 dark:[&_.alert-title]:text-gray-50 dark:[&>.alert-header>svg]:text-gray-50'
-      },
-      {
-        variant: 'glass',
-        theme: 'blue',
-        class:
-          'bg-blue-500/10 text-blue-950 [&_.alert-title]:text-blue-950 [&>.alert-header>svg]:text-blue-950 dark:bg-blue-800/30 dark:text-blue-50 dark:[&_.alert-title]:text-blue-50 dark:[&>.alert-header>svg]:text-blue-50'
-      },
-      {
-        variant: 'glass',
-        theme: 'green',
-        class:
-          'bg-green-500/10 text-green-950 [&_.alert-title]:text-green-950 [&>.alert-header>svg]:text-green-950 dark:bg-green-800/30 dark:text-green-50 dark:[&_.alert-title]:text-green-50 dark:[&>.alert-header>svg]:text-green-50'
-      },
-      {
-        variant: 'glass',
-        theme: 'yellow',
-        class:
-          'bg-yellow-500/12 text-yellow-950 [&_.alert-title]:text-yellow-950 [&>.alert-header>svg]:text-yellow-950 dark:bg-yellow-800/30 dark:text-yellow-50 dark:[&_.alert-title]:text-yellow-50 dark:[&>.alert-header>svg]:text-yellow-50'
-      },
-      {
-        variant: 'glass',
-        theme: 'orange',
-        class:
-          'bg-orange-500/10 text-orange-950 [&_.alert-title]:text-orange-950 [&>.alert-header>svg]:text-orange-950 dark:bg-orange-800/30 dark:text-orange-50 dark:[&_.alert-title]:text-orange-50 dark:[&>.alert-header>svg]:text-orange-50'
-      },
-      {
-        variant: 'glass',
-        theme: 'red',
-        class:
-          'bg-red-500/10 text-red-950 [&_.alert-title]:text-red-950 [&>.alert-header>svg]:text-red-950 dark:bg-red-800/30 dark:text-red-50 dark:[&_.alert-title]:text-red-50 dark:[&>.alert-header>svg]:text-red-50'
-      },
-      {
-        variant: 'glass',
-        theme: 'purple',
-        class:
-          'bg-purple-500/10 text-purple-950 [&_.alert-title]:text-purple-950 [&>.alert-header>svg]:text-purple-950 dark:bg-purple-800/30 dark:text-purple-50 dark:[&_.alert-title]:text-purple-50 dark:[&>.alert-header>svg]:text-purple-50'
       }
     ],
     defaultVariants: {
