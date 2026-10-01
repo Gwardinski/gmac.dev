@@ -64,6 +64,7 @@ export const Route = createFileRoute('/ui/')({
 
 function UIRoute() {
   const { variant } = useVariantState();
+  const setPageSettingsOpen = usePageSettingsState((state) => state.setOpen);
 
   return (
     <Page>
@@ -76,12 +77,16 @@ function UIRoute() {
       </Card>
 
       <Tabs >
+        <span className="flex flex-wrap items-center justify-between gap-2">
+
         <TabsList variant={variant} theme="gray">
           <TabsTrigger value={1}>Typography</TabsTrigger>
           <TabsTrigger value={2}>Components</TabsTrigger>
           <TabsTrigger value={3}>Layout</TabsTrigger>
           <TabsTrigger value={4}>Form</TabsTrigger>
         </TabsList>
+        <Button onClick={() => setPageSettingsOpen(true)}>Page Settings</Button>
+        </span>
         <TabsContent value={1}>
           <DemoCard title="Headings">
             <div className="flex flex-col gap-3">
@@ -335,7 +340,7 @@ function UIRoute() {
         </TabsContent>
         <TabsContent value={4}>
           <DemoCard title="Form">
-            <FormExample />
+            <FormExample  variant={variant}/>
           </DemoCard>
         </TabsContent>
       </Tabs>
@@ -361,6 +366,7 @@ function Controls() {
   const { variant, setVariant } = useVariantState();
   const { card, setCard } = useBackgroundState();
   const { font, setFont } = useFontState();
+  const { open, setOpen } = usePageSettingsState();
 
   useEffect(() => {
     document.body.classList.toggle('font-roboto', font === 'roboto');
@@ -368,7 +374,7 @@ function Controls() {
 
   return (
     <>
-      <Popover defaultOpen>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
           render={
             <IconButton variant="solid" theme="gray" className="fixed right-4 bottom-4 z-30 w-fit max-w-lg">
@@ -456,4 +462,14 @@ interface FontState {
 const useFontState = create<FontState>((set) => ({
   font: 'raleway',
   setFont: (font: FontOption) => set(() => ({ font }))
+}));
+
+interface PageSettingsState {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}
+
+const usePageSettingsState = create<PageSettingsState>((set) => ({
+  open: true,
+  setOpen: (open: boolean) => set(() => ({ open }))
 }));

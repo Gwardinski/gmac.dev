@@ -41,8 +41,9 @@ const formExampleSchema = z.object({
   option: z.string().min(1, 'You must select an option to continue.')
 });
 
-export const FormExample = () => {
+export const FormExample = ({ variant }: { variant: 'solid' | 'glass'  }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const inputVariant = variant === 'glass' ? 'glass' : 'default';
 
   const form = useForm({
     defaultValues: {
@@ -112,10 +113,11 @@ export const FormExample = () => {
             {(field) => {
               const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
               return (
-                <Field>
+                <Field >
                   <FieldLabel htmlFor={`${FORM_ID}-username`}>FieldLabel</FieldLabel>
                   <Input
                     id={`${FORM_ID}-username`}
+                    variant={inputVariant}
                     name={field.name}
                     value={field.state.value}
                     onBlur={field.handleBlur}
@@ -138,6 +140,7 @@ export const FormExample = () => {
                   <FieldLabel htmlFor={`${FORM_ID}-password`}>FieldLabel</FieldLabel>
                   <Input
                     id={`${FORM_ID}-password`}
+                    variant={inputVariant}
                     name={field.name}
                     value={field.state.value}
                     onBlur={field.handleBlur}
@@ -166,13 +169,13 @@ export const FormExample = () => {
               return (
                 <Field>
                   <FieldLabel htmlFor={`${FORM_ID}-website`}>FieldLabel</FieldLabel>
-                  <InputGroup>
+                  <InputGroup variant={inputVariant}>
                     <InputAddon>
                       <InputGroupText>InputGroupText</InputGroupText>
                     </InputAddon>
                     <Input
                       id={`${FORM_ID}-website`}
-                      variant="group"
+                      group
                       name={field.name}
                       value={field.state.value}
                       onBlur={field.handleBlur}
@@ -193,7 +196,7 @@ export const FormExample = () => {
               return (
                 <Field>
                   <FieldLabel htmlFor={`${FORM_ID}-lookup`}>FieldLabel</FieldLabel>
-                  <InputGroup>
+                  <InputGroup variant={inputVariant}>
                     <InputAddon align="left">
                       <InputGroupText>
                         <IconSearch />
@@ -201,7 +204,7 @@ export const FormExample = () => {
                     </InputAddon>
                     <Input
                       id={`${FORM_ID}-lookup`}
-                      variant="group"
+                      group
                       name={field.name}
                       value={field.state.value}
                       onBlur={field.handleBlur}
@@ -231,6 +234,7 @@ export const FormExample = () => {
                 <FieldLabel htmlFor={`${FORM_ID}-reply`}>FieldLabel</FieldLabel>
                 <Textarea
                   id={`${FORM_ID}-reply`}
+                  variant={inputVariant}
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
@@ -245,10 +249,10 @@ export const FormExample = () => {
             {(field) => (
               <Field>
                 <FieldLabel htmlFor={`${FORM_ID}-attach`}>FieldLabel</FieldLabel>
-                <InputGroup>
+                <InputGroup variant={inputVariant}>
                   <Textarea
                     id={`${FORM_ID}-attach`}
-                    variant="group"
+                    group
                     name={field.name}
                     value={field.state.value}
                     onBlur={field.handleBlur}

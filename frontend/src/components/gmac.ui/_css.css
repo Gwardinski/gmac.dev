@@ -105,10 +105,13 @@
   --color-white: #fff;
 }
 
-/* Hide scrollbar for IE, Edge and Firefox */
+/* Hide scrollbar (still scrollable) */
 @utility no-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none; /* Firefox, Chrome */
+  &::-webkit-scrollbar {
+    display: none; /* Safari */
+  }
 }
 @utility glass {
   background-color: rgba(250, 245, 255, 0.25);

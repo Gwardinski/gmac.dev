@@ -70,7 +70,7 @@ const tabsVariantClasses = {
   glass: ''
 } satisfies Record<TabsVariantOption, string>;
 
-export const tabsListVariants = cva('group/tabs-list inline-flex h-auto w-fit min-h-9 flex-row items-center justify-center rounded-full p-1 text-sm font-normal', {
+export const tabsListVariants = cva('group/tabs-list no-scrollbar inline-flex h-auto w-fit max-w-full min-h-9 flex-row items-center justify-start overflow-x-auto rounded-full p-1 text-sm font-normal', {
   variants: {
     variant: tabsVariantClasses,
     theme: tabsThemeClasses
@@ -108,7 +108,7 @@ export const tabsListVariants = cva('group/tabs-list inline-flex h-auto w-fit mi
 });
 
 const tabsTriggerVariants = cva(
-  'relative inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-full border border-transparent px-3 py-1.5 text-sm font-normal whitespace-nowrap transition-colors outline-none disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 focus-visible:outline-hidden focus-visible:ring-4 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
+  'relative inline-flex flex-1 shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-full border border-transparent px-3 py-1.5 text-sm font-normal whitespace-nowrap transition-colors outline-none disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 focus-visible:outline-hidden focus-visible:ring-4 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
   {
     variants: {
       variant: tabsVariantClasses,

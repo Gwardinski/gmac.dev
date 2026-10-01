@@ -5,56 +5,77 @@ import { IconButton } from './icon-button';
 import { cn } from './utils';
 
 // Styling must be kept consistent with the default Input component
-export function InputGroup({ className, variant = 'group', ...props }: React.ComponentProps<'div'> & VariantProps<typeof inputGroupVariants>) {
+export function InputGroup({ className, variant = 'default', ...props }: React.ComponentProps<'div'> & VariantProps<typeof inputGroupVariants>) {
   return <div data-slot="input-group" role="group" className={cn(inputGroupVariants({ variant }), className)} {...props} />;
 }
 
 const inputGroupVariants = cva(
-  `group/input-group relative flex h-10 w-full max-w-xl min-w-0 items-center rounded-full border border-gray-300 transition-colors outline-none has-[>textarea]:rounded-lg has-[>[data-align=top]]:rounded-lg has-[>[data-align=bottom]]:rounded-lg 
-  has-disabled:bg-gray-300 has-disabled:opacity-50 has-[[data-slot=input-group-control]:focus-visible]:border-blue-500 
-  has-[[data-slot][aria-invalid=true]]:border-red-700 has-[[data-slot][aria-invalid=true]]:ring-[3px] has-[[data-slot][aria-invalid=true]]:ring-red-700/50 has-[>[data-align=bottom]]:h-auto 
-  has-[>[data-align=bottom]]:flex-col has-[>[data-align=top]]:h-auto has-[>[data-align=top]]:flex-col has-[>textarea]:h-auto 
-  dark:border-gray-700 dark:bg-transparent dark:has-disabled:bg-gray-700/40 dark:has-[[data-slot][aria-invalid=true]]:border-red-500 dark:has-[[data-slot][aria-invalid=true]]:ring-red-500/50 
+  `group/input-group relative flex h-10 w-full max-w-xl min-w-0 items-center rounded-full border transition-colors outline-none has-[>textarea]:rounded-lg has-[>[data-align=top]]:rounded-lg has-[>[data-align=bottom]]:rounded-lg
+  has-disabled:bg-gray-300 has-disabled:opacity-50 has-[[data-slot=input-group-control]:focus-visible]:border-blue-500
+  has-[[data-slot][aria-invalid=true]]:border-red-700 has-[[data-slot][aria-invalid=true]]:ring-[3px] has-[[data-slot][aria-invalid=true]]:ring-red-700/50 has-[>[data-align=bottom]]:h-auto
+  has-[>[data-align=bottom]]:flex-col has-[>[data-align=top]]:h-auto has-[>[data-align=top]]:flex-col has-[>textarea]:h-auto
+  dark:has-disabled:bg-gray-700/40 dark:has-[[data-slot][aria-invalid=true]]:border-red-500 dark:has-[[data-slot][aria-invalid=true]]:ring-red-500/50
   has-[>[data-align=bottom]]:[&>input]:pt-2 has-[>[data-align=left]]:[&>input]:pl-3 has-[>[data-align=right]]:[&>input]:pr-3 
   has-[>[data-align=top]]:[&>input]:pb-2 [[data-slot=combobox-content]_&]:focus-within:border-inherit [[data-slot=combobox-content]_&]:focus-within:ring-0`,
   {
     variants: {
       variant: {
-        group: `has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] has-[[data-slot=input-group-control]:focus-visible]:ring-blue-500/50`,
-        search: `rounded-full has-[[data-slot=input-group-control]:focus-visible]:ring-[1px] has-[[data-slot=input-group-control]:focus-visible]:ring-blue-500/50 [&_button]:rounded-full`
+        default: `border-gray-300 dark:border-gray-700 dark:bg-transparent has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] has-[[data-slot=input-group-control]:focus-visible]:ring-blue-500/50`,
+        glass: `glass dark:dark-glass dark:has-[[data-slot=input-group-control]:focus-visible]:border-blue-500 has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] has-[[data-slot=input-group-control]:focus-visible]:ring-blue-500/50`
       }
     },
     defaultVariants: {
-      variant: 'group'
+      variant: 'default'
     }
   }
 );
 
 export const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<'input'> & VariantProps<typeof inputVariants>>(
-  ({ className, type, variant = 'default', ...props }, ref) => {
-    return <input ref={ref} type={type} data-slot={variant === 'group' ? 'input-group-control' : 'input'} className={cn(inputVariants({ variant }), className)} {...props} />;
+  ({ className, type, variant = 'default', group = false, ...props }, ref) => {
+    return <input ref={ref} type={type} data-slot={group ? 'input-group-control' : 'input'} className={cn(inputVariants({ variant, group }), className)} {...props} />;
   }
 );
 Input.displayName = 'Input';
 
 const inputVariants = cva(
-  `h-10 w-full min-w-0 max-w-xl bg-transparent px-3 text-base text-gray-900 transition-colors outline-none 
-   file:inline-flex file:h-6 file:border-0 file:bg-transparent file:font-medium 
-   placeholder:text-gray-500 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-gray-300 disabled:opacity-50 
-   dark:bg-transparent dark:text-gray-50 dark:disabled:bg-gray-700`,
+  `h-10 w-full min-w-0 max-w-xl px-3 text-base text-gray-900 transition-colors outline-none
+   file:inline-flex file:h-6 file:border-0 file:bg-transparent file:font-medium
+   placeholder:text-gray-500 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-gray-300 disabled:opacity-50
+   dark:text-gray-50 dark:disabled:bg-gray-700`,
   {
     variants: {
       variant: {
-        default: `border border-gray-300 rounded-full 
-          focus-visible:border-blue-500 focus-visible:ring-[3px] focus-visible:ring-blue-500/50 
-          aria-invalid:border-red-700 aria-invalid:ring-[3px] aria-invalid:ring-red-700/50 
-          dark:border-gray-700 dark:aria-invalid:border-red-500 dark:aria-invalid:ring-red-500/50`,
-        group: `flex-1 rounded-none border-0 bg-transparent shadow-none ring-0 
-          focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent`
+        default: '',
+        glass: ''
+      },
+      // Inside an InputGroup: the group owns the surface, so the control is transparent
+      group: {
+        true: `flex-1 rounded-none border-0 bg-transparent shadow-none ring-0
+          focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent`,
+        false: ''
       }
     },
+    compoundVariants: [
+      {
+        variant: 'default',
+        group: false,
+        class: `border border-gray-300 rounded-full bg-transparent
+          focus-visible:border-blue-500 focus-visible:ring-[3px] focus-visible:ring-blue-500/50
+          aria-invalid:border-red-700 aria-invalid:ring-[3px] aria-invalid:ring-red-700/50
+          dark:border-gray-700 dark:bg-transparent dark:aria-invalid:border-red-500 dark:aria-invalid:ring-red-500/50`
+      },
+      {
+        variant: 'glass',
+        group: false,
+        class: `glass dark:dark-glass rounded-full
+          focus-visible:border-blue-500 dark:focus-visible:border-blue-500 focus-visible:ring-[3px] focus-visible:ring-blue-500/50
+          aria-invalid:border-red-700 aria-invalid:ring-[3px] aria-invalid:ring-red-700/50
+          dark:aria-invalid:border-red-500 dark:aria-invalid:ring-red-500/50`
+      }
+    ],
     defaultVariants: {
-      variant: 'default'
+      variant: 'default',
+      group: false
     }
   }
 );
@@ -135,23 +156,41 @@ const textareaAddonVariants = cva({
   }
 });
 
-export function Textarea({ className, variant = 'default', ...props }: React.ComponentProps<'textarea'> & VariantProps<typeof textareaVariants>) {
-  return <textarea data-slot={variant === 'group' ? 'input-group-control' : 'textarea'} className={cn(textareaVariants({ variant }), className)} {...props} />;
+export function Textarea({ className, variant = 'default', group = false, ...props }: React.ComponentProps<'textarea'> & VariantProps<typeof textareaVariants>) {
+  return <textarea data-slot={group ? 'input-group-control' : 'textarea'} className={cn(textareaVariants({ variant, group }), className)} {...props} />;
 }
 
 const textareaVariants = cva(
-  'w-full min-w-0 rounded-lg max-w-2xl min-h-24 h-fit bg-transparent px-3 py-2 text-base text-gray-900 transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-gray-300 disabled:opacity-50 dark:bg-transparent dark:text-gray-50 dark:disabled:bg-gray-700',
+  'w-full min-w-0 rounded-lg max-w-2xl min-h-24 h-fit px-3 py-2 text-base text-gray-900 transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-gray-300 disabled:opacity-50 dark:text-gray-50 dark:disabled:bg-gray-700',
   {
     variants: {
       variant: {
-        default:
-          'border border-gray-300 focus-visible:border-blue-500 focus-visible:ring-[3px] focus-visible:ring-blue-200 aria-invalid:border-red-700 aria-invalid:ring-[3px] aria-invalid:ring-red-200 dark:aria-invalid:border-red-500 dark:aria-invalid:ring-red-700/40',
-        group:
-          'flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent'
+        default: '',
+        glass: ''
+      },
+      // Inside an InputGroup: the group owns the surface, so the control is transparent
+      group: {
+        true: 'flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent',
+        false: ''
       }
     },
+    compoundVariants: [
+      {
+        variant: 'default',
+        group: false,
+        class:
+          'border border-gray-300 bg-transparent dark:bg-transparent focus-visible:border-blue-500 focus-visible:ring-[3px] focus-visible:ring-blue-200 aria-invalid:border-red-700 aria-invalid:ring-[3px] aria-invalid:ring-red-200 dark:aria-invalid:border-red-500 dark:aria-invalid:ring-red-700/40'
+      },
+      {
+        variant: 'glass',
+        group: false,
+        class:
+          'glass dark:dark-glass focus-visible:border-blue-500 dark:focus-visible:border-blue-500 focus-visible:ring-[3px] focus-visible:ring-blue-200 aria-invalid:border-red-700 aria-invalid:ring-[3px] aria-invalid:ring-red-200 dark:aria-invalid:border-red-500 dark:aria-invalid:ring-red-700/40'
+      }
+    ],
     defaultVariants: {
-      variant: 'default'
+      variant: 'default',
+      group: false
     }
   }
 );
