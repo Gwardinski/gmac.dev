@@ -17,7 +17,8 @@ export const PROJECTS: Project[] = [
   {
     title: 'gmac.dev',
     subTitle: "You're looking at it.",
-    tags: ['React', 'Vite', 'TanStack Router', 'TanStack Query', 'TypeScript', 'Railway', 'Cloudflare', 'TailwindCSS', 'Shadcn/UI', 'Zustand'],
+    tags: ['React', 'Vite', 'TanStack Router', 'TanStack Query', 'TypeScript', 'Railway', 'Cloudflare', 'TailwindCSS', 'Shadcn/UI', 'Zustand', 'Bun', 'Elysia', 'Zod'],
+    deprecated_tags: ['Remix', 'NextJS', 'NodeJS', 'Express'],
     description: 'My portfolio website. Come click around.',
     link: 'https://gmac.dev',
     code: 'https://github.com/Gwardinski/gmac.dev'
@@ -29,6 +30,32 @@ export const PROJECTS: Project[] = [
     description: 'Write once, copy & paste everywhere.',
     link: '/ui',
     code: 'https://github.com/Gwardinski/gmac.dev'
+  },
+  {
+    title: 'BitzOfCoinz',
+    subTitle: 'Buy High, Sell Low',
+    tags: [
+      'Bun',
+      'Coinbase API',
+      'DrizzleORM',
+      'Elysia',
+      'PostgreSQL',
+      'Railway',
+      'Shadcn/UI',
+      'TailwindCSS',
+      'TanStack Form',
+      'TanStack Query',
+      'TanStack Router',
+      'TanStack Table',
+      'TypeScript',
+      'Zod'
+    ],
+    deprecated_tags: ['NextJS', 'NodeJS', 'Express'],
+    description: 'Full stack app for buying / selling Bitcoin based on price fluctuations.',
+    link: 'https://bitzofcoinz-frontend-production.up.railway.app',
+    code: 'https://github.com/Gwardinski/bitzOfCoinz',
+    codeLocked: false,
+    offline: false
   },
   {
     title: 'Pantie Packer',
@@ -62,26 +89,6 @@ export const PROJECTS: Project[] = [
     description: 'WIP. Remix + Supabase => Next + SocketIO => Vite + Bun + SocketIO',
     link: 'https://pixelboard-production-4cea.up.railway.app/',
     code: 'https://github.com/Gwardinski/pixelboard'
-  },
-  {
-    title: 'BitzOfCoinz - Frontend',
-    subTitle: 'Buy High. Sell Low.',
-    tags: ['NextJS', 'React', 'Railway', 'TypeScript', 'TailwindCSS', 'Shadcn/UI', 'TanStack Query', 'Zod'],
-    description: 'A NextJS App for tracking the price of Bitcoin and automatically buying / selling on price fluctuations',
-    link: 'https://bitzofcoinznext-production.up.railway.app/wave-rider',
-    code: 'https://github.com/Gwardinski/bitzofcoinz_next',
-    codeLocked: true,
-    offline: true
-  },
-  {
-    title: 'BitzOfCoinz - Backend',
-    subTitle: 'REST API for BitzOfCoinz',
-    tags: ['NodeJS', 'Express', 'PostgreSQL', 'TypeScript', 'DrizzleORM', 'Zod', 'Coinbase API', 'Railway'],
-    description: 'A NodeJS backend for the BitzOfCoinz Dashboard. Express REST API and Cron job for tracking prices',
-    link: '/projects/project-2',
-    code: 'https://github.com/Gwardinski/bitzofcoinz_node',
-    codeLocked: true,
-    offline: true
   }
 ];
 
