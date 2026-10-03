@@ -52,7 +52,7 @@ export const PROJECTS: Project[] = [
     ],
     deprecated_tags: ['NextJS', 'NodeJS', 'Express'],
     description: 'Full stack app for buying / selling Bitcoin based on price fluctuations.',
-    link: 'https://bitzofcoinz-frontend-production.up.railway.app',
+    link: 'https://bitzofcoinz.up.railway.app',
     code: 'https://github.com/Gwardinski/bitzOfCoinz',
     codeLocked: false,
     offline: false
