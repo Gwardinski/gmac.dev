@@ -60,7 +60,7 @@ export const badgeVariants = cva(
       {
         variant: 'solid',
         theme: 'green',
-        class: 'border-green-500 bg-green-500 dark:border-green-600 dark:bg-green-600 [&_svg]:text-inherit'
+        class: 'border-green-500 bg-green-500 dark:border-green-600 dark:bg-green-600 text-gray-950 dark:text-gray-950 [&_svg]:text-inherit'
       },
       {
         variant: 'solid',

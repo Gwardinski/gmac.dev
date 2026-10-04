@@ -132,13 +132,13 @@ const tabsTriggerVariants = cva(
         variant: 'solid',
         theme: 'green',
         class:
-          'text-green-900 not-data-active:hover:bg-green-200 not-data-active:focus-visible:bg-green-200 not-data-active:active:bg-green-200 hover:text-green-950 focus-visible:text-green-950 active:text-green-950 dark:text-green-200 dark:not-data-active:hover:bg-green-900 dark:not-data-active:focus-visible:bg-green-900 dark:not-data-active:active:bg-green-900 dark:hover:text-green-50 dark:focus-visible:text-green-50 dark:active:text-green-50 data-active:bg-green-500 data-active:text-white data-active:border-green-500 dark:data-active:bg-green-600 focus-visible:ring-green-500/50 dark:focus-visible:ring-green-500/50'
+          'text-green-900 not-data-active:hover:bg-green-200 not-data-active:focus-visible:bg-green-200 not-data-active:active:bg-green-200 hover:text-green-950 focus-visible:text-green-950 active:text-green-950 dark:text-green-200 dark:not-data-active:hover:bg-green-900 dark:not-data-active:focus-visible:bg-green-900 dark:not-data-active:active:bg-green-900 dark:hover:text-green-50 dark:focus-visible:text-green-50 dark:active:text-green-50 data-active:bg-green-500 data-active:text-gray-950 dark:data-active:text-gray-950 data-active:border-green-500 dark:data-active:bg-green-600 focus-visible:ring-green-500/50 dark:focus-visible:ring-green-500/50'
       },
       {
         variant: 'solid',
         theme: 'yellow',
         class:
-          'text-yellow-900 not-data-active:hover:bg-yellow-200 not-data-active:focus-visible:bg-yellow-200 not-data-active:active:bg-yellow-200 hover:text-yellow-950 focus-visible:text-yellow-950 active:text-yellow-950 dark:text-yellow-200 dark:not-data-active:hover:bg-yellow-900 dark:not-data-active:focus-visible:bg-yellow-900 dark:not-data-active:active:bg-yellow-900 dark:hover:text-yellow-50 dark:focus-visible:text-yellow-50 dark:active:text-yellow-50 data-active:bg-yellow-500 data-active:text-white data-active:border-yellow-500 dark:data-active:bg-yellow-600 focus-visible:ring-yellow-500/50 dark:focus-visible:ring-yellow-500/50'
+          'text-yellow-900 not-data-active:hover:bg-yellow-200 not-data-active:focus-visible:bg-yellow-200 not-data-active:active:bg-yellow-200 hover:text-yellow-950 focus-visible:text-yellow-950 active:text-yellow-950 dark:text-yellow-200 dark:not-data-active:hover:bg-yellow-900 dark:not-data-active:focus-visible:bg-yellow-900 dark:not-data-active:active:bg-yellow-900 dark:hover:text-yellow-50 dark:focus-visible:text-yellow-50 dark:active:text-yellow-50 data-active:bg-yellow-500 data-active:text-gray-950 dark:data-active:text-gray-950 data-active:border-yellow-500 dark:data-active:bg-yellow-600 focus-visible:ring-yellow-500/50 dark:focus-visible:ring-yellow-500/50'
       },
       {
         variant: 'solid',

@@ -27,13 +27,14 @@ export function H3({ className, as = 'h3', ...props }: HeadingProps) {
 export function H4({ className, as = 'h4', ...props }: HeadingProps) {
   const Component = as;
 
-  return <Component className={cn(headingVariants({ type: 'h4', className }))} {...props} />;
+  return <Component className={cn(headingVariants({ type: 'h4' }), className)} {...props} />;
 }
 
-export function H5({ className, as = 'h5', ...props }: HeadingProps) {
-  const Component = as;
+export function H5({ className, as = 'h5', ...props }: HeadingProps) {   
+  
+const Component = as;
 
-  return <Component className={cn(headingVariants({ type: 'h5', className }))} {...props} />;
+  return <Component className={cn(headingVariants({ type: 'h5' }), className)} {...props} />;
 }
 
 interface TextProps extends React.HTMLAttributes<HTMLParagraphElement>, VariantProps<typeof textVariants> {}
@@ -48,32 +49,32 @@ export function H2Description({ className, ...props }: TextProps) {
   return <p className={cn('text-md text-gray-700 dark:text-gray-300', className)} {...props} />;
 }
 
-export function Text({ className, size, weight, theme, ...props }: TextProps) {
+export function P({ className, size, weight, theme, ...props }: TextProps) {
   return <p className={cn(textVariants({ size, weight, theme, className }))} {...props} />;
 }
 
 export function P1({ className, ...props }: TextProps) {
-  return <Text theme="primary" className={cn(className)} {...props} />;
+  return <P theme="primary" className={cn(className)} {...props} />;
 }
 
 export function P2({ className, ...props }: TextProps) {
-  return <Text theme="secondary" className={cn(className)} {...props} />;
+  return <P theme="secondary" className={cn(className)} {...props} />;
 }
 
 export function P3({ className, ...props }: TextProps) {
-  return <Text theme="tertiary" className={cn(className)} {...props} />;
+  return <P theme="tertiary" className={cn(className)} {...props} />;
 }
 
 export function PS({ className, ...props }: TextProps) {
   return (
     <strong>
-      <Text theme="primary" weight={600} className={cn(className)} {...props} />
+      <P theme="primary" weight={600} className={cn(className)} {...props} />
     </strong>
   );
 }
 
 export function PL({ className, ...props }: TextProps) {
-  return <Text theme="primary" className={cn(className)} {...props} />;
+  return <P theme="primary" className={cn(className)} {...props} />;
 }
 
 export const headingTypeOptions = ['h1', 'h2', 'h3', 'h4', 'h5'] as const;

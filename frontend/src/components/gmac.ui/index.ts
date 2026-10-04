@@ -15,6 +15,8 @@ export * from './label';
 export * from './notification';
 export * from './popover';
 export * from './radio-group';
+export * from './skeleton';
+export * from './table';
 export * from './separator';
 export * from './tabs';
 export * from './text-button';

@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 import type { ButtonTheme } from './button';
-import { H4, Text } from './typography';
+import { H4, P } from './typography';
 import { cn } from './utils';
 
 // ------------------------------------------------------------
@@ -61,11 +61,11 @@ function CardHeader({ className, column = false, ...props }: React.ComponentProp
 }
 
 function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
-  return <H4 data-slot="card-title" className={cn('text-inherit', className)} {...props} />;
+  return <H4 as="p" data-slot="card-title" className={cn('text-inherit', className)} {...props} />;
 }
 
 function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
-  return <Text data-slot="card-description" className={cn('w-full basis-full text-inherit', className)} {...props} />;
+  return <P data-slot="card-description" className={cn('w-full basis-full text-inherit', className)} {...props} />;
 }
 
 function CardAction({ className, ...props }: React.ComponentProps<'div'>) {

@@ -103,7 +103,8 @@ export const iconButtonVariants = cva(
                 focus-visible:ring-green-500/50
                 dark:bg-green-600 dark:hover:bg-green-700 dark:active:bg-green-800
                 dark:border-green-600 dark:hover:border-green-700 dark:active:border-green-800
-                dark:focus-visible:ring-green-600/50`
+                dark:focus-visible:ring-green-600/50
+                text-gray-950 dark:text-gray-950`
       },
       {
         variant: 'solid',

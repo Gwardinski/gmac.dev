@@ -113,7 +113,7 @@ const avatarSizeClasses = {
 } satisfies Record<AvatarSize, string>;
 
 const avatarVariantClasses = {
-  solid: 'text-white border ',
+  solid: 'border ',
   outline: ' border bg-transparent dark:bg-transparent '
 } satisfies Record<AvatarVariantOption, string>;
 
@@ -165,7 +165,7 @@ export const avatarVariants = cva(
       {
         variant: 'solid',
         theme: 'blue',
-        class: `bg-blue-500 hover:bg-blue-600 active:bg-blue-700
+        class: `text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700
               border-blue-500 hover:border-blue-600 active:border-blue-700
               focus-visible:ring-blue-500/50
               dark:bg-blue-600 dark:hover:bg-blue-700 dark:active:bg-blue-800
@@ -176,10 +176,10 @@ export const avatarVariants = cva(
       {
         variant: 'solid',
         theme: 'green',
-        class: `bg-green-500 hover:bg-green-600 active:bg-green-700
+        class: `text-gray-950 bg-green-500 hover:bg-green-600 active:bg-green-700
               border-green-500 hover:border-green-600 active:border-green-700
               focus-visible:ring-green-500/50
-              dark:bg-green-600 dark:hover:bg-green-700 dark:active:bg-green-800
+              dark:text-gray-950 dark:bg-green-600 dark:hover:bg-green-700 dark:active:bg-green-800
               dark:border-green-600 dark:hover:border-green-700 dark:active:border-green-800
               dark:focus-visible:ring-green-600/50
               [&_[data-slot=avatar-image]]:mix-blend-normal`
@@ -187,19 +187,18 @@ export const avatarVariants = cva(
       {
         variant: 'solid',
         theme: 'yellow',
-        class: `bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700
+        class: `text-gray-950 bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700
               border-yellow-500 hover:border-yellow-600 active:border-yellow-700
               focus-visible:ring-yellow-500/50
-              dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:active:bg-yellow-800
+              dark:text-gray-950 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:active:bg-yellow-800
               dark:border-yellow-600 dark:hover:border-yellow-700 dark:active:border-yellow-800
               dark:focus-visible:ring-yellow-600/50
-              text-gray-900 dark:text-gray-900
               [&_[data-slot=avatar-image]]:mix-blend-normal`
       },
       {
         variant: 'solid',
         theme: 'orange',
-        class: `bg-orange-500 hover:bg-orange-600 active:bg-orange-700
+        class: `text-white bg-orange-500 hover:bg-orange-600 active:bg-orange-700
               border-orange-500 hover:border-orange-600 active:border-orange-700
               focus-visible:ring-orange-500/50
               dark:bg-orange-600 dark:hover:bg-orange-700 dark:active:bg-orange-800
@@ -210,7 +209,7 @@ export const avatarVariants = cva(
       {
         variant: 'solid',
         theme: 'red',
-        class: `bg-red-500 hover:bg-red-600 active:bg-red-700
+        class: `text-white  bg-red-500 hover:bg-red-600 active:bg-red-700
               border-red-500 hover:border-red-600 active:border-red-700
               focus-visible:ring-red-500/50
               dark:bg-red-600 dark:hover:bg-red-700 dark:active:bg-red-800
@@ -221,7 +220,7 @@ export const avatarVariants = cva(
       {
         variant: 'solid',
         theme: 'purple',
-        class: `bg-purple-500 hover:bg-purple-600 active:bg-purple-700
+        class: `text-white  bg-purple-500 hover:bg-purple-600 active:bg-purple-700
               border-purple-500 hover:border-purple-600 active:border-purple-700
               focus-visible:ring-purple-500/50
               dark:bg-purple-600 dark:hover:bg-purple-700 dark:active:bg-purple-800
@@ -256,20 +255,20 @@ export const avatarVariants = cva(
         variant: 'outline',
         theme: 'green',
         class: `hover:bg-green-600/10 active:bg-green-600/20
-              text-gray-900 border-green-600
+              text-green-600 border-green-600
               focus-visible:ring-green-600/50
               dark:hover:bg-green-600/10 dark:active:bg-green-600/20
-              dark:text-gray-900 dark:border-green-400
+              dark:text-green-400 dark:border-green-400
               dark:focus-visible:ring-green-400/50`
       },
       {
         variant: 'outline',
         theme: 'yellow',
         class: `hover:bg-yellow-600/10 active:bg-yellow-600/20
-              text-gray-900 border-yellow-600
+              text-yellow-600 border-yellow-600
               focus-visible:ring-yellow-600/50
               dark:hover:bg-yellow-600/10 dark:active:bg-yellow-600/20
-              dark:text-gray-900 dark:border-yellow-400
+              dark:text-yellow-400 dark:border-yellow-400
               dark:focus-visible:ring-yellow-400/50`
       },
       {
