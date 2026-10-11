@@ -1,7 +1,7 @@
-import { CODE, NOTE_CONTENT, NOTE_TITLE } from "../../../env.js";
-import { returnServiceResponse } from "../../../responses.js";
-import type { ServiceResponse } from "../../../types.js";
-import type { NoteResponse } from "./models.note.js";
+import { CODE, NOTE_CONTENT, NOTE_TITLE } from "../../../../env.js";
+import { returnServiceResponse } from "../../../../responses.js";
+import type { ServiceResponse } from "../../../../types.js";
+import type { NoteResponse } from "../models/index.js";
 
 export const getNote = async (
   code: string

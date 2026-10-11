@@ -3,29 +3,29 @@ import { returnAPIError, returnWSResponse } from "../../responses.js";
 import {
   getChatsController,
   sendChatController,
-} from "./controllers.chat.pew.js";
-import { joinRoomController } from "./controllers.joinRoom.pew.js";
-import { listRoomsController } from "./controllers.listRooms.pew.js";
+} from "./controllers/index.js";
+import { joinRoomController } from "./controllers/index.js";
+import { listRoomsController } from "./controllers/index.js";
 import {
   isGameEngineRunning,
   startGameEngine,
   stopGameEngine,
-} from "./engine.js";
+} from "./utils/index.js";
 import {
   wsMessageSchema,
   wsQuerySchema,
   type WSSendMessageType,
-} from "./models/base.models.pew.js";
-import type { GameSerialized } from "./models/game.model.pew.js";
-import { addChat } from "./service.chat.pew.js";
-import { getGameSerialisedState } from "./service.game.pew.js";
+} from "./models/index.js";
+import type { GameSerialized } from "./models/index.js";
+import { addChat } from "./services/index.js";
+import { getGameSerialisedState } from "./services/index.js";
 import {
   markPlayerForDeletion,
   playerFire,
   playerSetPosition,
-} from "./service.player.pew.js";
-import { roomServiceDeleteEmpty } from "./service.room.pew.js";
-import { roomJoinSchema, sendChatSchema } from "./validation.js";
+} from "./services/index.js";
+import { roomServiceDeleteEmpty } from "./services/index.js";
+import { roomJoinSchema, sendChatSchema } from "./validation/index.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const roomConnections = new Map<string, Set<any>>();

@@ -1,10 +1,10 @@
 import z from "zod";
-import type { Color } from "./base.models.pew";
-import { BulletClass, bulletSerialisedSchema } from "./bullet.model.pew";
-import { ItemClass, itemSerialisedSchema } from "./item.model.pew";
-import { LevelClass } from "./level.model.pew";
-import { PlayerClass, playerSerialisedSchema } from "./player.model.pew";
-import type { SystemEventClass } from "./system-event.model";
+import type { Color } from "./model.pew.base";
+import { BulletClass, bulletSerialisedSchema } from "./model.pew.bullet";
+import { ItemClass, itemSerialisedSchema } from "./model.pew.item";
+import { LevelClass } from "./model.pew.level";
+import { PlayerClass, playerSerialisedSchema } from "./model.pew.player";
+import type { SystemEventClass } from "./model.pew.systemEvent";
 
 // External Game State - Serialised
 export const gameSerializedSchema = z.object({

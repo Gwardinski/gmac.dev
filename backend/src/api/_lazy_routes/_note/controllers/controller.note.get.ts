@@ -1,7 +1,7 @@
-import { returnAPIError, returnAPIResponse } from "../../../responses.js";
-import type { APIResponse } from "../../../types.js";
-import type { NoteRequest, NoteResponse } from "./models.note.js";
-import { getNote } from "./service.note.js";
+import { returnAPIError, returnAPIResponse } from "../../../../responses.js";
+import type { APIResponse } from "../../../../types.js";
+import type { NoteRequest, NoteResponse } from "../models/index.js";
+import { getNote } from "../services/index.js";
 
 export const getNoteController = async (
   body: NoteRequest

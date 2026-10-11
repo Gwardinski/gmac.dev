@@ -1,10 +1,10 @@
-import { returnAPIError, returnAPIResponse } from "../../responses";
-import type { Color, Room } from "./models/base.models.pew";
-import type { GameClass } from "./models/game.model.pew";
-import { LEVEL_1 } from "./models/level.model.pew";
-import { getGameState } from "./service.game.pew";
-import { roomServiceCreate, roomServiceGetByName } from "./service.room.pew";
-import type { RoomJoinRequestModel } from "./validation";
+import { returnAPIError, returnAPIResponse } from "../../../responses";
+import type { Color, Room } from "../models";
+import type { GameClass } from "../models";
+import { LEVEL_1 } from "../models";
+import { getGameState } from "../services";
+import { roomServiceCreate, roomServiceGetByName } from "../services";
+import type { RoomJoinRequestModel } from "../validation";
 
 export const joinRoomController = (body: RoomJoinRequestModel) => {
   const {

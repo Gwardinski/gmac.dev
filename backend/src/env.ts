@@ -8,7 +8,13 @@ const envSchema = z.object({
   CORS_ORIGINS: z
     .string()
     .default("http://localhost:3000")
-    .transform((val) => val.split(",")),
+    // Tolerate "a, b" and trailing slashes — browsers send origins without either
+    .transform((val) =>
+      val
+        .split(",")
+        .map((origin) => origin.trim().replace(/\/+$/, ""))
+        .filter(Boolean)
+    ),
 });
 
 type EnvSchema = z.infer<typeof envSchema>;

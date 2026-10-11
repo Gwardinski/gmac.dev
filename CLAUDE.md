@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Personal portfolio site (https://gmac.dev) plus a small API (deployed on Railway at https://gmacdev-production.up.railway.app/). Two independent packages, each with its own `package.json` and lockfile — there is no shared workspace:
+Personal portfolio site (https://gmac.dev) plus a small API, both on Railway (project `gmac.dev`): the site is service `gmac.dev` (https://gmac.dev, also https://gmacdev-production.up.railway.app) and the API is service `gmac.api` (https://gmacapi-production.up.railway.app). Two independent packages, each with its own `package.json` and lockfile — there is no shared workspace:
 
 - `frontend/` — React 19 + Vite SPA (TanStack Router/Query, Tailwind v4, Zustand, Base UI)
 - `backend/` — Bun + Elysia API, mostly serving the real-time multiplayer game "pew"
@@ -60,13 +60,13 @@ There are currently no test files in either package, and no lint script. Formatt
 
 Request bodies are validated by passing zod schemas to Elysia's `body`/`query` options; the pew router's `onError` turns `VALIDATION` errors into a 400 `APIResponse`.
 
-**Pew game (`src/api/pew/`):** files are named `<kind>.<name>.pew.ts` (`controllers.*`, `service.*`, `models/*.model.pew.ts`).
+**Pew game (`src/api/pew/`):** files are named `<type>.pew.<name>.ts` and grouped in a subfolder per type (`controllers/`, `services/`, `models/`, `utils/`, `validation/`), each with an `index.ts` re-exporting its files. Import from the folder (`../services/index.js`), except between files in the same folder (e.g. models), which import each other directly. This matches `~/dev/AuthStarter-Bun-Elysia`, the template for these conventions; `_lazy_routes/_note/` follows it too.
 
-- All state is in memory — `db.pew.ts` exports `ROOMS_DB`, `GAMES_DB`, `CHATS_DB` Maps keyed by room ID. Restarting the server wipes all rooms.
+- All state is in memory — `utils/util.pew.db.ts` exports `ROOMS_DB`, `GAMES_DB`, `CHATS_DB` Maps keyed by room ID. Restarting the server wipes all rooms.
 - REST endpoints (`/pew/rooms`, `/pew/join-room`, `/pew/chats/:roomId`) create/join rooms and players; the client then opens `ws://…/pew/game?roomId=…&playerId=…`.
-- `engine.ts` runs one `setInterval` loop per room at 60 FPS, calling the `GameClass` `tick*` methods (collisions, respawns, bullets, item spawns, player cleanup) and broadcasting serialized `game-state` to every socket in the room. The engine starts on the first WS connection to a room.
+- `utils/util.pew.engine.ts` runs one `setInterval` loop per room at 60 FPS, calling the `GameClass` `tick*` methods (collisions, respawns, bullets, item spawns, player cleanup) and broadcasting serialized `game-state` to every socket in the room. The engine starts on the first WS connection to a room.
 - Models are classes (`GameClass`, `PlayerClass`, `BulletClass`, …) with paired zod "serialised" schemas; `toJSON()` produces the wire format (`GameSerialized`). System events (kills, joins, etc.) are pushed to room chat through `systemEventHandler`.
-- Clients send `update-position`, `fire`, `send-chat`, `leave-room` WS messages (schema in `models/base.models.pew.ts`). Player movement is client-authoritative: the client simulates movement and reports position; the server simulates bullets/collisions.
+- Clients send `update-position`, `fire`, `send-chat`, `leave-room` WS messages (schema in `models/model.pew.base.ts`). Player movement is client-authoritative: the client simulates movement and reports position; the server simulates bullets/collisions.
 
 **Lazy routes (`src/api/_lazy_routes/`):** one-off endpoints for unrelated side projects (e.g. `/note`), kept here to avoid separate backends. Not part of gmac.dev itself.
 

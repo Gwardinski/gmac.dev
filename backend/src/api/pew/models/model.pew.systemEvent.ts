@@ -1,6 +1,6 @@
-import type { Color } from "./base.models.pew";
-import type { ItemClass } from "./item.model.pew";
-import type { PlayerClass } from "./player.model.pew";
+import type { Color } from "./model.pew.base";
+import type { ItemClass } from "./model.pew.item";
+import type { PlayerClass } from "./model.pew.player";
 
 export type SystemChatParams = {
   content: string;

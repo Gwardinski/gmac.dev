@@ -1,7 +1,7 @@
-import { returnAPIError, returnAPIResponse } from "../../responses";
-import type { ROOM_ID } from "./models/base.models.pew";
-import { addChat, getGameChats } from "./service.chat.pew";
-import type { SendChatRequestModel } from "./validation";
+import { returnAPIError, returnAPIResponse } from "../../../responses";
+import type { ROOM_ID } from "../models";
+import { addChat, getGameChats } from "../services";
+import type { SendChatRequestModel } from "../validation";
 
 export const getChatsController = (roomId: ROOM_ID) => {
   const [chats, error] = getGameChats(roomId);

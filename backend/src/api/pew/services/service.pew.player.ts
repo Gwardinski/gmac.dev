@@ -1,14 +1,14 @@
-import { returnServiceResponse } from "../../responses";
-import type { ServiceResponse } from "../../types";
-import type { Bearing, ROOM_ID } from "./models/base.models.pew";
-import type { GameSerialized } from "./models/game.model.pew";
+import { returnServiceResponse } from "../../../responses";
+import type { ServiceResponse } from "../../../types";
+import type { Bearing, ROOM_ID } from "../models";
+import type { GameSerialized } from "../models";
 
 import {
   getGameAndPlayer,
   updateGamePlayerFire,
   updateGamePlayerPosition,
   updateGamePlayerPositionFromClient,
-} from "./service.game.pew";
+} from "./service.pew.game";
 
 // WebSocket Services
 

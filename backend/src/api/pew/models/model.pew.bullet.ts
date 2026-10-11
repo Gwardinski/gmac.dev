@@ -1,9 +1,9 @@
 import z from "zod";
-import { generateBulletId } from "../util.pew";
-import { bearingSchema, type Bearing } from "./base.models.pew";
-import type { LevelTiles } from "./level.model.pew";
-import { PhysicalModel } from "./physical.model.pew";
-import type { PlayerClass } from "./player.model.pew";
+import { generateBulletId } from "../utils";
+import { bearingSchema, type Bearing } from "./model.pew.base";
+import type { LevelTiles } from "./model.pew.level";
+import { PhysicalModel } from "./model.pew.physical";
+import type { PlayerClass } from "./model.pew.player";
 
 const BULLET_BASE_SPEED = 10;
 const BULLET_SIZE = 1;

@@ -1,10 +1,10 @@
-import { returnServiceResponse } from "../../responses";
-import type { ServiceResponse } from "../../types";
-import { CHATS_DB, GAMES_DB } from "./db.pew";
-import type { ROOM_ID } from "./models/base.models.pew";
-import type { GameChat } from "./models/chat.model.pew";
-import type { SystemChatParams } from "./models/system-event.model";
-import { generateMessageId } from "./util.pew";
+import { returnServiceResponse } from "../../../responses";
+import type { ServiceResponse } from "../../../types";
+import { CHATS_DB, GAMES_DB } from "../utils";
+import type { ROOM_ID } from "../models";
+import type { GameChat } from "../models";
+import type { SystemChatParams } from "../models";
+import { generateMessageId } from "../utils";
 
 const MAX_MESSAGES_PER_ROOM = 50;
 

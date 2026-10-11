@@ -1,5 +1,5 @@
 import z from "zod";
-import { COLORS_SCHEMA, type Room } from "./models/base.models.pew";
+import { COLORS_SCHEMA, type Room } from "../models";
 
 // join room
 export const roomJoinSchema = z.object({

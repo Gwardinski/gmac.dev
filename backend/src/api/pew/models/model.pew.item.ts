@@ -1,6 +1,6 @@
 import z from "zod";
-import { generateItemId } from "../util.pew";
-import { PhysicalModel } from "./physical.model.pew";
+import { generateItemId } from "../utils";
+import { PhysicalModel } from "./model.pew.physical";
 
 const ITEM_SIZE = 16;
 

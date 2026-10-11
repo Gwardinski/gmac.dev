@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
-import { getNoteController } from "./controller.note.js";
-import { noteSchema } from "./models.note.js";
+import { getNoteController } from "./controllers/index.js";
+import { noteSchema } from "./models/index.js";
 
 // Lazy Route
 // /api/note is unrelated to gmac.dev and is used by a separate project.

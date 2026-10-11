@@ -1,5 +1,5 @@
-import type { Bearing } from "./base.models.pew";
-import { GRID_SIZE, type LevelTiles } from "./level.model.pew";
+import type { Bearing } from "./model.pew.base";
+import { GRID_SIZE, type LevelTiles } from "./model.pew.level";
 
 type CornerPosition = { x: number; y: number };
 type PhysicalPositions = {

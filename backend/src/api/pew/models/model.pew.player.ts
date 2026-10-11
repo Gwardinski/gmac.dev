@@ -1,13 +1,13 @@
 import z from "zod";
-import { generatePlayerId } from "../util.pew";
+import { generatePlayerId } from "../utils";
 import {
   COLORS_SCHEMA,
   bearingSchema,
   type Bearing,
   type Color,
-} from "./base.models.pew";
-import type { LevelTiles } from "./level.model.pew";
-import { PhysicalModel } from "./physical.model.pew";
+} from "./model.pew.base";
+import type { LevelTiles } from "./model.pew.level";
+import { PhysicalModel } from "./model.pew.physical";
 
 const PLAYER_SIZE = 16; // width and height of the player
 const PLAYER_BASE_SPEED = 2; // todo implement the collision code todo if increasing

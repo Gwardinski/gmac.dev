@@ -1,5 +1,5 @@
 import z from "zod";
-import { COLORS_SCHEMA } from "./base.models.pew";
+import { COLORS_SCHEMA } from "./model.pew.base";
 
 export const gameChatSchema = z.object({
   chatId: z.string(),
