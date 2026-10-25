@@ -23,7 +23,7 @@ export class PhysicalModel {
     public id: string,
     private x: number,
     private y: number,
-    private size: number
+    private size: number,
   ) {
     this.id = id;
     this.x = x;
@@ -66,11 +66,7 @@ export class PhysicalModel {
     this.bearing = bearing;
   }
 
-  public onCollisionEnter(
-    other: PhysicalModel,
-    enterCallback?: (other: PhysicalModel) => void,
-    exitCallback?: (other: PhysicalModel) => void
-  ): boolean {
+  public onCollisionEnter(other: PhysicalModel, enterCallback?: (other: PhysicalModel) => void, exitCallback?: (other: PhysicalModel) => void): boolean {
     // AABB (Axis-Aligned Bounding Box) collision detection
     const thisPos = this.getPositions();
     const otherPos = other.getPositions();
@@ -80,11 +76,7 @@ export class PhysicalModel {
     const thisRight = thisPos.x + thisPos.size;
     const thisBottom = thisPos.y + thisPos.size;
 
-    const isColliding =
-      otherPos.x < thisRight &&
-      otherRight > thisPos.x &&
-      otherPos.y < thisBottom &&
-      otherBottom > thisPos.y;
+    const isColliding = otherPos.x < thisRight && otherRight > thisPos.x && otherPos.y < thisBottom && otherBottom > thisPos.y;
 
     if (isColliding) {
       // Check if this collision is already being tracked
@@ -112,10 +104,7 @@ export class PhysicalModel {
     return isColliding;
   }
 
-  public onCollisionExit(
-    other: PhysicalModel,
-    exitCallback: (other: PhysicalModel) => void
-  ): void {
+  public onCollisionExit(other: PhysicalModel, exitCallback: (other: PhysicalModel) => void): void {
     const entry = this.collidingWith.get(other.id);
     if (entry) {
       entry.exitCallback = exitCallback;
@@ -137,11 +126,7 @@ export class PhysicalModel {
       const thisRight = thisPos.x + thisPos.size;
       const thisBottom = thisPos.y + thisPos.size;
 
-      const isStillColliding =
-        otherPos.x < thisRight &&
-        otherRight > thisPos.x &&
-        otherPos.y < thisBottom &&
-        otherBottom > thisPos.y;
+      const isStillColliding = otherPos.x < thisRight && otherRight > thisPos.x && otherPos.y < thisBottom && otherBottom > thisPos.y;
 
       if (isStillColliding) {
         // Still colliding - keep tracking
@@ -156,13 +141,7 @@ export class PhysicalModel {
   }
 
   // walls use Level array so handled differently from "physical" objects
-  public checkWallCollision(
-    newX: number,
-    newY: number,
-    level: LevelTiles,
-    size: number = this.size,
-    checkBounds: boolean = false
-  ): boolean {
+  public checkWallCollision(newX: number, newY: number, level: LevelTiles, size: number = this.size, checkBounds: boolean = false): boolean {
     // Calculate the 4 corners of the bounding box
     const topLeft = { x: newX, y: newY };
     const topRight = { x: newX + size, y: newY };

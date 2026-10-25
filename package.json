@@ -5,6 +5,7 @@
   "scripts": {
     "front": "cd frontend && pnpm dev",
     "back": "cd backend && pnpm dev",
-    "build": "cd frontend && pnpm build"
+    "build": "cd frontend && pnpm build",
+    "token": "openssl rand -hex 32"
   }
 }

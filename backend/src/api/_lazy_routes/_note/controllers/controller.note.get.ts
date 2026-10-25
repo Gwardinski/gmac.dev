@@ -3,9 +3,7 @@ import type { APIResponse } from "../../../../types.js";
 import type { NoteRequest, NoteResponse } from "../models/index.js";
 import { getNote } from "../services/index.js";
 
-export const getNoteController = async (
-  body: NoteRequest
-): Promise<APIResponse<NoteResponse>> => {
+export const getNoteController = async (body: NoteRequest): Promise<APIResponse<NoteResponse>> => {
   const [note, error] = await getNote(body.code);
   if (!note || error) {
     return returnAPIError(error);

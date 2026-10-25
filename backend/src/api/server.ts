@@ -15,9 +15,7 @@ export function initServer() {
   // Elysia REST API
   const app = initAPI();
 
-  console.log(
-    `gmac.api running on ${app.server?.hostname}:${app.server?.port}`
-  );
+  console.log(`gmac.api running on ${app.server?.hostname}:${app.server?.port}`);
 
   return { app };
 }
@@ -29,7 +27,7 @@ function initAPI() {
       cors({
         origin: CORS_ORIGINS,
         credentials: true,
-      })
+      }),
     )
     .get("/", () => {
       try {

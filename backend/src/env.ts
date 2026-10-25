@@ -13,7 +13,7 @@ const envSchema = z.object({
       val
         .split(",")
         .map((origin) => origin.trim().replace(/\/+$/, ""))
-        .filter(Boolean)
+        .filter(Boolean),
     ),
 });
 

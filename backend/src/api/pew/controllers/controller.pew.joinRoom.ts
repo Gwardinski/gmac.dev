@@ -7,14 +7,7 @@ import { roomServiceCreate, roomServiceGetByName } from "../services";
 import type { RoomJoinRequestModel } from "../validation";
 
 export const joinRoomController = (body: RoomJoinRequestModel) => {
-  const {
-    roomName,
-    roomCode,
-    playerName,
-    playerColour,
-    playerId,
-    playerDeviceId,
-  } = body;
+  const { roomName, roomCode, playerName, playerColour, playerId, playerDeviceId } = body;
 
   let room: Room | null = null;
   const [existingRoom, existingRoomError] = roomServiceGetByName(roomName);
@@ -48,44 +41,21 @@ export const joinRoomController = (body: RoomJoinRequestModel) => {
 
   // no optional player id provided. Return create new player
   if (!playerId) {
-    return returnCreateNewPlayerResponse(
-      room,
-      game,
-      playerDeviceId,
-      playerName,
-      playerColour
-    );
+    return returnCreateNewPlayerResponse(room, game, playerDeviceId, playerName, playerColour);
   }
 
   // existing player?
-  const existingPlayer = game.players.find(
-    (p) => p.deviceId === playerDeviceId
-  );
+  const existingPlayer = game.players.find((p) => p.deviceId === playerDeviceId);
 
   // id provided but not player, potentially deleted? Return create new player
   if (!existingPlayer) {
-    return returnCreateNewPlayerResponse(
-      room,
-      game,
-      playerDeviceId,
-      playerName,
-      playerColour
-    );
+    return returnCreateNewPlayerResponse(room, game, playerDeviceId, playerName, playerColour);
   }
 
   // Name or colour changed, remove existing and return create new player
-  if (
-    existingPlayer.name !== playerName ||
-    existingPlayer.colour !== playerColour
-  ) {
+  if (existingPlayer.name !== playerName || existingPlayer.colour !== playerColour) {
     game.deletePlayer(existingPlayer.id);
-    return returnCreateNewPlayerResponse(
-      room,
-      game,
-      playerDeviceId,
-      playerName,
-      playerColour
-    );
+    return returnCreateNewPlayerResponse(room, game, playerDeviceId, playerName, playerColour);
   }
 
   if (existingPlayer.isDeleted) {
@@ -99,18 +69,8 @@ export const joinRoomController = (body: RoomJoinRequestModel) => {
   });
 };
 
-function returnCreateNewPlayerResponse(
-  room: Room,
-  game: GameClass,
-  playerDeviceId: string,
-  playerName: string,
-  playerColour: Color
-) {
-  const newPlayer = game.spawnNewPlayer(
-    playerDeviceId,
-    playerName,
-    playerColour
-  );
+function returnCreateNewPlayerResponse(room: Room, game: GameClass, playerDeviceId: string, playerName: string, playerColour: Color) {
+  const newPlayer = game.spawnNewPlayer(playerDeviceId, playerName, playerColour);
   return returnAPIResponse({
     roomId: room.roomId,
     playerId: newPlayer.id,

@@ -1,10 +1,10 @@
-import React, { createContext, useCallback, useContext, useEffect, useRef } from 'react';
-import { create } from 'zustand';
-import type { Bullet, GameState, Level, Message } from './client-copies';
-import { PLAYER_SIZE, PlayerClient, type FireKey, type MovementKey, type Player } from './client-copies/PlayerClient';
-import type { JoinRoomResponse } from './useJoinRoom';
+import React, { createContext, useCallback, useContext, useEffect, useRef } from "react";
+import { create } from "zustand";
+import type { Bullet, GameState, Level, Message } from "./client-copies";
+import { PLAYER_SIZE, PlayerClient, type FireKey, type MovementKey, type Player } from "./client-copies/PlayerClient";
+import type { JoinRoomResponse } from "./useJoinRoom";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3001";
 
 // Matches backend
 export const TARGET_FPS = 60;
@@ -13,13 +13,13 @@ export const FRAME_TIME = 1000 / TARGET_FPS;
 const LERP_FACTOR = 0.15;
 const MAX_SMOOTH_DISTANCE = PLAYER_SIZE * 4;
 const BULLET_SPEED = 10;
-const WS_URL = BACKEND_URL.replace('http', 'ws');
+const WS_URL = BACKEND_URL.replace("http", "ws");
 
 // WebSocket message types - matches backend structure
-type WSMessage = { type: 'game-state'; data: GameState } | { type: 'new-chat'; data: Message } | { error: string };
+type WSMessage = { type: "game-state"; data: GameState } | { type: "new-chat"; data: Message } | { error: string };
 
 // WebSocket connection states
-export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
+export type ConnectionStatus = "connecting" | "connected" | "disconnected" | "error";
 
 type LocalGameState = {
   roomId: string | null;
@@ -53,7 +53,7 @@ export const useLocalGameState = create<LocalGameState>((set) => ({
   roomId: null,
   playerId: null,
   level: null,
-  status: 'disconnected',
+  status: "disconnected",
   setRoomId: (roomId) => set({ roomId }),
   setPlayerId: (playerId) => set({ playerId }),
   setRoom: (roomId, playerId, level) => set({ roomId, playerId, level }),
@@ -67,7 +67,7 @@ export const useLocalGameState = create<LocalGameState>((set) => ({
       otherPlayers: [],
       gameState: { players: [], bullets: [], items: [] },
       previousGameState: { players: [], bullets: [], items: [] },
-      displayBullets: []
+      displayBullets: [],
     }),
   setStatus: (status) => set({ status }),
   playerClient: null,
@@ -85,7 +85,7 @@ export const useLocalGameState = create<LocalGameState>((set) => ({
   displayBullets: [],
   setDisplayBullets: (displayBullets) => set({ displayBullets }),
   debugEnabled: false,
-  setDebugEnabled: (debugEnabled) => set({ debugEnabled })
+  setDebugEnabled: (debugEnabled) => set({ debugEnabled }),
 }));
 
 type GameActions = ReturnType<typeof useGetGameState>;
@@ -98,7 +98,7 @@ export function GameStateProvider(props: { children: React.ReactNode }) {
 
 export function useGameActions(): GameActions {
   const ctx = useContext(GameActionsContext);
-  if (!ctx) throw new Error('useGameActions must be used within GameStateProvider');
+  if (!ctx) throw new Error("useGameActions must be used within GameStateProvider");
   return ctx;
 }
 
@@ -131,18 +131,18 @@ export function useGetGameState() {
   // Setup & Receive WebSocket Messages
   useEffect(() => {
     if (!roomId || !playerId) {
-      setStatus('disconnected');
+      setStatus("disconnected");
       return;
     }
 
-    setStatus('connecting');
+    setStatus("connecting");
 
     const connectionDelay = setTimeout(() => {
       const ws = new WebSocket(`${WS_URL}/pew/game?roomId=${roomId}&playerId=${playerId}`);
       wsRef.current = ws;
 
       ws.onopen = async () => {
-        setStatus('connected');
+        setStatus("connected");
 
         // Fetch initial chat history on connect
         try {
@@ -154,7 +154,7 @@ export function useGetGameState() {
             }
           }
         } catch (err) {
-          console.error('Error fetching initial chats:', err);
+          console.error("Error fetching initial chats:", err);
         }
       };
 
@@ -162,12 +162,12 @@ export function useGetGameState() {
         try {
           const message = JSON.parse(event.data) as WSMessage;
 
-          if ('error' in message) {
-            setStatus('error');
+          if ("error" in message) {
+            setStatus("error");
             return;
           }
 
-          if (message.type === 'game-state') {
+          if (message.type === "game-state") {
             setPreviousGameState(useLocalGameState.getState().gameState);
             setGameState(message.data);
             setDisplayBullets(message.data.bullets.map((b) => ({ ...b })));
@@ -184,26 +184,26 @@ export function useGetGameState() {
             _syncOtherPlayerClientsWithServer(message.data.players);
           }
 
-          if (message.type === 'new-chat') {
+          if (message.type === "new-chat") {
             const { chats: currentChats } = useLocalGameState.getState();
             setChats([...currentChats, message.data]);
           }
         } catch (err) {
-          console.error('Error parsing WebSocket message:', err);
+          console.error("Error parsing WebSocket message:", err);
         }
       };
 
       ws.onclose = () => {
         if (wsRef.current === ws) {
           wsRef.current = null;
-          setStatus('disconnected');
+          setStatus("disconnected");
         }
       };
 
       // Connection error
       ws.onerror = (event) => {
-        console.error('WebSocket error:', event);
-        setStatus('error');
+        console.error("WebSocket error:", event);
+        setStatus("error");
       };
     }, 100);
 
@@ -211,7 +211,7 @@ export function useGetGameState() {
       clearTimeout(connectionDelay);
       const ws = wsRef.current;
       if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
-        ws.close(1000, 'Component unmounted');
+        ws.close(1000, "Component unmounted");
       }
       wsRef.current = null;
       setChats([]);
@@ -225,23 +225,23 @@ export function useGetGameState() {
   const onJoinSuccess = useCallback(
     ({ roomId, playerId, level }: JoinRoomResponse) => {
       setRoom(roomId, playerId, level);
-      localStorage.setItem('room-id', roomId);
-      localStorage.setItem('player-id', playerId);
+      localStorage.setItem("room-id", roomId);
+      localStorage.setItem("player-id", playerId);
     },
-    [setRoom]
+    [setRoom],
   );
 
   const onLeave = useCallback(() => {
-    sendMessage({ type: 'leave-room' });
+    sendMessage({ type: "leave-room" });
     clearRoom();
-    localStorage.removeItem('room-id');
-    localStorage.removeItem('player-id');
+    localStorage.removeItem("room-id");
+    localStorage.removeItem("player-id");
   }, [sendMessage, clearRoom]);
 
   const sendChat = (chatContent: string) => {
     return sendMessage({
-      type: 'send-chat',
-      data: { chatContent }
+      type: "send-chat",
+      data: { chatContent },
     });
   };
 
@@ -334,7 +334,7 @@ export function useGetGameState() {
       return {
         ...b,
         x: b.x + Math.cos(rad) * dist,
-        y: b.y + Math.sin(rad) * dist
+        y: b.y + Math.sin(rad) * dist,
       };
     });
     setDisplayBullets(advancedBullets);
@@ -369,8 +369,8 @@ export function useGetGameState() {
       return false;
     }
     return sendMessage({
-      type: 'update-position',
-      data: { x: currentPlayerClient.x, y: currentPlayerClient.y, bearing: currentPlayerClient.bearing }
+      type: "update-position",
+      data: { x: currentPlayerClient.x, y: currentPlayerClient.y, bearing: currentPlayerClient.bearing },
     });
   }, [sendMessage]);
 
@@ -395,8 +395,8 @@ export function useGetGameState() {
         movementKeys: movementKeysRef.current,
         fireKeys: fireKeysRef.current,
         onFireCallback: (bearing) => {
-          sendMessage({ type: 'fire', data: { bearing } });
-        }
+          sendMessage({ type: "fire", data: { bearing } });
+        },
       });
 
       tickUpdateBulletsOnScreen(deltaMs);
@@ -408,7 +408,7 @@ export function useGetGameState() {
         if (serverP) tickUpdatePositionTowardServer(otherPlayer, serverP);
       });
     },
-    [setDisplayBullets, tickSendPlayerClientPosition]
+    [setDisplayBullets, tickSendPlayerClientPosition],
   );
 
   _useEngineTick(onGameTick);
@@ -420,7 +420,7 @@ export function useGetGameState() {
     registerAimKey,
     onGameTick,
     onJoinSuccess,
-    onLeave
+    onLeave,
   };
 }
 

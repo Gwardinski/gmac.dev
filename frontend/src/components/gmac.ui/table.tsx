@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "@/components/gmac.ui";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 // `scrollBody` switches to a grid layout where the body is its own scroll area (give TableBody a max height),
 // so the header stays visible and the scrollbar sits beside the body only. Subgrid keeps header and body columns aligned.
@@ -36,7 +36,14 @@ export function Table({ className, scrollBody, style, ref, ...props }: React.Com
           else if (ref) ref.current = node;
         }}
         className={cn("w-full caption-bottom text-sm", scrollBody && scrollBodyClasses, className)}
-        style={scrollBody && columns ? { gridTemplateColumns: `repeat(${columns}, auto) ${scrollbarWidth}px`, ...style } : style}
+        style={
+          scrollBody && columns
+            ? {
+                gridTemplateColumns: `repeat(${columns}, auto) ${scrollbarWidth}px`,
+                ...style,
+              }
+            : style
+        }
         {...props}
       />
     </div>
@@ -52,12 +59,7 @@ export function TableBody({ className, ...props }: React.ComponentProps<"tbody">
 }
 
 export function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
-  return (
-    <tr
-      className={cn("border-b border-gray-300 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-900", className)}
-      {...props}
-    />
-  );
+  return <tr className={cn("border-b border-gray-300 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-900", className)} {...props} />;
 }
 
 export function TableHead({ className, ...props }: React.ComponentProps<"th">) {

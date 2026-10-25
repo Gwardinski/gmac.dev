@@ -1,11 +1,6 @@
 import z from "zod";
 import { generatePlayerId } from "../utils";
-import {
-  COLORS_SCHEMA,
-  bearingSchema,
-  type Bearing,
-  type Color,
-} from "./model.pew.base";
+import { COLORS_SCHEMA, bearingSchema, type Bearing, type Color } from "./model.pew.base";
 import type { LevelTiles } from "./model.pew.level";
 import { PhysicalModel } from "./model.pew.physical";
 
@@ -50,7 +45,7 @@ export class PlayerClass extends PhysicalModel {
     public name: string,
     public colour: Color,
     initialX: number,
-    initialY: number
+    initialY: number,
   ) {
     super(generatePlayerId(), initialX, initialY, PLAYER_SIZE);
   }
@@ -77,8 +72,7 @@ export class PlayerClass extends PhysicalModel {
   public deletedTimestamp: number = 0;
 
   public toJSON(): PlayerSerialised {
-    const { x, y, topLeft, topRight, bottomLeft, bottomRight } =
-      this.getPositions();
+    const { x, y, topLeft, topRight, bottomLeft, bottomRight } = this.getPositions();
     return {
       id: this.id,
       deviceId: this.deviceId,
@@ -125,16 +119,8 @@ export class PlayerClass extends PhysicalModel {
 
     if (this.checkWallCollision(newX, newY, level)) {
       // Wall sliding: try X-only or Y-only move if diagonal hits a wall
-      const tryX = this.checkWallCollision(
-        currentPositions.x + xMod,
-        currentPositions.y,
-        level
-      );
-      const tryY = this.checkWallCollision(
-        currentPositions.x,
-        currentPositions.y + yMod,
-        level
-      );
+      const tryX = this.checkWallCollision(currentPositions.x + xMod, currentPositions.y, level);
+      const tryY = this.checkWallCollision(currentPositions.x, currentPositions.y + yMod, level);
       if (!tryX) {
         newX = currentPositions.x + xMod;
         newY = currentPositions.y;
@@ -151,12 +137,7 @@ export class PlayerClass extends PhysicalModel {
   }
 
   /** Client sends position; server validates (wall collision) and applies or rejects. */
-  public setPositionFromClient(
-    x: number,
-    y: number,
-    bearing: Bearing,
-    level: LevelTiles
-  ): void {
+  public setPositionFromClient(x: number, y: number, bearing: Bearing, level: LevelTiles): void {
     const inWall = this.checkWallCollision(x, y, level);
     if (inWall) return;
     this.setPositions(x, y, bearing ?? this.bearing);
@@ -175,10 +156,7 @@ export class PlayerClass extends PhysicalModel {
   }
 
   public canHandleRespawnState1() {
-    return (
-      this.isDestroyed &&
-      this.destroyedTimestamp + PLAYER_DEATH_TIME < Date.now()
-    );
+    return this.isDestroyed && this.destroyedTimestamp + PLAYER_DEATH_TIME < Date.now();
   }
 
   public handleRespawnState1(spawnPoint: { x: number; y: number }) {
@@ -193,9 +171,7 @@ export class PlayerClass extends PhysicalModel {
   }
 
   public canHandleRespawnState2() {
-    return (
-      this.isSpawning && this.spawnTimestamp + PLAYER_SPAWN_TIME < Date.now()
-    );
+    return this.isSpawning && this.spawnTimestamp + PLAYER_SPAWN_TIME < Date.now();
   }
 
   public handleRespawnState2() {
@@ -206,10 +182,7 @@ export class PlayerClass extends PhysicalModel {
   }
 
   public canHandleRespawnState3() {
-    return (
-      this.isInvincible &&
-      this.invincibilityTimestamp + PLAYER_INVINCIBILITY_TIME < Date.now()
-    );
+    return this.isInvincible && this.invincibilityTimestamp + PLAYER_INVINCIBILITY_TIME < Date.now();
   }
   public handleRespawnState3() {
     this.isInvincible = false;

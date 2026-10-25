@@ -1,0 +1,39 @@
+{
+  "name": "@gmac/config",
+  "version": "1.2.0",
+  "description": "Shared Prettier and ESLint config for the ~/dev projects",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./prettier": "./prettier.js",
+    "./eslint": "./eslint.js"
+  },
+  "files": [
+    "prettier.js",
+    "eslint.js"
+  ],
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@eslint/js": "^10.0.1",
+    "@tanstack/eslint-plugin-query": "^5.104.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.13.0",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.0"
+  },
+  "peerDependencies": {
+    "eslint": "^10.0.0",
+    "prettier": "^3.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^10.13.0",
+    "prettier": "^3.9.10"
+  }
+}

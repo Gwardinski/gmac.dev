@@ -13,10 +13,7 @@ export const getChatsController = (roomId: ROOM_ID) => {
   return returnAPIResponse(chats);
 };
 
-export const sendChatController = (
-  roomId: ROOM_ID,
-  body: SendChatRequestModel
-) => {
+export const sendChatController = (roomId: ROOM_ID, body: SendChatRequestModel) => {
   const { playerId, content } = body;
   const [newChat, error] = addChat(roomId, playerId, content, false);
 

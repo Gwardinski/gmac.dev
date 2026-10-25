@@ -1,8 +1,8 @@
-import { ThemeToggle } from '../ThemeToggle';
-import { useVariantState, VariantToggle } from '../VariantToggle';
-import { ContactMeButton } from '../bits';
-import { ButtonLink, Card } from '../gmac.ui';
-import { AppBackgroundToggle } from './AppBackground';
+import { ThemeToggle } from "../ThemeToggle";
+import { useVariantState, VariantToggle } from "../VariantToggle";
+import { ContactMeButton } from "../bits";
+import { ButtonLink, Card } from "../gmac.ui";
+import { AppBackgroundToggle } from "./AppBackground";
 
 export const AppHeader: React.FC = () => {
   const { variant } = useVariantState();

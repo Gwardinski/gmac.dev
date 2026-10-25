@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { Button } from '../button';
-import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '../dialog';
-import { P1 } from '../typography';
+import { create } from "zustand";
+import { Button } from "../button";
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from "../dialog";
+import { P1 } from "../typography";
 
 export const DialogExample = () => {
   const { modalOpen, closeModal, openModal } = useModalState();
@@ -36,5 +36,5 @@ interface ModalState {
 const useModalState = create<ModalState>((set) => ({
   modalOpen: false,
   openModal: () => set(() => ({ modalOpen: true })),
-  closeModal: () => set(() => ({ modalOpen: false }))
+  closeModal: () => set(() => ({ modalOpen: false })),
 }));

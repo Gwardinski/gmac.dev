@@ -1,6 +1,6 @@
-import cyndaquilGif from '../../assets/cyndaquil.gif';
-import { Card, CardHeader, TextAnchor } from '../gmac.ui';
-import { useVariantState } from '../VariantToggle';
+import cyndaquilGif from "../../assets/cyndaquil.gif";
+import { Card, CardHeader, TextAnchor } from "../gmac.ui";
+import { useVariantState } from "../VariantToggle";
 
 export const AppFooter: React.FC = () => {
   const { variant } = useVariantState();

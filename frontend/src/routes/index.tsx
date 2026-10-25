@@ -20,13 +20,13 @@ import {
   H2,
   H2Description,
   P1,
-  PL
-} from '@/components/gmac.ui';
-import { DocumentationLink, GithubLink, Page } from '@/components/layout';
-import { useVariantState } from '@/components/VariantToggle';
-import { PLAYGROUNDS, type Playground } from '@/data/playgrounds';
-import { PROJECTS, type Project } from '@/data/projects';
-import { TECH_TAGS, type TECH_TAG } from '@/data/types';
+  PL,
+} from "@/components/gmac.ui";
+import { DocumentationLink, GithubLink, Page } from "@/components/layout";
+import { useVariantState } from "@/components/VariantToggle";
+import { PLAYGROUNDS, type Playground } from "@/data-core/playgrounds";
+import { PROJECTS, type Project } from "@/data-core/projects";
+import { TECH_TAGS, type TECH_TAG } from "@/data-core/types";
 import {
   IconApi,
   IconBrandCloudflare,
@@ -42,13 +42,13 @@ import {
   IconLock,
   IconPalette,
   IconPlugConnected,
-  IconTrain
-} from '@tabler/icons-react';
-import { createFileRoute } from '@tanstack/react-router';
-import { useState } from 'react';
+  IconTrain,
+} from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 
-export const Route = createFileRoute('/')({
-  component: App
+export const Route = createFileRoute("/")({
+  component: App,
 });
 
 function App() {
@@ -112,7 +112,7 @@ function App() {
           <ul className="flex flex-wrap gap-2">
             {TECH_TAG_SORTED.map((tag) => (
               <li key={tag}>
-                <Button key={tag} variant={selectedTags.includes(tag) ? 'solid' : variant === 'glass' ? 'glass' : 'outline'} onClick={() => handleTagClick(tag)}>
+                <Button key={tag} variant={selectedTags.includes(tag) ? "solid" : variant === "glass" ? "glass" : "outline"} onClick={() => handleTagClick(tag)}>
                   {tag}
                 </Button>
               </li>
@@ -169,7 +169,7 @@ const ProjectCard: React.FC<{
   const { variant } = useVariantState();
   const locked = project.inProgress || project.offline;
   return (
-    <Card key={project.title} variant={variant} className={`relative ${locked ? 'group/project-card' : ''}`} style={{ '--card-opacity': '1' } as React.CSSProperties}>
+    <Card key={project.title} variant={variant} className={`relative ${locked ? "group/project-card" : ""}`} style={{ "--card-opacity": "1" } as React.CSSProperties}>
       {project.inProgress && (
         <div className="invisible absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 rounded-lg opacity-0 backdrop-blur-2xl backdrop-opacity-100 transition-all duration-300 group-hover/project-card:visible group-hover/project-card:opacity-100">
           <PL>Work in Progress</PL>
@@ -182,49 +182,49 @@ const ProjectCard: React.FC<{
           <IconGhost className="size-12" />
         </div>
       )}
-      <CardHeader className={`transition-opacity duration-300 ${locked ? 'group-hover/project-card:opacity-0' : ''}`}>
+      <CardHeader className={`transition-opacity duration-300 ${locked ? "group-hover/project-card:opacity-0" : ""}`}>
         <CardTitle className="pr-8">{project.title}</CardTitle>
         <CardDescription>{project.subTitle}</CardDescription>
       </CardHeader>
-      <CardBody className={`transition-opacity duration-300 ${locked ? 'group-hover/project-card:opacity-0' : ''}`}>
+      <CardBody className={`transition-opacity duration-300 ${locked ? "group-hover/project-card:opacity-0" : ""}`}>
         <P1>{project.description}</P1>
         <span className="flex flex-wrap gap-2">
           {project.tags
             ?.sort((a, b) => a.localeCompare(b))
             .map((tag) => (
-              <Badge key={tag} variant={selectedTags.includes(tag) ? 'solid' : 'outline'} onClick={() => onTagClick(tag)}>
+              <Badge key={tag} variant={selectedTags.includes(tag) ? "solid" : "outline"} onClick={() => onTagClick(tag)}>
                 {tag}
               </Badge>
             ))}
           {project.deprecated_tags
             ?.sort((a, b) => a.localeCompare(b))
             .map((tag) => (
-              <Badge key={tag} variant={selectedTags.includes(tag) ? 'solid' : 'outline'} theme="red" onClick={() => onTagClick(tag)}>
+              <Badge key={tag} variant={selectedTags.includes(tag) ? "solid" : "outline"} theme="red" onClick={() => onTagClick(tag)}>
                 <s>{tag}</s>
               </Badge>
             ))}
         </span>
       </CardBody>
-      <CardFooter className={`transition-opacity duration-300 ${locked ? 'group-hover/project-card:opacity-0' : ''}`}>
+      <CardFooter className={`transition-opacity duration-300 ${locked ? "group-hover/project-card:opacity-0" : ""}`}>
         {project.codeLocked ? (
-          <Button onClick={onClick} variant="ghost" className={`${locked ? 'pointer-events-none group-hover/project-card:pointer-events-none' : ''}`}>
+          <Button onClick={onClick} variant="ghost" className={`${locked ? "pointer-events-none group-hover/project-card:pointer-events-none" : ""}`}>
             <IconLock />
             Code
           </Button>
         ) : (
-          <ButtonAnchor variant="ghost" href={project.code} target="_blank" className={`${locked ? 'pointer-events-none group-hover/project-card:pointer-events-none' : ''}`}>
+          <ButtonAnchor variant="ghost" href={project.code} target="_blank" className={`${locked ? "pointer-events-none group-hover/project-card:pointer-events-none" : ""}`}>
             <IconBrandGithub />
             Code
           </ButtonAnchor>
         )}
-        {project.link.includes('http') && (
-          <ButtonAnchor variant="outline" href={project.link} target="_blank" className={`${locked ? 'pointer-events-none group-hover/project-card:pointer-events-none' : ''}`}>
+        {project.link.includes("http") && (
+          <ButtonAnchor variant="outline" href={project.link} target="_blank" className={`${locked ? "pointer-events-none group-hover/project-card:pointer-events-none" : ""}`}>
             <IconExternalLink />
             View
           </ButtonAnchor>
         )}
-        {!project.link.includes('http') && (
-          <ButtonLink variant="outline" href={project.link} className={`${locked ? 'pointer-events-none group-hover/project-card:pointer-events-none' : ''}`}>
+        {!project.link.includes("http") && (
+          <ButtonLink variant="outline" href={project.link} className={`${locked ? "pointer-events-none group-hover/project-card:pointer-events-none" : ""}`}>
             <IconExternalLink />
             View
           </ButtonLink>
@@ -253,14 +253,14 @@ const PlaygroundCard: React.FC<{
           {playground.tags
             ?.sort((a, b) => a.localeCompare(b))
             .map((tag) => (
-              <Badge key={tag} variant={selectedTags.includes(tag) ? 'solid' : 'outline'} onClick={() => onTagClick(tag)}>
+              <Badge key={tag} variant={selectedTags.includes(tag) ? "solid" : "outline"} onClick={() => onTagClick(tag)}>
                 {tag}
               </Badge>
             ))}
           {playground.deprecated_tags
             ?.sort((a, b) => a.localeCompare(b))
             .map((tag) => (
-              <Badge key={tag} variant={selectedTags.includes(tag) ? 'solid' : 'outline'} theme="red" onClick={() => onTagClick(tag)}>
+              <Badge key={tag} variant={selectedTags.includes(tag) ? "solid" : "outline"} theme="red" onClick={() => onTagClick(tag)}>
                 <s>{tag}</s>
               </Badge>
             ))}

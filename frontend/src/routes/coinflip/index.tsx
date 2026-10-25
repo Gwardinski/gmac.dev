@@ -1,14 +1,14 @@
-import { Button, Card, CardBody, CardHeader, H1, H1Description, H2 } from '@/components/gmac.ui';
-import { Page } from '@/components/layout';
-import { useVariantState } from '@/components/VariantToggle';
-import { createFileRoute } from '@tanstack/react-router';
-import { useState } from 'react';
+import { Button, Card, CardBody, CardHeader, H1, H1Description, H2 } from "@/components/gmac.ui";
+import { Page } from "@/components/layout";
+import { useVariantState } from "@/components/VariantToggle";
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 
-export const Route = createFileRoute('/coinflip/')({
-  component: RouteComponent
+export const Route = createFileRoute("/coinflip/")({
+  component: RouteComponent,
 });
 
-type VALUE = 'HEADS' | 'TAILS' | 'FELL OFF TABLE' | 'LANDED ON SIDE';
+type VALUE = "HEADS" | "TAILS" | "FELL OFF TABLE" | "LANDED ON SIDE";
 
 const SIDE_CHANCE = 0.002;
 const FELL_OFF_CHANCE = 0.06;
@@ -16,10 +16,10 @@ const FELL_OFF_CHANCE = 0.06;
 const HEADS_CHANCE = (1 - SIDE_CHANCE - FELL_OFF_CHANCE) / 2;
 
 function getFlipResult(random: number): VALUE {
-  if (random < SIDE_CHANCE) return 'LANDED ON SIDE';
-  if (random < SIDE_CHANCE + FELL_OFF_CHANCE) return 'FELL OFF TABLE';
-  if (random < SIDE_CHANCE + FELL_OFF_CHANCE + HEADS_CHANCE) return 'HEADS';
-  return 'TAILS';
+  if (random < SIDE_CHANCE) return "LANDED ON SIDE";
+  if (random < SIDE_CHANCE + FELL_OFF_CHANCE) return "FELL OFF TABLE";
+  if (random < SIDE_CHANCE + FELL_OFF_CHANCE + HEADS_CHANCE) return "HEADS";
+  return "TAILS";
 }
 
 function RouteComponent() {

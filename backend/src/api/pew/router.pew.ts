@@ -1,29 +1,14 @@
 import { Elysia } from "elysia";
 import { returnAPIError, returnWSResponse } from "../../responses.js";
-import {
-  getChatsController,
-  sendChatController,
-} from "./controllers/index.js";
+import { getChatsController, sendChatController } from "./controllers/index.js";
 import { joinRoomController } from "./controllers/index.js";
 import { listRoomsController } from "./controllers/index.js";
-import {
-  isGameEngineRunning,
-  startGameEngine,
-  stopGameEngine,
-} from "./utils/index.js";
-import {
-  wsMessageSchema,
-  wsQuerySchema,
-  type WSSendMessageType,
-} from "./models/index.js";
+import { isGameEngineRunning, startGameEngine, stopGameEngine } from "./utils/index.js";
+import { wsMessageSchema, wsQuerySchema, type WSSendMessageType } from "./models/index.js";
 import type { GameSerialized } from "./models/index.js";
 import { addChat } from "./services/index.js";
 import { getGameSerialisedState } from "./services/index.js";
-import {
-  markPlayerForDeletion,
-  playerFire,
-  playerSetPosition,
-} from "./services/index.js";
+import { markPlayerForDeletion, playerFire, playerSetPosition } from "./services/index.js";
 import { roomServiceDeleteEmpty } from "./services/index.js";
 import { roomJoinSchema, sendChatSchema } from "./validation/index.js";
 
@@ -59,13 +44,9 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
     body: roomJoinSchema,
   })
   .get("/chats/:roomId", ({ params }) => getChatsController(params.roomId))
-  .post(
-    "/chats/:roomId",
-    ({ params, body }) => sendChatController(params.roomId, body),
-    {
-      body: sendChatSchema,
-    }
-  )
+  .post("/chats/:roomId", ({ params, body }) => sendChatController(params.roomId, body), {
+    body: sendChatSchema,
+  })
   // Usage: ws://localhost:3001/pew/game?roomId=roomId&playerId=playerId
   .ws("/game", {
     query: wsQuerySchema,
@@ -99,13 +80,7 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
       }
 
       // send game state to all players in room
-      broadcastToRoom(
-        roomId,
-        returnWSResponse<WSSendMessageType, GameSerialized>(
-          "game-state",
-          gameState
-        )
-      );
+      broadcastToRoom(roomId, returnWSResponse<WSSendMessageType, GameSerialized>("game-state", gameState));
     },
 
     message(ws, message) {
@@ -120,22 +95,13 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
 
       switch (message.type) {
         case "leave-room": {
-          const [removedGame, removedGameError] = markPlayerForDeletion(
-            roomId,
-            playerId
-          );
+          const [removedGame, removedGameError] = markPlayerForDeletion(roomId, playerId);
           if (!removedGame || removedGameError) {
             ws.send(JSON.stringify({ error: removedGameError }));
             return;
           }
 
-          broadcastToRoom(
-            roomId,
-            returnWSResponse<WSSendMessageType, GameSerialized>(
-              "game-state",
-              removedGame
-            )
-          );
+          broadcastToRoom(roomId, returnWSResponse<WSSendMessageType, GameSerialized>("game-state", removedGame));
 
           if (removedGame.players.length === 0) {
             roomServiceDeleteEmpty();
@@ -146,13 +112,7 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
 
         case "update-position": {
           const { x, y, bearing } = message.data;
-          const [, gameStateErr] = playerSetPosition(
-            roomId,
-            playerId,
-            x,
-            y,
-            bearing
-          );
+          const [, gameStateErr] = playerSetPosition(roomId, playerId, x, y, bearing);
           if (gameStateErr) {
             ws.send(JSON.stringify({ error: gameStateErr }));
             return;
@@ -176,25 +136,14 @@ export const pewRouter = new Elysia({ prefix: "/pew" })
         case "send-chat": {
           const { chatContent } = message.data;
 
-          const [newChat, chatError] = addChat(
-            roomId,
-            playerId,
-            chatContent,
-            false
-          );
+          const [newChat, chatError] = addChat(roomId, playerId, chatContent, false);
 
           if (chatError || !newChat) {
             ws.send(JSON.stringify({ error: chatError }));
             return;
           }
 
-          broadcastToRoom(
-            roomId,
-            returnWSResponse<WSSendMessageType, typeof newChat>(
-              "new-chat",
-              newChat
-            )
-          );
+          broadcastToRoom(roomId, returnWSResponse<WSSendMessageType, typeof newChat>("new-chat", newChat));
           break;
         }
       }

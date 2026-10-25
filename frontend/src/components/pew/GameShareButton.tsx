@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { Button } from '../gmac.ui';
+import { useState } from "react";
+import { Button } from "../gmac.ui";
 
 export const GameShareButton = () => {
-  const savedRoomName = localStorage.getItem('room-name') || '';
-  const savedRoomCode = localStorage.getItem('room-code') || '';
+  const savedRoomName = localStorage.getItem("room-name") || "";
+  const savedRoomCode = localStorage.getItem("room-code") || "";
   const [isCopied, setIsCopied] = useState(false);
 
   if (!savedRoomName || !savedRoomCode) {
@@ -20,7 +20,7 @@ export const GameShareButton = () => {
 
   return (
     <Button onClick={onCopy} theme="blue" disabled={isCopied} className="w-[180px]">
-      {isCopied ? 'Copied!' : 'Share Room Link'}
+      {isCopied ? "Copied!" : "Share Room Link"}
     </Button>
   );
 };

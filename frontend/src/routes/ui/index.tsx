@@ -39,27 +39,27 @@ import {
   TabsTrigger,
   tabsVariantOptions,
   TextButton,
-  textVariants
-} from '@/components/gmac.ui';
-import { alertThemeOptions, alertVariantOptions } from '@/components/gmac.ui/alert';
-import { AvatarButton, avatarSizeOptions, avatarThemeOptions, avatarVariantOptions } from '@/components/gmac.ui/avatar';
-import { badgeThemeOptions, badgeVariantOptions } from '@/components/gmac.ui/badge';
-import { buttonSizeOptions, buttonThemeOptions, buttonVariantOptions } from '@/components/gmac.ui/button';
-import { cardOutlineThemeOptions, cardThemeOptions, cardVariantOptions } from '@/components/gmac.ui/card';
-import { IconButton, iconButtonSizeOptions, iconButtonThemeOptions, iconButtonVariantOptions } from '@/components/gmac.ui/icon-button';
-import { DialogExample, DrawerExample, FormExample } from '@/components/gmac.ui/mocks';
-import { textButtonThemeOptions } from '@/components/gmac.ui/text-button';
-import { PL } from '@/components/gmac.ui/typography';
-import { Page } from '@/components/layout';
-import { useTheme } from '@/components/theme-provider';
-import { useVariantState } from '@/components/VariantToggle';
-import { IconInfoCircle, IconPlus, IconSettings } from '@tabler/icons-react';
-import { createFileRoute } from '@tanstack/react-router';
-import { useEffect } from 'react';
-import { create } from 'zustand';
+  textVariants,
+} from "@/components/gmac.ui";
+import { alertThemeOptions, alertVariantOptions } from "@/components/gmac.ui/alert";
+import { AvatarButton, avatarSizeOptions, avatarThemeOptions, avatarVariantOptions } from "@/components/gmac.ui/avatar";
+import { badgeThemeOptions, badgeVariantOptions } from "@/components/gmac.ui/badge";
+import { buttonSizeOptions, buttonThemeOptions, buttonVariantOptions } from "@/components/gmac.ui/button";
+import { cardOutlineThemeOptions, cardThemeOptions, cardVariantOptions } from "@/components/gmac.ui/card";
+import { IconButton, iconButtonSizeOptions, iconButtonThemeOptions, iconButtonVariantOptions } from "@/components/gmac.ui/icon-button";
+import { DialogExample, DrawerExample, FormExample } from "@/components/gmac.ui/mocks";
+import { textButtonThemeOptions } from "@/components/gmac.ui/text-button";
+import { PL } from "@/components/gmac.ui/typography";
+import { Page } from "@/components/layout";
+import { useTheme } from "@/components/theme-provider";
+import { useVariantState } from "@/components/VariantToggle";
+import { IconInfoCircle, IconPlus, IconSettings } from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { create } from "zustand";
 
-export const Route = createFileRoute('/ui/')({
-  component: UIRoute
+export const Route = createFileRoute("/ui/")({
+  component: UIRoute,
 });
 
 function UIRoute() {
@@ -76,16 +76,15 @@ function UIRoute() {
         </CardHeader>
       </Card>
 
-      <Tabs >
+      <Tabs>
         <span className="flex flex-wrap items-center justify-between gap-2">
-
-        <TabsList variant={variant} theme="gray">
-          <TabsTrigger value={1}>Typography</TabsTrigger>
-          <TabsTrigger value={2}>Components</TabsTrigger>
-          <TabsTrigger value={3}>Layout</TabsTrigger>
-          <TabsTrigger value={4}>Form</TabsTrigger>
-        </TabsList>
-        <Button onClick={() => setPageSettingsOpen(true)}>Page Settings</Button>
+          <TabsList variant={variant} theme="gray">
+            <TabsTrigger value={1}>Typography</TabsTrigger>
+            <TabsTrigger value={2}>Components</TabsTrigger>
+            <TabsTrigger value={3}>Layout</TabsTrigger>
+            <TabsTrigger value={4}>Form</TabsTrigger>
+          </TabsList>
+          <Button onClick={() => setPageSettingsOpen(true)}>Page Settings</Button>
         </span>
         <TabsContent value={1}>
           <DemoCard title="Headings">
@@ -111,15 +110,15 @@ function UIRoute() {
           </DemoCard>
 
           <DemoCard title="textVariants">
-            <p className={textVariants({ size: 'sm', weight: 400, theme: 'primary' })}>textVariants sm:400:primary</p>
-            <p className={textVariants({ size: 'md', weight: 400, theme: 'primary' })}>textVariants md:400:primary</p>
-            <p className={textVariants({ size: 'lg', weight: 400, theme: 'primary' })}>textVariants lg:400:primary</p>
-            <p className={textVariants({ size: 'sm', weight: 400, theme: 'secondary' })}>textVariants sm:400:secondary</p>
-            <p className={textVariants({ size: 'md', weight: 400, theme: 'secondary' })}>textVariants md:400:secondary</p>
-            <p className={textVariants({ size: 'lg', weight: 400, theme: 'secondary' })}>textVariants lg:400:secondary</p>
-            <p className={textVariants({ size: 'sm', weight: 400, theme: 'tertiary' })}>textVariants sm:400:tertiary</p>
-            <p className={textVariants({ size: 'md', weight: 400, theme: 'tertiary' })}>textVariants md:400:tertiary</p>
-            <p className={textVariants({ size: 'lg', weight: 400, theme: 'tertiary' })}>textVariants lg:400:tertiary</p>
+            <p className={textVariants({ size: "sm", weight: 400, theme: "primary" })}>textVariants sm:400:primary</p>
+            <p className={textVariants({ size: "md", weight: 400, theme: "primary" })}>textVariants md:400:primary</p>
+            <p className={textVariants({ size: "lg", weight: 400, theme: "primary" })}>textVariants lg:400:primary</p>
+            <p className={textVariants({ size: "sm", weight: 400, theme: "secondary" })}>textVariants sm:400:secondary</p>
+            <p className={textVariants({ size: "md", weight: 400, theme: "secondary" })}>textVariants md:400:secondary</p>
+            <p className={textVariants({ size: "lg", weight: 400, theme: "secondary" })}>textVariants lg:400:secondary</p>
+            <p className={textVariants({ size: "sm", weight: 400, theme: "tertiary" })}>textVariants sm:400:tertiary</p>
+            <p className={textVariants({ size: "md", weight: 400, theme: "tertiary" })}>textVariants md:400:tertiary</p>
+            <p className={textVariants({ size: "lg", weight: 400, theme: "tertiary" })}>textVariants lg:400:tertiary</p>
           </DemoCard>
         </TabsContent>
         <TabsContent value={2}>
@@ -289,7 +288,7 @@ function UIRoute() {
               <div key={variant} className="flex flex-col gap-2">
                 <H4>{variant}</H4>
                 <div className="flex flex-col gap-4 lg:flex-row lg:flex-wrap">
-                  {(variant === 'outline' ? cardOutlineThemeOptions : cardThemeOptions).map((theme) => (
+                  {(variant === "outline" ? cardOutlineThemeOptions : cardThemeOptions).map((theme) => (
                     <Card key={theme} variant={variant} theme={theme} className="w-full max-w-sm">
                       <CardHeader>
                         <CardTitle>
@@ -314,7 +313,7 @@ function UIRoute() {
                 <H4>{variant}</H4>
                 <div className="flex flex-wrap gap-4">
                   {alertThemeOptions.map((theme) => (
-                    <Alert key={theme} variant={variant} theme={theme} onDismiss={theme === 'red' ? () => {} : undefined}>
+                    <Alert key={theme} variant={variant} theme={theme} onDismiss={theme === "red" ? () => {} : undefined}>
                       <AlertHeader>
                         <IconInfoCircle />
                         <AlertTitle>
@@ -324,9 +323,9 @@ function UIRoute() {
                       <AlertDescription>
                         Sample description for {variant} / {theme}.
                       </AlertDescription>
-                      {theme === 'yellow' && (
+                      {theme === "yellow" && (
                         <AlertActions>
-                          <Button size="sm" type="button" theme={'yellow'} variant={variant === 'solid' ? 'solid' : 'outline'}>
+                          <Button size="sm" type="button" theme={"yellow"} variant={variant === "solid" ? "solid" : "outline"}>
                             Action
                           </Button>
                         </AlertActions>
@@ -340,7 +339,7 @@ function UIRoute() {
         </TabsContent>
         <TabsContent value={4}>
           <DemoCard title="Form">
-            <FormExample  variant={variant}/>
+            <FormExample variant={variant} />
           </DemoCard>
         </TabsContent>
       </Tabs>
@@ -369,7 +368,7 @@ function Controls() {
   const { open, setOpen } = usePageSettingsState();
 
   useEffect(() => {
-    document.body.classList.toggle('font-roboto', font === 'roboto');
+    document.body.classList.toggle("font-roboto", font === "roboto");
   }, [font]);
 
   return (
@@ -380,7 +379,8 @@ function Controls() {
             <IconButton variant="solid" theme="gray" className="fixed right-4 bottom-4 z-30 w-fit max-w-lg">
               <IconSettings />
             </IconButton>
-          }>
+          }
+        >
           Open Popover
         </PopoverTrigger>
         <PopoverContent>
@@ -390,10 +390,10 @@ function Controls() {
               <div className="flex flex-col items-start gap-2">
                 Site Theme:
                 <span className="flex flex-wrap items-center gap-4">
-                  <Button variant={theme === 'light' ? 'solid' : 'outline'} onClick={() => setTheme('light')}>
+                  <Button variant={theme === "light" ? "solid" : "outline"} onClick={() => setTheme("light")}>
                     Light
                   </Button>
-                  <Button variant={theme === 'dark' ? 'solid' : 'outline'} onClick={() => setTheme('dark')}>
+                  <Button variant={theme === "dark" ? "solid" : "outline"} onClick={() => setTheme("dark")}>
                     Dark
                   </Button>
                 </span>
@@ -401,10 +401,10 @@ function Controls() {
               <div className="flex flex-col items-start gap-2">
                 Site Variant:
                 <span className="flex flex-wrap items-center gap-4">
-                  <Button variant={variant === 'solid' ? 'solid' : 'outline'} onClick={() => setVariant('solid')}>
+                  <Button variant={variant === "solid" ? "solid" : "outline"} onClick={() => setVariant("solid")}>
                     Solid
                   </Button>
-                  <Button variant={variant === 'glass' ? 'solid' : 'outline'} onClick={() => setVariant('glass')}>
+                  <Button variant={variant === "glass" ? "solid" : "outline"} onClick={() => setVariant("glass")}>
                     Glass
                   </Button>
                 </span>
@@ -412,13 +412,13 @@ function Controls() {
               <div className="flex flex-col items-start gap-2">
                 Page Cards:
                 <span className="flex flex-wrap items-center gap-4">
-                  <Button variant={card === 'solid' ? 'solid' : 'outline'} onClick={() => setCard('solid')}>
+                  <Button variant={card === "solid" ? "solid" : "outline"} onClick={() => setCard("solid")}>
                     Solid
                   </Button>
-                  <Button variant={card === 'glass' ? 'solid' : 'outline'} onClick={() => setCard('glass')}>
+                  <Button variant={card === "glass" ? "solid" : "outline"} onClick={() => setCard("glass")}>
                     Glass
                   </Button>
-                  <Button variant={card === 'outline' ? 'solid' : 'outline'} onClick={() => setCard('outline')}>
+                  <Button variant={card === "outline" ? "solid" : "outline"} onClick={() => setCard("outline")}>
                     Outline
                   </Button>
                 </span>
@@ -426,10 +426,10 @@ function Controls() {
               <div className="flex flex-col items-start gap-2">
                 Site Font:
                 <span className="flex flex-wrap items-center gap-4">
-                  <Button variant={font === 'raleway' ? 'solid' : 'outline'} onClick={() => setFont('raleway')}>
+                  <Button variant={font === "raleway" ? "solid" : "outline"} onClick={() => setFont("raleway")}>
                     Raleway
                   </Button>
-                  <Button variant={font === 'roboto' ? 'solid' : 'outline'} onClick={() => setFont('roboto')}>
+                  <Button variant={font === "roboto" ? "solid" : "outline"} onClick={() => setFont("roboto")}>
                     Roboto
                   </Button>
                 </span>
@@ -443,16 +443,16 @@ function Controls() {
 }
 
 interface BackgroundState {
-  card: 'solid' | 'glass' | 'outline';
-  setCard: (bg: 'solid' | 'glass' | 'outline') => void;
+  card: "solid" | "glass" | "outline";
+  setCard: (bg: "solid" | "glass" | "outline") => void;
 }
 
 const useBackgroundState = create<BackgroundState>((set) => ({
-  card: 'solid',
-  setCard: (card: 'solid' | 'glass' | 'outline') => set(() => ({ card }))
+  card: "solid",
+  setCard: (card: "solid" | "glass" | "outline") => set(() => ({ card })),
 }));
 
-type FontOption = 'raleway' | 'roboto';
+type FontOption = "raleway" | "roboto";
 
 interface FontState {
   font: FontOption;
@@ -460,8 +460,8 @@ interface FontState {
 }
 
 const useFontState = create<FontState>((set) => ({
-  font: 'raleway',
-  setFont: (font: FontOption) => set(() => ({ font }))
+  font: "raleway",
+  setFont: (font: FontOption) => set(() => ({ font })),
 }));
 
 interface PageSettingsState {
@@ -471,5 +471,5 @@ interface PageSettingsState {
 
 const usePageSettingsState = create<PageSettingsState>((set) => ({
   open: true,
-  setOpen: (open: boolean) => set(() => ({ open }))
+  setOpen: (open: boolean) => set(() => ({ open })),
 }));

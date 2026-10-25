@@ -1,5 +1,5 @@
-import { Card, CardHeader, Kbd } from '@/components/gmac.ui';
-import { useVariantState } from '../VariantToggle';
+import { Card, CardHeader, Kbd } from "@/components/gmac.ui";
+import { useVariantState } from "../VariantToggle";
 
 export const GameControls = () => {
   const { variant } = useVariantState();

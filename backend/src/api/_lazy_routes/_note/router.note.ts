@@ -13,5 +13,5 @@ export const noteRouter = new Elysia({ prefix: "/note" }).post(
     set.status = response.status;
     return response;
   },
-  { body: noteSchema }
+  { body: noteSchema },
 );

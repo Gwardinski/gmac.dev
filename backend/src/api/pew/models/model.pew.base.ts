@@ -1,16 +1,7 @@
 import z from "zod";
 
 // COLORS
-export const COLORS = [
-  "RED",
-  "BLUE",
-  "GREEN",
-  "YELLOW",
-  "PURPLE",
-  "ORANGE",
-  "TEAL",
-  "PINK",
-] as const;
+export const COLORS = ["RED", "BLUE", "GREEN", "YELLOW", "PURPLE", "ORANGE", "TEAL", "PINK"] as const;
 export type Color = (typeof COLORS)[number];
 export const COLORS_SCHEMA = z.enum(COLORS);
 
@@ -80,12 +71,7 @@ const sendGameChatSchema = z.object({
 export type SendGameChat = z.infer<typeof sendGameChatSchema>;
 
 // Union of all possible WebSocket messages
-export const wsMessageSchema = z.discriminatedUnion("type", [
-  updatePositionMessageSchema,
-  fireMessageSchema,
-  leaveRoomMessageSchema,
-  sendGameChatSchema,
-]);
+export const wsMessageSchema = z.discriminatedUnion("type", [updatePositionMessageSchema, fireMessageSchema, leaveRoomMessageSchema, sendGameChatSchema]);
 export type WSMessage = z.infer<typeof wsMessageSchema>;
 
 export type WSSendMessageType = "game-state" | "new-chat";

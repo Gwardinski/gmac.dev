@@ -1,20 +1,20 @@
-import { Button, Field, FieldError, FieldGroup, FieldLabel, Input } from '@/components/gmac.ui';
-import { useForm } from '@tanstack/react-form';
-import { getRouteApi } from '@tanstack/react-router';
-import { useState } from 'react';
-import { Card, CardBody, CardFooter, RadioGroup, RadioGroupItem } from '../gmac.ui';
-import { useVariantState } from '../VariantToggle';
-import { COLORS, colorToHex, type Color } from './client-copies';
-import { mapAPIErrorsToForm } from './form-utils';
-import { useGameActions } from './useGetGameState';
-import { joinGameSchema, useJoinRoom } from './useJoinRoom';
+import { Button, Field, FieldError, FieldGroup, FieldLabel, Input } from "@/components/gmac.ui";
+import { useForm } from "@tanstack/react-form";
+import { getRouteApi } from "@tanstack/react-router";
+import { useState } from "react";
+import { Card, CardBody, CardFooter, RadioGroup, RadioGroupItem } from "../gmac.ui";
+import { useVariantState } from "../VariantToggle";
+import { COLORS, colorToHex, type Color } from "./client-copies";
+import { mapAPIErrorsToForm } from "./form-utils";
+import { useGameActions } from "./useGetGameState";
+import { joinGameSchema, useJoinRoom } from "./useJoinRoom";
 
-const savedPlayerName = localStorage.getItem('player-name') || '';
-const savedPlayerColor = (localStorage.getItem('player-color') as Color) || 'RED';
-const savedRoomCode = localStorage.getItem('room-code') || '';
-const savedRoomName = localStorage.getItem('room-name') || '';
+const savedPlayerName = localStorage.getItem("player-name") || "";
+const savedPlayerColor = (localStorage.getItem("player-color") as Color) || "RED";
+const savedRoomCode = localStorage.getItem("room-code") || "";
+const savedRoomName = localStorage.getItem("room-name") || "";
 
-const route = getRouteApi('/pew/');
+const route = getRouteApi("/pew/");
 
 function createNewPlayerDeviceId() {
   return `device-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
@@ -25,12 +25,12 @@ export function GameJoinForm() {
   const { onJoinSuccess } = useGameActions();
 
   const { mutate, isPending } = useJoinRoom();
-  const [globalError, setGlobalError] = useState<string>('');
+  const [globalError, setGlobalError] = useState<string>("");
 
   const searchParams = route.useSearch();
 
-  const sharedRoomCode = (searchParams as any)?.code?.toString().trim() ?? '';
-  const sharedRoomName = (searchParams as any)?.room?.toString().trim() ?? '';
+  const sharedRoomCode = (searchParams as any)?.code?.toString().trim() ?? "";
+  const sharedRoomName = (searchParams as any)?.room?.toString().trim() ?? "";
 
   const form = useForm({
     defaultValues: {
@@ -38,18 +38,18 @@ export function GameJoinForm() {
       roomCode: sharedRoomCode || savedRoomCode,
       roomName: sharedRoomName || savedRoomName,
       playerColour: (searchParams as any)?.playerColour || savedPlayerColor,
-      playerId: localStorage.getItem('player-id') || null,
-      playerDeviceId: localStorage.getItem('player-device-id') || createNewPlayerDeviceId()
+      playerId: localStorage.getItem("player-id") || null,
+      playerDeviceId: localStorage.getItem("player-device-id") || createNewPlayerDeviceId(),
     },
     validators: {
-      onSubmit: joinGameSchema
+      onSubmit: joinGameSchema,
     },
     onSubmit: async ({ value, formApi }) => {
-      localStorage.setItem('player-name', value.playerName);
-      localStorage.setItem('player-color', value.playerColour);
-      localStorage.setItem('room-code', value.roomCode);
-      localStorage.setItem('room-name', value.roomName);
-      localStorage.setItem('player-device-id', value.playerDeviceId);
+      localStorage.setItem("player-name", value.playerName);
+      localStorage.setItem("player-color", value.playerColour);
+      localStorage.setItem("room-code", value.roomCode);
+      localStorage.setItem("room-name", value.roomName);
+      localStorage.setItem("player-device-id", value.playerDeviceId);
       mutate(value, {
         onSuccess: ({ validationErrors, error, value }) => {
           if (mapAPIErrorsToForm(validationErrors, formApi)) {
@@ -61,17 +61,17 @@ export function GameJoinForm() {
             return;
           }
           if (!value?.playerId || !value?.roomId) {
-            setGlobalError('Failed to join room. Please refresh the page and try again.');
+            setGlobalError("Failed to join room. Please refresh the page and try again.");
             return;
           }
-          localStorage.setItem('player-id', value.playerId);
+          localStorage.setItem("player-id", value.playerId);
           onJoinSuccess?.({ roomId: value.roomId, playerId: value.playerId, level: value.level });
         },
         onError: (error) => {
           setGlobalError(error.message);
-        }
+        },
       });
-    }
+    },
   });
 
   return (
@@ -82,7 +82,8 @@ export function GameJoinForm() {
           onSubmit={(e) => {
             e.preventDefault();
             form.handleSubmit();
-          }}>
+          }}
+        >
           <FieldGroup>
             <form.Field
               name="playerName"
@@ -109,13 +110,13 @@ export function GameJoinForm() {
             <form.Field name="playerColour">
               {(field) => (
                 <RadioGroup value={field.state.value} onValueChange={(value) => field.handleChange(value as Color)} className="flex flex-wrap justify-center gap-2">
-                  {COLORS.filter((color) => color !== 'YELLOW').map((color) => (
+                  {COLORS.filter((color) => color !== "YELLOW").map((color) => (
                     <label key={color} className="relative cursor-pointer" title={color}>
                       <RadioGroupItem
                         value={color}
-                        className={`size-10 border-2 ${field.state.value === color ? 'ring-offset-background ring-2 ring-offset-2' : ''}`}
+                        className={`size-10 border-2 ${field.state.value === color ? "ring-offset-background ring-2 ring-offset-2" : ""}`}
                         style={{
-                          backgroundColor: colorToHex(color)
+                          backgroundColor: colorToHex(color),
                         }}
                       />
                     </label>

@@ -1,13 +1,13 @@
-import { Button, Card, CardBody, CardHeader, H1, H1Description, H2, Tabs, TabsContent, TabsList, TabsTrigger, cn } from '@/components/gmac.ui';
-import { Page } from '@/components/layout';
-import { useVariantState } from '@/components/VariantToggle';
-import { createFileRoute } from '@tanstack/react-router';
-import { differenceInMilliseconds } from 'date-fns';
-import { useEffect, useRef, useState, type RefObject } from 'react';
-import { create } from 'zustand';
+import { Button, Card, CardBody, CardHeader, H1, H1Description, H2, Tabs, TabsContent, TabsList, TabsTrigger, cn } from "@/components/gmac.ui";
+import { Page } from "@/components/layout";
+import { useVariantState } from "@/components/VariantToggle";
+import { createFileRoute } from "@tanstack/react-router";
+import { differenceInMilliseconds } from "date-fns";
+import { useEffect, useRef, useState, type RefObject } from "react";
+import { create } from "zustand";
 
-export const Route = createFileRoute('/maze/')({
-  component: RouteComponent
+export const Route = createFileRoute("/maze/")({
+  component: RouteComponent,
 });
 
 function RouteComponent() {
@@ -83,7 +83,7 @@ function RouteComponent() {
       </Card>
 
       <Tabs defaultValue={tab1} onValueChange={setTab1}>
-        <TabsList variant={variant === 'solid' ? 'solid' : 'glass'}>
+        <TabsList variant={variant === "solid" ? "solid" : "glass"}>
           <TabsTrigger value="1">Game</TabsTrigger>
           <TabsTrigger value="2">Scoreboard</TabsTrigger>
         </TabsList>
@@ -91,10 +91,10 @@ function RouteComponent() {
           <Card as="section" variant={variant} className="relative">
             <CardHeader>
               <H2 className="mr-auto">Time: {seconds}</H2>
-              <Stat hasCollected={hasButton1}>Switch 1: {hasButton1 ? 'On' : 'Off'}</Stat>
-              <Stat hasCollected={hasButton2}>Switch 2: {hasButton2 ? 'On' : 'Off'}</Stat>
-              <Stat hasCollected={hasButton3}>Switch 3: {hasButton3 ? 'On' : 'Off'}</Stat>
-              <Stat hasCollected={hasButton1 && hasButton2 && hasButton3}>Exit: {hasButton1 && hasButton2 && hasButton3 ? 'Open' : 'Closed'}</Stat>
+              <Stat hasCollected={hasButton1}>Switch 1: {hasButton1 ? "On" : "Off"}</Stat>
+              <Stat hasCollected={hasButton2}>Switch 2: {hasButton2 ? "On" : "Off"}</Stat>
+              <Stat hasCollected={hasButton3}>Switch 3: {hasButton3 ? "On" : "Off"}</Stat>
+              <Stat hasCollected={hasButton1 && hasButton2 && hasButton3}>Exit: {hasButton1 && hasButton2 && hasButton3 ? "Open" : "Closed"}</Stat>
 
               {gameCompleted && (
                 <div className="absolute top-0 z-10 flex h-full w-full flex-col items-center justify-center gap-1">
@@ -109,8 +109,9 @@ function RouteComponent() {
             <CardBody>
               <div
                 ref={mazePlayAreaRef}
-                className={`${isRunning ? 'hover:cursor-move' : 'hover:cursor-crosshair'} relative mx-auto flex w-fit flex-col items-center justify-center`}
-                onMouseLeave={resetGame}>
+                className={`${isRunning ? "hover:cursor-move" : "hover:cursor-crosshair"} relative mx-auto flex w-fit flex-col items-center justify-center`}
+                onMouseLeave={resetGame}
+              >
                 {bricks.map((row, i) => (
                   <div key={i} className="flex w-full items-center justify-center gap-0">
                     {row.map((cell, j) => (
@@ -130,13 +131,13 @@ function RouteComponent() {
                   <div
                     id="blackout"
                     style={{
-                      position: 'absolute',
-                      top: '0px',
-                      left: '0px',
-                      width: '100%',
-                      height: '100%',
-                      pointerEvents: 'none',
-                      background: 'radial-gradient(circle at var(--x) var(--y) , transparent 20px, rgba(0,0,0,1) 60px)'
+                      position: "absolute",
+                      top: "0px",
+                      left: "0px",
+                      width: "100%",
+                      height: "100%",
+                      pointerEvents: "none",
+                      background: "radial-gradient(circle at var(--x) var(--y) , transparent 20px, rgba(0,0,0,1) 60px)",
                     }}
                   />
                 )}
@@ -151,30 +152,30 @@ function RouteComponent() {
 }
 
 function Wall({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('h-16 w-16 bg-gray-500', className)} {...props} />;
+  return <div className={cn("h-16 w-16 bg-gray-500", className)} {...props} />;
 }
 function Path({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('h-16 w-16 bg-yellow-500', className)} {...props} />;
+  return <div className={cn("h-16 w-16 bg-yellow-500", className)} {...props} />;
 }
 function Start({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div id="start" className={cn('h-16 w-16 bg-orange-500', className)} {...props} />;
+  return <div id="start" className={cn("h-16 w-16 bg-orange-500", className)} {...props} />;
 }
 function Goal({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('h-16 w-16 bg-red-500', className)} {...props} />;
+  return <div className={cn("h-16 w-16 bg-red-500", className)} {...props} />;
 }
 
 interface SwitchProps extends React.HTMLAttributes<HTMLButtonElement> {
   hasCollected: boolean;
 }
 function Switch({ className, hasCollected, ...props }: SwitchProps) {
-  return <Button variant="glass" className={cn(`h-16 w-16 rounded-none ${hasCollected ? 'bg-yellow-500' : 'animate-pulse bg-green-500'}`, className)} {...props} />;
+  return <Button variant="glass" className={cn(`h-16 w-16 rounded-none ${hasCollected ? "bg-yellow-500" : "animate-pulse bg-green-500"}`, className)} {...props} />;
 }
 
 interface StatProps extends React.HTMLAttributes<HTMLHeadingElement> {
   hasCollected: boolean;
 }
 function Stat({ className, hasCollected, ...props }: StatProps) {
-  return <p className={cn(`w-32 text-right ${hasCollected ? 'text-green-500 dark:text-green-500' : 'text-red-500 dark:text-red-500'}`, className)} {...props} />;
+  return <p className={cn(`w-32 text-right ${hasCollected ? "text-green-500 dark:text-green-500" : "text-red-500 dark:text-red-500"}`, className)} {...props} />;
 }
 const useGameTimer = () => {
   const intervalRef = useRef<ReturnType<typeof setInterval>>(0);
@@ -215,15 +216,15 @@ const useFollowMouse = (hasTorch: boolean, areaRef: RefObject<HTMLDivElement | n
     const area = areaRef.current;
 
     if (!hasTorch) {
-      const start = document.getElementById('start');
+      const start = document.getElementById("start");
       if (area && start) {
         const ar = area.getBoundingClientRect();
         const sr = start.getBoundingClientRect();
-        pos.style.setProperty('--x', `${sr.left - ar.left + sr.width / 2}px`);
-        pos.style.setProperty('--y', `${sr.top - ar.top + sr.height / 2}px`);
+        pos.style.setProperty("--x", `${sr.left - ar.left + sr.width / 2}px`);
+        pos.style.setProperty("--y", `${sr.top - ar.top + sr.height / 2}px`);
       } else if (start) {
-        pos.style.setProperty('--x', `${(start.offsetLeft ?? 0) + 32}px`);
-        pos.style.setProperty('--y', `${(start.offsetTop ?? 0) + 32}px`);
+        pos.style.setProperty("--x", `${(start.offsetLeft ?? 0) + 32}px`);
+        pos.style.setProperty("--y", `${(start.offsetTop ?? 0) + 32}px`);
       }
       return;
     }
@@ -233,14 +234,14 @@ const useFollowMouse = (hasTorch: boolean, areaRef: RefObject<HTMLDivElement | n
         return;
       }
       const rect = area.getBoundingClientRect();
-      pos.style.setProperty('--x', `${e.clientX - rect.left}px`);
-      pos.style.setProperty('--y', `${e.clientY - rect.top}px`);
+      pos.style.setProperty("--x", `${e.clientX - rect.left}px`);
+      pos.style.setProperty("--y", `${e.clientY - rect.top}px`);
     };
 
-    pos.addEventListener('mousemove', follow);
+    pos.addEventListener("mousemove", follow);
 
     return () => {
-      pos.removeEventListener('mousemove', follow);
+      pos.removeEventListener("mousemove", follow);
     };
   }, [hasTorch, areaRef]);
 
@@ -263,7 +264,7 @@ const bricks = [
   [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0],
   [0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0],
   [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0],
 ];
 
 // 0 = wall
@@ -278,6 +279,6 @@ interface TabStore {
 }
 
 const useTabStore = create<TabStore>((set) => ({
-  tab1: '1',
-  setTab1: (v) => set(() => ({ tab1: v }))
+  tab1: "1",
+  setTab1: (v) => set(() => ({ tab1: v })),
 }));

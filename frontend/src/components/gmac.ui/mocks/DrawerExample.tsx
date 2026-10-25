@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { Button } from '../button';
-import { Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader } from '../drawer';
-import { P1 } from '../typography';
+import { create } from "zustand";
+import { Button } from "../button";
+import { Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader } from "../drawer";
+import { P1 } from "../typography";
 
 export const DrawerExample = () => {
   const { topOpen, rightOpen, bottomOpen, leftOpen, closeTop, closeRight, closeBottom, closeLeft, openTop, openRight, openBottom, openLeft } = useDrawerState();
@@ -101,5 +101,5 @@ const useDrawerState = create<DrawerState>((set) => ({
   closeBottom: () => set(() => ({ bottomOpen: false })),
   leftOpen: false,
   openLeft: () => set(() => ({ leftOpen: true })),
-  closeLeft: () => set(() => ({ leftOpen: false }))
+  closeLeft: () => set(() => ({ leftOpen: false })),
 }));

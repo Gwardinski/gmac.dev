@@ -1,9 +1,9 @@
-import type { Bearing, Color, Level } from '.';
+import type { Bearing, Color, Level } from ".";
 
 export const PLAYER_SIZE = 16;
 
-export type MovementKey = 'w' | 'a' | 's' | 'd';
-export type FireKey = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
+export type MovementKey = "w" | "a" | "s" | "d";
+export type FireKey = "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight";
 type CornerPosition = { x: number; y: number };
 type PlayerPositions = {
   x: number;
@@ -49,7 +49,7 @@ export class PlayerClient {
     public x: number,
     public y: number,
     public speed: number,
-    public bearing: Bearing | undefined
+    public bearing: Bearing | undefined,
   ) {
     // from api
     this.id = id;
@@ -86,7 +86,7 @@ export class PlayerClient {
       topRight: this.topRight,
       bottomLeft: this.bottomLeft,
       bottomRight: this.bottomRight,
-      bearing: this.bearing ?? undefined
+      bearing: this.bearing ?? undefined,
     };
   }
 
@@ -122,10 +122,10 @@ export class PlayerClient {
       let dx = 0;
       let dy = 0;
       fireKeys.forEach((k) => {
-        if (k === 'ArrowUp') dy -= 1;
-        if (k === 'ArrowDown') dy += 1;
-        if (k === 'ArrowLeft') dx -= 1;
-        if (k === 'ArrowRight') dx += 1;
+        if (k === "ArrowUp") dy -= 1;
+        if (k === "ArrowDown") dy += 1;
+        if (k === "ArrowLeft") dx -= 1;
+        if (k === "ArrowRight") dx += 1;
       });
       if (dx === 0 && dy === 0) return null;
       return Math.round((Math.atan2(dy, dx) * (180 / Math.PI) + 360) % 360) as Bearing;
@@ -142,10 +142,10 @@ export class PlayerClient {
     let dx = 0;
     let dy = 0;
     movementKeys.forEach((k) => {
-      if (k === 'w') dy -= 1;
-      if (k === 's') dy += 1;
-      if (k === 'a') dx -= 1;
-      if (k === 'd') dx += 1;
+      if (k === "w") dy -= 1;
+      if (k === "s") dy += 1;
+      if (k === "a") dx -= 1;
+      if (k === "d") dx += 1;
     });
     if (dx === 0 && dy === 0) return;
     const bearing = (Math.round((Math.atan2(dy, dx) * (180 / Math.PI) + 360) % 360) as Bearing) ?? this.bearing;
@@ -200,25 +200,25 @@ function checkWallCollision(newX: number, newY: number, level: Level) {
   const bottomLeft: CornerPosition = { x: newX, y: newY + PLAYER_SIZE };
   const bottomRight: CornerPosition = {
     x: newX + PLAYER_SIZE,
-    y: newY + PLAYER_SIZE
+    y: newY + PLAYER_SIZE,
   };
 
   // grid coordinates of the new 4 corners of the player
   const topLeftGrid = {
     x: Math.floor(topLeft.x / PLAYER_SIZE),
-    y: Math.floor(topLeft.y / PLAYER_SIZE)
+    y: Math.floor(topLeft.y / PLAYER_SIZE),
   };
   const topRightGrid = {
     x: Math.floor(topRight.x / PLAYER_SIZE),
-    y: Math.floor(topRight.y / PLAYER_SIZE)
+    y: Math.floor(topRight.y / PLAYER_SIZE),
   };
   const bottomLeftGrid = {
     x: Math.floor(bottomLeft.x / PLAYER_SIZE),
-    y: Math.floor(bottomLeft.y / PLAYER_SIZE)
+    y: Math.floor(bottomLeft.y / PLAYER_SIZE),
   };
   const bottomRightGrid = {
     x: Math.floor(bottomRight.x / PLAYER_SIZE),
-    y: Math.floor(bottomRight.y / PLAYER_SIZE)
+    y: Math.floor(bottomRight.y / PLAYER_SIZE),
   };
 
   // Check grid coordinates, is new position in a wall?

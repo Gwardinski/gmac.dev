@@ -25,7 +25,7 @@ export class BulletClass extends PhysicalModel {
     public playerId: string,
     initialX: number,
     initialY: number,
-    bearing: Bearing
+    bearing: Bearing,
   ) {
     super(generateBulletId(), initialX, initialY, BULLET_SIZE);
     this.speed = BULLET_BASE_SPEED;
@@ -62,13 +62,7 @@ export class BulletClass extends PhysicalModel {
     const newX = currentPositions.x + Math.cos(rad) * this.speed;
     const newY = currentPositions.y + Math.sin(rad) * this.speed;
 
-    const hitWall = this.checkWallCollision(
-      newX,
-      newY,
-      level,
-      BULLET_SIZE,
-      true
-    );
+    const hitWall = this.checkWallCollision(newX, newY, level, BULLET_SIZE, true);
 
     if (hitWall) {
       this.destroy();

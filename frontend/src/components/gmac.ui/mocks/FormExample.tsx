@@ -1,16 +1,16 @@
-import { IconPlus, IconSearch } from '@tabler/icons-react';
-import { useForm } from '@tanstack/react-form';
-import { useState } from 'react';
-import z from 'zod';
-import { Alert, AlertDescription, AlertHeader, AlertTitle } from '../alert';
-import { Button } from '../button';
-import { Checkbox } from '../checkbox';
-import { Field, FieldContent, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet, Form } from '../field';
-import { Input, InputAddon, InputGroup, InputGroupButton, InputGroupIconButton, InputGroupText, Textarea, TextareaBottom } from '../input-group';
-import { RadioGroup, RadioGroupItem } from '../radio-group';
-import { TextAnchor } from '../text-button';
+import { IconPlus, IconSearch } from "@tabler/icons-react";
+import { useForm } from "@tanstack/react-form";
+import { useState } from "react";
+import z from "zod";
+import { Alert, AlertDescription, AlertHeader, AlertTitle } from "../alert";
+import { Button } from "../button";
+import { Checkbox } from "../checkbox";
+import { Field, FieldContent, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet, Form } from "../field";
+import { Input, InputAddon, InputGroup, InputGroupButton, InputGroupIconButton, InputGroupText, Textarea, TextareaBottom } from "../input-group";
+import { RadioGroup, RadioGroupItem } from "../radio-group";
+import { TextAnchor } from "../text-button";
 
-const FORM_ID = 'form-example-demo';
+const FORM_ID = "form-example-demo";
 
 type SubscriptionOption = {
   optionId: string;
@@ -20,52 +20,52 @@ type SubscriptionOption = {
 };
 
 const planOptions: SubscriptionOption[] = [
-  { optionId: '0', label: 'Label Option 1 (disabled)', disabled: true },
-  { optionId: '1', label: 'Label Option 2' },
-  { optionId: '2', label: 'Label Option 3 (disabled)', description: 'Description (disabled)', disabled: true },
-  { optionId: '3', label: 'Label Option 4', description: 'Description' }
+  { optionId: "0", label: "Label Option 1 (disabled)", disabled: true },
+  { optionId: "1", label: "Label Option 2" },
+  { optionId: "2", label: "Label Option 3 (disabled)", description: "Description (disabled)", disabled: true },
+  { optionId: "3", label: "Label Option 4", description: "Description" },
 ];
 
 const formExampleSchema = z.object({
-  username: z.string().min(6, 'Username must be at least 6 characters.').max(24, 'Username must be at most 24 characters.'),
-  password: z.string().min(8, 'Password must be at least 8 characters.').max(24, 'Password must be at most 24 characters.'),
+  username: z.string().min(6, "Username must be at least 6 characters.").max(24, "Username must be at most 24 characters."),
+  password: z.string().min(8, "Password must be at least 8 characters.").max(24, "Password must be at most 24 characters."),
   websitePath: z.string().max(128),
   lookupQuery: z.string().max(200),
   notes: z.string().max(2000),
   reply: z.string().max(2000),
   attachmentNote: z.string().max(2000),
-  terms: z.literal(true, { message: 'You must agree to the terms of service.' }),
+  terms: z.literal(true, { message: "You must agree to the terms of service." }),
   checkbox1: z.boolean(),
   disabledFalse: z.boolean(),
   disabledTrue: z.boolean(),
-  option: z.string().min(1, 'You must select an option to continue.')
+  option: z.string().min(1, "You must select an option to continue."),
 });
 
-export const FormExample = ({ variant }: { variant: 'solid' | 'glass'  }) => {
+export const FormExample = ({ variant }: { variant: "solid" | "glass" }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const inputVariant = variant === 'glass' ? 'glass' : 'default';
+  const inputVariant = variant === "glass" ? "glass" : "default";
 
   const form = useForm({
     defaultValues: {
-      username: '',
-      password: '',
-      websitePath: '',
-      lookupQuery: '',
-      notes: '',
-      reply: '',
-      attachmentNote: '',
+      username: "",
+      password: "",
+      websitePath: "",
+      lookupQuery: "",
+      notes: "",
+      reply: "",
+      attachmentNote: "",
       terms: false,
       checkbox1: false,
       disabledFalse: false,
       disabledTrue: true,
-      option: '1'
+      option: "1",
     },
     validators: {
-      onSubmit: formExampleSchema
+      onSubmit: formExampleSchema,
     },
     onSubmit: async () => {
       setIsSubmitted(true);
-    }
+    },
   });
 
   if (isSubmitted) {
@@ -77,13 +77,13 @@ export const FormExample = ({ variant }: { variant: 'solid' | 'glass'  }) => {
           <AlertTitle>Form submitted successfully</AlertTitle>
         </AlertHeader>
         <AlertDescription>Account: {v.username} · password (hidden)</AlertDescription>
-        <AlertDescription>Website path: {v.websitePath || '—'}</AlertDescription>
-        <AlertDescription>Lookup: {v.lookupQuery || '—'}</AlertDescription>
+        <AlertDescription>Website path: {v.websitePath || "—"}</AlertDescription>
+        <AlertDescription>Lookup: {v.lookupQuery || "—"}</AlertDescription>
         {v.notes ? <AlertDescription>Notes: {v.notes}</AlertDescription> : null}
         {v.reply ? <AlertDescription>Reply: {v.reply}</AlertDescription> : null}
         {v.attachmentNote ? <AlertDescription>Attachment hint: {v.attachmentNote}</AlertDescription> : null}
         <AlertDescription>
-          ToS / checkbox1 / disabled demos: {v.terms ? 'Y' : 'n'} / {v.checkbox1 ? 'Y' : 'n'} / {v.disabledFalse ? 'Y' : 'n'} / {v.disabledTrue ? 'Y' : 'n'}
+          ToS / checkbox1 / disabled demos: {v.terms ? "Y" : "n"} / {v.checkbox1 ? "Y" : "n"} / {v.disabledFalse ? "Y" : "n"} / {v.disabledTrue ? "Y" : "n"}
         </AlertDescription>
         <AlertDescription>Plan: {planLabel}</AlertDescription>
         <Button
@@ -91,7 +91,8 @@ export const FormExample = ({ variant }: { variant: 'solid' | 'glass'  }) => {
           onClick={() => {
             form.reset();
             setIsSubmitted(false);
-          }}>
+          }}
+        >
           Reset
         </Button>
       </Alert>
@@ -105,7 +106,8 @@ export const FormExample = ({ variant }: { variant: 'solid' | 'glass'  }) => {
       onSubmit={(e) => {
         e.preventDefault();
         form.handleSubmit();
-      }}>
+      }}
+    >
       <FieldSet>
         <FieldLegend>FieldLegend</FieldLegend>
         <FieldGroup>
@@ -113,7 +115,7 @@ export const FormExample = ({ variant }: { variant: 'solid' | 'glass'  }) => {
             {(field) => {
               const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
               return (
-                <Field >
+                <Field>
                   <FieldLabel htmlFor={`${FORM_ID}-username`}>FieldLabel</FieldLabel>
                   <Input
                     id={`${FORM_ID}-username`}
@@ -285,7 +287,7 @@ export const FormExample = ({ variant }: { variant: 'solid' | 'glass'  }) => {
                     <Checkbox id={`${FORM_ID}-tos`} checked={field.state.value} onCheckedChange={(checked) => field.handleChange(checked === true)} aria-invalid={isInvalid} />
                     <FieldContent>
                       <FieldLabel htmlFor={`${FORM_ID}-tos`}>
-                        FieldLabel I agree to the{' '}
+                        FieldLabel I agree to the{" "}
                         <TextAnchor href="/" target="_blank">
                           TextAnchor
                         </TextAnchor>

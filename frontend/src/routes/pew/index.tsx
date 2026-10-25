@@ -1,20 +1,20 @@
-import { Card, CardHeader, H1, H1Description } from '@/components/gmac.ui';
-import { Page } from '@/components/layout';
-import { GameBoard } from '@/components/pew/GameBoard';
-import { GameChat } from '@/components/pew/GameChat';
-import { GameControls } from '@/components/pew/GameControls';
-import { GameDebugButton } from '@/components/pew/GameDebugButton';
-import { GameJoinForm } from '@/components/pew/GameJoinForm';
-import { GameLeaveButton } from '@/components/pew/GameLeaveButton';
-import { GameRoomsActive } from '@/components/pew/GameRoomsActive';
-import { GameScore } from '@/components/pew/GameScore';
-import { GameShareButton } from '@/components/pew/GameShareButton';
-import { GameStateProvider, useLocalGameState } from '@/components/pew/useGetGameState';
-import { useVariantState } from '@/components/VariantToggle';
-import { createFileRoute } from '@tanstack/react-router';
+import { Card, CardHeader, H1, H1Description } from "@/components/gmac.ui";
+import { Page } from "@/components/layout";
+import { GameBoard } from "@/components/pew/GameBoard";
+import { GameChat } from "@/components/pew/GameChat";
+import { GameControls } from "@/components/pew/GameControls";
+import { GameDebugButton } from "@/components/pew/GameDebugButton";
+import { GameJoinForm } from "@/components/pew/GameJoinForm";
+import { GameLeaveButton } from "@/components/pew/GameLeaveButton";
+import { GameRoomsActive } from "@/components/pew/GameRoomsActive";
+import { GameScore } from "@/components/pew/GameScore";
+import { GameShareButton } from "@/components/pew/GameShareButton";
+import { GameStateProvider, useLocalGameState } from "@/components/pew/useGetGameState";
+import { useVariantState } from "@/components/VariantToggle";
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/pew/')({
-  component: RouteComponent
+export const Route = createFileRoute("/pew/")({
+  component: RouteComponent,
 });
 
 function RouteComponent() {
@@ -57,10 +57,10 @@ function GameContent() {
       {!hasRoom && <GameRoomsActive />}
       {hasRoom && (
         <div className="flex w-full flex-col items-center gap-4">
-          {status === 'connecting' && <p className="text-center text-amber-500">Establishing battlefield control, stand by...</p>}
-          {status === 'disconnected' && <p className="text-center text-amber-500">Disconnected. Refresh page, and re-join game.</p>}
-          {status === 'error' && <p className="text-center text-red-500">Connection failed. Refresh Page.</p>}
-          {status === 'connected' && (
+          {status === "connecting" && <p className="text-amber-500 text-center">Establishing battlefield control, stand by...</p>}
+          {status === "disconnected" && <p className="text-amber-500 text-center">Disconnected. Refresh page, and re-join game.</p>}
+          {status === "error" && <p className="text-center text-red-500">Connection failed. Refresh Page.</p>}
+          {status === "connected" && (
             <div className="flex flex-wrap items-stretch gap-4">
               <GameBoard />
               <GameChat />

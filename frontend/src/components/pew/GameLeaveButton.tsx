@@ -1,5 +1,5 @@
-import { Button } from '../gmac.ui';
-import { useGameActions } from './useGetGameState';
+import { Button } from "../gmac.ui";
+import { useGameActions } from "./useGetGameState";
 
 export const GameLeaveButton = () => {
   const { onLeave } = useGameActions();

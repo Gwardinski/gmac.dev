@@ -1,5 +1,5 @@
-import { IconBrandGithub, IconBrandYoutube, IconBug, IconCheckbox, IconChecklist, IconExternalLink, IconRefresh, IconTool, type IconProps } from '@tabler/icons-react';
-import { createElement, type HTMLAttributes } from 'react';
+import { IconBrandGithub, IconBrandYoutube, IconBug, IconCheckbox, IconChecklist, IconExternalLink, IconRefresh, IconTool, type IconProps } from "@tabler/icons-react";
+import { createElement, type HTMLAttributes } from "react";
 
 // TODO: Add cn to allow classname overwrites
 export const DocumentationLink: React.FC<{
@@ -7,8 +7,8 @@ export const DocumentationLink: React.FC<{
   text: string;
   icon?: React.ForwardRefExoticComponent<IconProps & React.RefAttributes<SVGSVGElement>>;
 }> = ({ href, text, icon = IconExternalLink }) => (
-  <a href={href} target="_blank" className="flex w-fit items-center justify-center gap-3  hover:underline">
-    {createElement(icon, { className: 'size-6 min-w-6' })} {text}
+  <a href={href} target="_blank" className="flex w-fit items-center justify-center gap-3 hover:underline">
+    {createElement(icon, { className: "size-6 min-w-6" })} {text}
   </a>
 );
 
@@ -16,7 +16,7 @@ export const VideoLink: React.FC<{
   href: string;
   text: string;
 }> = ({ href, text }) => (
-  <a href={href} target="_blank" className="flex w-fit items-center justify-center gap-3  hover:underline">
+  <a href={href} target="_blank" className="flex w-fit items-center justify-center gap-3 hover:underline">
     <IconBrandYoutube className="size-6 min-w-6 text-red-600 dark:text-red-500" /> {text}
   </a>
 );
@@ -25,7 +25,7 @@ export const GithubLink: React.FC<{
   href: string;
   text: string;
 }> = ({ href, text }) => (
-  <a href={href} target="_blank" className="flex w-fit items-center justify-center gap-3  hover:underline">
+  <a href={href} target="_blank" className="flex w-fit items-center justify-center gap-3 hover:underline">
     <IconBrandGithub className="size-6 min-w-6" /> {text}
   </a>
 );

@@ -1,8 +1,8 @@
-import { Button, Card, CardBody, CardDescription, CardHeader, CardTitle, H1, H1Description, Input, P1 } from '@/components/gmac.ui';
-import { Page } from '@/components/layout';
-import { useVariantState } from '@/components/VariantToggle';
-import { useForm } from '@tanstack/react-form';
-import { createFileRoute } from '@tanstack/react-router';
+import { Button, Card, CardBody, CardDescription, CardHeader, CardTitle, H1, H1Description, Input, P1 } from "@/components/gmac.ui";
+import { Page } from "@/components/layout";
+import { useVariantState } from "@/components/VariantToggle";
+import { useForm } from "@tanstack/react-form";
+import { createFileRoute } from "@tanstack/react-router";
 
 const MIN_VALUE = 1;
 const MAX_VALUE = 1000;
@@ -12,8 +12,8 @@ type Slider = {
   value: number;
 };
 
-export const Route = createFileRoute('/ratios')({
-  component: RatiosRoute
+export const Route = createFileRoute("/ratios")({
+  component: RatiosRoute,
 });
 
 function RatiosRoute() {
@@ -21,10 +21,10 @@ function RatiosRoute() {
   const form = useForm({
     defaultValues: {
       masterValue: 100,
-      newSliderName: '',
-      sliders: [] as Slider[]
+      newSliderName: "",
+      sliders: [] as Slider[],
     },
-    onSubmit: async () => {}
+    onSubmit: async () => {},
   });
 
   const clampValue = (value: number, max: number = MAX_VALUE) => Math.max(MIN_VALUE, Math.min(max, value));
@@ -49,7 +49,8 @@ function RatiosRoute() {
             className="flex flex-col gap-6"
             onSubmit={(event) => {
               event.preventDefault();
-            }}>
+            }}
+          >
             <form.Field name="masterValue">
               {(field) => (
                 <label className="flex w-full max-w-xl flex-col gap-2">
@@ -64,11 +65,11 @@ function RatiosRoute() {
                       const nextMasterValue = clampValue(Number(event.target.value));
                       field.handleChange(nextMasterValue);
                       form.setFieldValue(
-                        'sliders',
+                        "sliders",
                         form.state.values.sliders.map((slider) => ({
                           ...slider,
-                          value: clampValue(slider.value, nextMasterValue)
-                        }))
+                          value: clampValue(slider.value, nextMasterValue),
+                        })),
                       );
                     }}
                   />
@@ -84,28 +85,28 @@ function RatiosRoute() {
                 const updateSlider = (index: number, nextValue: number) => {
                   const nextSliders = [...values.sliders];
                   nextSliders[index] = { ...nextSliders[index], value: clampValue(nextValue, values.masterValue) };
-                  form.setFieldValue('sliders', nextSliders);
+                  form.setFieldValue("sliders", nextSliders);
                 };
 
                 const addSlider = () => {
                   const sliderName = values.newSliderName.trim();
                   if (!sliderName) return;
-                  form.setFieldValue('sliders', [...values.sliders, { name: sliderName, value: MIN_VALUE }]);
-                  form.setFieldValue('newSliderName', '');
+                  form.setFieldValue("sliders", [...values.sliders, { name: sliderName, value: MIN_VALUE }]);
+                  form.setFieldValue("newSliderName", "");
                 };
 
                 const removeSlider = (index: number) => {
                   if (values.sliders.length <= 1) return;
                   form.setFieldValue(
-                    'sliders',
-                    values.sliders.filter((_, sliderIndex) => sliderIndex !== index)
+                    "sliders",
+                    values.sliders.filter((_, sliderIndex) => sliderIndex !== index),
                   );
                 };
 
                 return (
                   <>
                     <div className="flex flex-wrap items-center gap-4">
-                      <P1 className={isOverBudget ? 'text-red-500 dark:text-red-400' : ''}>Total: {total}</P1>
+                      <P1 className={isOverBudget ? "text-red-500 dark:text-red-400" : ""}>Total: {total}</P1>
                       <P1>Remaining: {values.masterValue - total}</P1>
                     </div>
 

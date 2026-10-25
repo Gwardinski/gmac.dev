@@ -1,6 +1,6 @@
-import { Card, CardBody, CardHeader, CardTitle } from '../gmac.ui';
-import { useVariantState } from '../VariantToggle';
-import { useFetchRooms } from './useFetchRooms';
+import { Card, CardBody, CardHeader, CardTitle } from "../gmac.ui";
+import { useVariantState } from "../VariantToggle";
+import { useFetchRooms } from "./useFetchRooms";
 
 export const GameRoomsActive = () => {
   const { variant } = useVariantState();

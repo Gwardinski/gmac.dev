@@ -15,7 +15,11 @@ export type ItemSerialised = z.infer<typeof itemSerialisedSchema>;
 
 // Internal Game State - Class based
 export class ItemClass extends PhysicalModel {
-  constructor(initialX: number, initialY: number, public itemName: string) {
+  constructor(
+    initialX: number,
+    initialY: number,
+    public itemName: string,
+  ) {
     super(generateItemId(), initialX, initialY, ITEM_SIZE);
     this.itemName = itemName;
   }

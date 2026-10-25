@@ -1,9 +1,9 @@
-import { Link } from '@tanstack/react-router';
-import { cva, type VariantProps } from 'class-variance-authority';
-import * as React from 'react';
-import type { ButtonTheme } from './button';
-import { H4, P } from './typography';
-import { cn } from './utils';
+import { Link } from "@tanstack/react-router";
+import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
+import type { ButtonTheme } from "./button";
+import { H4, P } from "./typography";
+import { cn } from "./utils";
 
 // ------------------------------------------------------------
 // COMPONENTS
@@ -13,74 +13,85 @@ function Card({
   className,
   variant,
   theme,
-  as = 'article',
+  chonk,
+  as = "article",
   ...props
-}: React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof cardVariants> & { as?: 'article' | 'div' | 'section' | 'header' }) {
+}: React.HTMLAttributes<HTMLDivElement> &
+  VariantProps<typeof cardVariants> & {
+    as?: "article" | "div" | "section" | "header";
+  }) {
   const Comp = as;
-  return <Comp data-slot="card" className={cn(cardVariants({ variant, theme }), className)} {...props} />;
+  return <Comp data-slot="card" className={cn(cardVariants({ variant, theme, chonk }), className)} {...props} />;
 }
 
-function CardButton({ className, variant, theme, type = 'button', ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof cardVariants>) {
+function CardButton({ className, variant, theme, chonk, type = "button", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof cardVariants>) {
   return (
     <button
       type={type}
       data-slot="card"
       className={cn(
-        cardVariants({ variant, theme }),
+        cardVariants({ variant, theme, chonk }),
         cardInteractiveVariants({ variant, theme }),
-        'cursor-pointer text-left disabled:pointer-events-none disabled:opacity-50',
-        className
+        "cursor-pointer text-left disabled:pointer-events-none disabled:opacity-50",
+        className,
       )}
       {...props}
     />
   );
 }
 
-function CardLink({ className, variant, theme, ...props }: React.ComponentProps<typeof Link> & VariantProps<typeof cardVariants>) {
+function CardLink({ className, variant, theme, chonk, ...props }: React.ComponentProps<typeof Link> & VariantProps<typeof cardVariants>) {
   return (
     <Link
       data-slot="card"
-      className={cn(cardVariants({ variant, theme }), cardInteractiveVariants({ variant, theme }), 'cursor-pointer text-left disabled:opacity-50', className)}
+      className={cn(cardVariants({ variant, theme, chonk }), cardInteractiveVariants({ variant, theme }), "cursor-pointer text-left disabled:opacity-50", className)}
       {...props}
     />
   );
 }
 
-function CardHeader({ className, column = false, ...props }: React.ComponentProps<'div'> & { column?: boolean }) {
+function CardHeader({
+  className,
+  column = false,
+  left,
+  right,
+  children,
+  ...props
+}: React.ComponentProps<"div"> & {
+  column?: boolean;
+  left?: React.ReactNode;
+  right?: React.ReactNode;
+}) {
   return (
-    <header
-      data-slot="card-header"
-      className={cn(
-        'flex w-full gap-x-4 px-4 pb-4 group-has-data-[slot=card-body]:pb-5 [&_svg]:text-purple-500',
-        column ? 'flex-col' : 'flex-row flex-wrap items-center',
-        className
-      )}
-      {...props}
-    />
+    <header data-slot="card-header" className={cn("flex w-full gap-2 px-4 pb-4 group-has-data-[slot=card-body]:pb-5 [&_svg]:text-purple-500", className)} {...props}>
+      {left && <span className="flex h-fit shrink-0 gap-2">{left}</span>}
+      <span className={cn("flex w-full gap-2", column ? "flex-col" : "flex-row flex-wrap items-center")}>{children}</span>
+      {right && <span className="flex h-fit shrink-0 gap-2">{right}</span>}
+    </header>
   );
 }
 
-function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
-  return <H4 as="p" data-slot="card-title" className={cn('text-inherit', className)} {...props} />;
+function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
+  return <H4 as="p" data-slot="card-title" className={cn("w-fit text-inherit", className)} {...props} />;
 }
 
-function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
-  return <P data-slot="card-description" className={cn('w-full basis-full text-inherit', className)} {...props} />;
+function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
+  return <P data-slot="card-description" className={cn("w-full basis-full text-inherit", className)} {...props} />;
 }
 
-function CardAction({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot="card-action" className={cn('col-start-2 row-span-2 row-start-1 self-start justify-self-end', className)} {...props} />;
+function CardAction({ className, ...props }: React.ComponentProps<"div">) {
+  return <div data-slot="card-action" className={cn("col-start-2 row-span-2 row-start-1 self-start justify-self-end", className)} {...props} />;
 }
 
-function CardBody({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot="card-body" className={cn('flex flex-col gap-4 px-4 pb-4', className)} {...props} />;
+function CardBody({ className, ...props }: React.ComponentProps<"div">) {
+  return <div data-slot="card-body" className={cn("flex flex-col gap-4 px-4 pb-4", className)} {...props} />;
 }
 
-function CardFooter({ className, column = false, ...props }: React.ComponentProps<'div'> & { column?: boolean }) {
+function CardFooter({ className, column = false, ...props }: React.ComponentProps<"div"> & { column?: boolean }) {
   return (
     <div
       data-slot="card-footer"
-      className={cn('mt-auto flex items-center justify-end gap-2 rounded-b-lg px-4 pt-4 pb-4', column ? 'w-full flex-col' : 'flex-row justify-end', className)}
+      className={cn("mt-auto flex items-center justify-end gap-2 rounded-b-lg px-4 pt-4 pb-4", column ? "w-full flex-col" : "flex-row justify-end", className)}
       {...props}
     />
   );
@@ -90,204 +101,284 @@ function CardFooter({ className, column = false, ...props }: React.ComponentProp
 // THEMING
 // ------------------------------------------------------------
 
-export { buttonThemeOptions as cardThemeOptions, type ButtonTheme as CardTheme } from './button';
+export { buttonThemeOptions as cardThemeOptions, type ButtonTheme as CardTheme } from "./button";
 
 /** `outline` is only styled for these themes. */
-export const cardOutlineThemeOptions = ['gray', 'blue', 'green', 'red'] as const satisfies readonly ButtonTheme[];
+export const cardOutlineThemeOptions = ["gray", "blue", "green", "yellow", "orange", "red"] as const satisfies readonly ButtonTheme[];
 
-export const cardVariantOptions = ['solid', 'outline', 'glass'] as const;
+export const cardVariantOptions = ["solid", "outline", "glass"] as const;
 export type CardVariantOption = (typeof cardVariantOptions)[number];
 
 const cardVariantClasses = {
-  solid: '',
-  outline: '',
-  glass: 'backdrop-blur dark:backdrop-blur-[32px] glass-border dark:dark-glass-border'
+  solid: "",
+  outline: "",
+  glass: "backdrop-blur dark:backdrop-blur-[32px] glass-border dark:dark-glass-border",
 } satisfies Record<CardVariantOption, string>;
 
 const cardThemeClasses = {
-  gray: '',
-  blue: '',
-  green: '',
-  yellow: '',
-  orange: '',
-  red: '',
-  purple: ''
+  gray: "",
+  blue: "",
+  green: "",
+  yellow: "",
+  orange: "",
+  red: "",
+  purple: "",
 } satisfies Record<ButtonTheme, string>;
 
 /** Static surface (border / background / text). Used by `Card`; no hover or focus affordances. */
 export const cardVariants = cva(
-  'group relative flex max-h-fit w-full flex-col rounded-lg border border-gray-300 dark:border-gray-700 px-4 pt-4 pb-4 has-data-[slot=card-body]:px-0 has-data-[slot=card-body]:pb-0 has-data-[slot=card-header]:px-0 has-data-[slot=card-header]:pb-0 has-data-[slot=card-image]:pt-0',
+  "group relative flex max-h-fit w-full flex-col rounded-lg border border-gray-300 px-4 pt-4 pb-4 has-data-[slot=card-body]:px-0 has-data-[slot=card-body]:pb-0 has-data-[slot=card-header]:px-0 has-data-[slot=card-header]:pb-0 has-data-[slot=card-image]:pt-0 dark:border-gray-700",
   {
     variants: {
       variant: cardVariantClasses,
-      theme: cardThemeClasses
+      theme: cardThemeClasses,
+      /** Thick border. */
+      chonk: { true: "border-5", false: "" },
     },
     compoundVariants: [
       // solid
-      { variant: 'solid', theme: 'gray', class: 'border-gray-200 bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-white' },
-      { variant: 'solid', theme: 'blue', class: 'border-blue-500 bg-blue-500 text-white dark:border-blue-900 dark:bg-blue-950' },
-      { variant: 'solid', theme: 'green', class: 'border-green-500 bg-green-500 text-gray-950 dark:border-green-900 dark:bg-green-950 dark:text-white' },
-      { variant: 'solid', theme: 'yellow', class: 'border-yellow-500 bg-yellow-500 text-gray-950 dark:border-yellow-900 dark:bg-yellow-950 dark:text-white' },
-      { variant: 'solid', theme: 'orange', class: 'border-orange-500 bg-orange-500 text-white dark:border-orange-900 dark:bg-orange-950' },
-      { variant: 'solid', theme: 'red', class: 'border-red-500 bg-red-500 text-white dark:border-red-900 dark:bg-red-950' },
-      { variant: 'solid', theme: 'purple', class: 'border-purple-500 bg-purple-500 text-white dark:border-purple-900 dark:bg-purple-950' },
+      {
+        variant: "solid",
+        theme: "gray",
+        class: "border-gray-200 bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-white",
+      },
+      {
+        variant: "solid",
+        theme: "blue",
+        class: "border-blue-500 bg-blue-500 text-white dark:border-blue-900 dark:bg-blue-950",
+      },
+      {
+        variant: "solid",
+        theme: "green",
+        class: "border-green-500 bg-green-500 text-gray-950 dark:border-green-900 dark:bg-green-950 dark:text-white",
+      },
+      {
+        variant: "solid",
+        theme: "yellow",
+        class: "border-yellow-500 bg-yellow-500 text-gray-950 dark:border-yellow-900 dark:bg-yellow-950 dark:text-white",
+      },
+      {
+        variant: "solid",
+        theme: "orange",
+        class: "border-orange-500 bg-orange-500 text-white dark:border-orange-900 dark:bg-orange-950",
+      },
+      {
+        variant: "solid",
+        theme: "red",
+        class: "border-red-500 bg-red-500 text-white dark:border-red-900 dark:bg-red-950",
+      },
+      {
+        variant: "solid",
+        theme: "purple",
+        class: "border-purple-500 bg-purple-500 text-white dark:border-purple-900 dark:bg-purple-950",
+      },
       // outline
       {
-        variant: 'outline',
-        theme: 'gray',
-        class: 'border-gray-200 bg-transparent text-gray-900 dark:border-gray-700 dark:text-gray-50'
+        variant: "outline",
+        theme: "gray",
+        class: "border-gray-200 bg-transparent text-gray-900 dark:border-gray-700 dark:text-gray-50",
       },
       {
-        variant: 'outline',
-        theme: 'blue',
-        class: 'border-blue-200 bg-transparent text-blue-800 dark:border-blue-700 dark:text-blue-200'
+        variant: "outline",
+        theme: "blue",
+        class: "border-blue-200 bg-transparent text-blue-800 dark:border-blue-700 dark:text-blue-200",
       },
       {
-        variant: 'outline',
-        theme: 'green',
-        class: 'border-green-200 bg-transparent text-green-800 dark:border-green-700 dark:text-green-200'
+        variant: "outline",
+        theme: "green",
+        class: "border-green-200 bg-transparent text-green-800 dark:border-green-700 dark:text-green-200",
       },
       {
-        variant: 'outline',
-        theme: 'red',
-        class: 'border-red-200 bg-transparent text-red-800 dark:border-red-700 dark:text-red-200'
+        variant: "outline",
+        theme: "yellow",
+        class: "border-yellow-200 bg-transparent text-yellow-800 dark:border-yellow-700 dark:text-yellow-200",
+      },
+      {
+        variant: "outline",
+        theme: "orange",
+        class: "border-orange-200 bg-transparent text-orange-800 dark:border-orange-700 dark:text-orange-200",
+      },
+      {
+        variant: "outline",
+        theme: "red",
+        class: "border-red-200 bg-transparent text-red-800 dark:border-red-700 dark:text-red-200",
       },
       // glass
-      { variant: 'glass', theme: 'gray', class: 'bg-gray-50/25 text-gray-900 dark:bg-gray-950/25 dark:text-white' },
-      { variant: 'glass', theme: 'blue', class: 'bg-blue-50/25 text-blue-950 dark:bg-blue-950/25 dark:text-blue-50' },
-      { variant: 'glass', theme: 'green', class: 'bg-green-50/25 text-green-950 dark:bg-green-950/25 dark:text-green-50' },
-      { variant: 'glass', theme: 'yellow', class: 'bg-yellow-50/25 text-yellow-950 dark:bg-yellow-950/25 dark:text-yellow-50' },
-      { variant: 'glass', theme: 'orange', class: 'bg-orange-50/25 text-orange-950 dark:bg-orange-950/25 dark:text-orange-50' },
-      { variant: 'glass', theme: 'red', class: 'bg-red-50/25 text-red-950 dark:bg-red-950/25 dark:text-red-50' },
-      { variant: 'glass', theme: 'purple', class: 'bg-purple-50/25 text-purple-950 dark:bg-purple-950/25 dark:text-purple-50' }
+      {
+        variant: "glass",
+        theme: "gray",
+        class: "bg-gray-50/25 text-gray-900 dark:bg-gray-950/25 dark:text-white",
+      },
+      {
+        variant: "glass",
+        theme: "blue",
+        class: "bg-blue-50/25 text-blue-950 dark:bg-blue-950/25 dark:text-blue-50",
+      },
+      {
+        variant: "glass",
+        theme: "green",
+        class: "bg-green-50/25 text-green-950 dark:bg-green-950/25 dark:text-green-50",
+      },
+      {
+        variant: "glass",
+        theme: "yellow",
+        class: "bg-yellow-50/25 text-yellow-950 dark:bg-yellow-950/25 dark:text-yellow-50",
+      },
+      {
+        variant: "glass",
+        theme: "orange",
+        class: "bg-orange-50/25 text-orange-950 dark:bg-orange-950/25 dark:text-orange-50",
+      },
+      {
+        variant: "glass",
+        theme: "red",
+        class: "bg-red-50/25 text-red-950 dark:bg-red-950/25 dark:text-red-50",
+      },
+      {
+        variant: "glass",
+        theme: "purple",
+        class: "bg-purple-50/25 text-purple-950 dark:bg-purple-950/25 dark:text-purple-50",
+      },
     ],
     defaultVariants: {
-      variant: 'solid',
-      theme: 'gray'
-    }
-  }
+      variant: "solid",
+      theme: "gray",
+    },
+  },
 );
 
 /** Hover / active / focus-visible / disabled — only composed on `CardButton` and `CardLink`. */
-const cardInteractiveVariants = cva('transition-colors', {
+const cardInteractiveVariants = cva("transition-colors", {
   variants: {
     variant: cardVariantClasses,
-    theme: cardThemeClasses
+    theme: cardThemeClasses,
   },
   compoundVariants: [
     {
-      variant: 'solid',
-      theme: 'gray',
+      variant: "solid",
+      theme: "gray",
       class:
-        'hover:border-gray-700 hover:bg-gray-700 active:border-gray-700 active:bg-gray-700 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-gray-200 disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:focus-visible:ring-gray-700/40 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40'
+        "hover:border-gray-700 hover:bg-gray-700 focus-visible:ring-4 focus-visible:ring-gray-200 focus-visible:outline-hidden active:border-gray-700 active:bg-gray-700 disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:hover:border-gray-700/40 dark:hover:bg-gray-700/40 dark:focus-visible:ring-gray-700/40 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40",
     },
     {
-      variant: 'solid',
-      theme: 'blue',
+      variant: "solid",
+      theme: "blue",
       class:
-        'hover:border-blue-700 hover:bg-blue-700 active:border-blue-700 active:bg-blue-700 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-blue-200 disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:hover:border-blue-600 dark:hover:bg-blue-600 dark:focus-visible:ring-blue-700/40 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40'
+        "hover:border-blue-700 hover:bg-blue-700 focus-visible:ring-4 focus-visible:ring-blue-200 focus-visible:outline-hidden active:border-blue-700 active:bg-blue-700 disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:hover:border-blue-700/40 dark:hover:bg-blue-700/40 dark:focus-visible:ring-blue-700/40 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40",
     },
     {
-      variant: 'solid',
-      theme: 'green',
+      variant: "solid",
+      theme: "green",
       class:
-        'hover:border-green-700 hover:bg-green-700 active:border-green-700 active:bg-green-700 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-green-200 disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:hover:border-green-600 dark:hover:bg-green-600 dark:focus-visible:ring-green-700/40 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40'
+        "hover:border-green-700 hover:bg-green-700 focus-visible:ring-4 focus-visible:ring-green-200 focus-visible:outline-hidden active:border-green-700 active:bg-green-700 disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:hover:border-green-700/40 dark:hover:bg-green-700/40 dark:focus-visible:ring-green-700/40 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40",
     },
     {
-      variant: 'solid',
-      theme: 'yellow',
+      variant: "solid",
+      theme: "yellow",
       class:
-        'hover:border-yellow-700 hover:bg-yellow-700 active:border-yellow-700 active:bg-yellow-700 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-yellow-200 disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:hover:border-yellow-600 dark:hover:bg-yellow-600 dark:focus-visible:ring-yellow-700/40 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40'
+        "hover:border-yellow-700 hover:bg-yellow-700 focus-visible:ring-4 focus-visible:ring-yellow-200 focus-visible:outline-hidden active:border-yellow-700 active:bg-yellow-700 disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:hover:border-yellow-700/40 dark:hover:bg-yellow-700/40 dark:focus-visible:ring-yellow-700/40 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40",
     },
     {
-      variant: 'solid',
-      theme: 'orange',
+      variant: "solid",
+      theme: "orange",
       class:
-        'hover:border-orange-700 hover:bg-orange-700 active:border-orange-700 active:bg-orange-700 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-orange-200 disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:hover:border-orange-600 dark:hover:bg-orange-600 dark:focus-visible:ring-orange-700/40 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40'
+        "hover:border-orange-700 hover:bg-orange-700 focus-visible:ring-4 focus-visible:ring-orange-200 focus-visible:outline-hidden active:border-orange-700 active:bg-orange-700 disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:hover:border-orange-700/40 dark:hover:bg-orange-700/40 dark:focus-visible:ring-orange-700/40 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40",
     },
     {
-      variant: 'solid',
-      theme: 'red',
+      variant: "solid",
+      theme: "red",
       class:
-        'hover:border-red-700 hover:bg-red-700 active:border-red-700 active:bg-red-700 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-red-200 disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:hover:border-red-600 dark:hover:bg-red-600 dark:focus-visible:ring-red-700/40 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40'
+        "hover:border-red-700 hover:bg-red-700 focus-visible:ring-4 focus-visible:ring-red-200 focus-visible:outline-hidden active:border-red-700 active:bg-red-700 disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:hover:border-red-700/40 dark:hover:bg-red-700/40 dark:focus-visible:ring-red-700/40 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40",
     },
     {
-      variant: 'solid',
-      theme: 'purple',
+      variant: "solid",
+      theme: "purple",
       class:
-        'hover:border-purple-700 hover:bg-purple-700 active:border-purple-700 active:bg-purple-700 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-purple-200 disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:hover:border-purple-600 dark:hover:bg-purple-600 dark:focus-visible:ring-purple-700/40 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40'
+        "hover:border-purple-700 hover:bg-purple-700 focus-visible:ring-4 focus-visible:ring-purple-200 focus-visible:outline-hidden active:border-purple-700 active:bg-purple-700 disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:hover:border-purple-700/40 dark:hover:bg-purple-700/40 dark:focus-visible:ring-purple-700/40 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40",
     },
     {
-      variant: 'outline',
-      theme: 'gray',
+      variant: "outline",
+      theme: "gray",
       class:
-        'hover:border-gray-400 active:border-gray-700 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-gray-200 focus-visible:border-gray-500 disabled:cursor-default disabled:text-gray-500 disabled:border-gray-300 dark:hover:border-gray-500 dark:active:border-gray-500 dark:focus-visible:ring-gray-700/40 dark:disabled:bg-transparent dark:disabled:text-gray-500 dark:disabled:border-gray-700/40'
+        "hover:border-gray-400 focus-visible:border-gray-500 focus-visible:ring-4 focus-visible:ring-gray-200 focus-visible:outline-hidden active:border-gray-700 disabled:cursor-default disabled:border-gray-300 disabled:text-gray-500 dark:hover:border-gray-500 dark:focus-visible:ring-gray-700/40 dark:active:border-gray-500 dark:disabled:border-gray-700/40 dark:disabled:bg-transparent dark:disabled:text-gray-500",
     },
     {
-      variant: 'outline',
-      theme: 'blue',
+      variant: "outline",
+      theme: "blue",
       class:
-        'hover:border-blue-400 active:border-blue-700 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-blue-200 focus-visible:border-blue-500 disabled:cursor-default disabled:text-gray-500 disabled:border-gray-300 dark:hover:border-blue-500 dark:active:border-blue-500 dark:focus-visible:ring-blue-700/40 dark:disabled:bg-transparent dark:disabled:text-gray-500 dark:disabled:border-gray-700/40'
+        "hover:border-blue-400 focus-visible:border-blue-500 focus-visible:ring-4 focus-visible:ring-blue-200 focus-visible:outline-hidden active:border-blue-700 disabled:cursor-default disabled:border-gray-300 disabled:text-gray-500 dark:hover:border-blue-500 dark:focus-visible:ring-blue-700/40 dark:active:border-blue-500 dark:disabled:border-gray-700/40 dark:disabled:bg-transparent dark:disabled:text-gray-500",
     },
     {
-      variant: 'outline',
-      theme: 'green',
+      variant: "outline",
+      theme: "green",
       class:
-        'hover:border-green-400 active:border-green-700 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-green-200 focus-visible:border-green-500 disabled:cursor-default disabled:text-gray-500 disabled:border-gray-300 dark:hover:border-green-500 dark:active:border-green-500 dark:focus-visible:ring-green-700/40 dark:disabled:bg-transparent dark:disabled:text-gray-500 dark:disabled:border-gray-700/40'
+        "hover:border-green-400 focus-visible:border-green-500 focus-visible:ring-4 focus-visible:ring-green-200 focus-visible:outline-hidden active:border-green-700 disabled:cursor-default disabled:border-gray-300 disabled:text-gray-500 dark:hover:border-green-500 dark:focus-visible:ring-green-700/40 dark:active:border-green-500 dark:disabled:border-gray-700/40 dark:disabled:bg-transparent dark:disabled:text-gray-500",
     },
     {
-      variant: 'outline',
-      theme: 'red',
+      variant: "outline",
+      theme: "yellow",
       class:
-        'hover:border-red-400 active:border-red-700 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-red-200 focus-visible:border-red-500 disabled:cursor-default disabled:text-gray-500 disabled:border-gray-300 dark:hover:border-red-500 dark:active:border-red-500 dark:focus-visible:ring-red-700/40 dark:disabled:bg-transparent dark:disabled:text-gray-500 dark:disabled:border-gray-700/40'
+        "hover:border-yellow-400 focus-visible:border-yellow-500 focus-visible:ring-4 focus-visible:ring-yellow-200 focus-visible:outline-hidden active:border-yellow-700 disabled:cursor-default disabled:border-gray-300 disabled:text-gray-500 dark:hover:border-yellow-500 dark:focus-visible:ring-yellow-700/40 dark:active:border-yellow-500 dark:disabled:border-gray-700/40 dark:disabled:bg-transparent dark:disabled:text-gray-500",
     },
     {
-      variant: 'glass',
-      theme: 'gray',
+      variant: "outline",
+      theme: "orange",
       class:
-        'hover:bg-gray-50/35 active:bg-gray-50/45 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-gray-500/50 dark:hover:bg-gray-950/35 dark:active:bg-gray-950/45 dark:focus-visible:ring-gray-500/50'
+        "hover:border-orange-400 focus-visible:border-orange-500 focus-visible:ring-4 focus-visible:ring-orange-200 focus-visible:outline-hidden active:border-orange-700 disabled:cursor-default disabled:border-gray-300 disabled:text-gray-500 dark:hover:border-orange-500 dark:focus-visible:ring-orange-700/40 dark:active:border-orange-500 dark:disabled:border-gray-700/40 dark:disabled:bg-transparent dark:disabled:text-gray-500",
     },
     {
-      variant: 'glass',
-      theme: 'blue',
+      variant: "outline",
+      theme: "red",
       class:
-        'hover:bg-blue-50/35 active:bg-blue-50/45 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-blue-500/50 dark:hover:bg-blue-950/35 dark:active:bg-blue-950/45 dark:focus-visible:ring-blue-500/50'
+        "hover:border-red-400 focus-visible:border-red-500 focus-visible:ring-4 focus-visible:ring-red-200 focus-visible:outline-hidden active:border-red-700 disabled:cursor-default disabled:border-gray-300 disabled:text-gray-500 dark:hover:border-red-500 dark:focus-visible:ring-red-700/40 dark:active:border-red-500 dark:disabled:border-gray-700/40 dark:disabled:bg-transparent dark:disabled:text-gray-500",
     },
     {
-      variant: 'glass',
-      theme: 'green',
+      variant: "glass",
+      theme: "gray",
       class:
-        'hover:bg-green-50/35 active:bg-green-50/45 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-green-500/50 dark:hover:bg-green-950/35 dark:active:bg-green-950/45 dark:focus-visible:ring-green-500/50'
+        "hover:bg-gray-50/35 focus-visible:ring-4 focus-visible:ring-gray-500/50 focus-visible:outline-hidden active:bg-gray-50/45 dark:hover:bg-gray-950/35 dark:focus-visible:ring-gray-500/50 dark:active:bg-gray-950/45",
     },
     {
-      variant: 'glass',
-      theme: 'yellow',
+      variant: "glass",
+      theme: "blue",
       class:
-        'hover:bg-yellow-50/35 active:bg-yellow-50/45 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-yellow-500/50 dark:hover:bg-yellow-950/35 dark:active:bg-yellow-950/45 dark:focus-visible:ring-yellow-500/50'
+        "hover:bg-blue-50/35 focus-visible:ring-4 focus-visible:ring-blue-500/50 focus-visible:outline-hidden active:bg-blue-50/45 dark:hover:bg-blue-950/35 dark:focus-visible:ring-blue-500/50 dark:active:bg-blue-950/45",
     },
     {
-      variant: 'glass',
-      theme: 'orange',
+      variant: "glass",
+      theme: "green",
       class:
-        'hover:bg-orange-50/35 active:bg-orange-50/45 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-orange-500/50 dark:hover:bg-orange-950/35 dark:active:bg-orange-950/45 dark:focus-visible:ring-orange-500/50'
+        "hover:bg-green-50/35 focus-visible:ring-4 focus-visible:ring-green-500/50 focus-visible:outline-hidden active:bg-green-50/45 dark:hover:bg-green-950/35 dark:focus-visible:ring-green-500/50 dark:active:bg-green-950/45",
     },
     {
-      variant: 'glass',
-      theme: 'red',
+      variant: "glass",
+      theme: "yellow",
       class:
-        'hover:bg-red-50/35 active:bg-red-50/45 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-red-500/50 dark:hover:bg-red-950/35 dark:active:bg-red-950/45 dark:focus-visible:ring-red-500/50'
+        "hover:bg-yellow-50/35 focus-visible:ring-4 focus-visible:ring-yellow-500/50 focus-visible:outline-hidden active:bg-yellow-50/45 dark:hover:bg-yellow-950/35 dark:focus-visible:ring-yellow-500/50 dark:active:bg-yellow-950/45",
     },
     {
-      variant: 'glass',
-      theme: 'purple',
+      variant: "glass",
+      theme: "orange",
       class:
-        'hover:bg-purple-50/35 active:bg-purple-50/45 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-purple-500/50 dark:hover:bg-purple-950/35 dark:active:bg-purple-950/45 dark:focus-visible:ring-purple-500/50'
-    }
+        "hover:bg-orange-50/35 focus-visible:ring-4 focus-visible:ring-orange-500/50 focus-visible:outline-hidden active:bg-orange-50/45 dark:hover:bg-orange-950/35 dark:focus-visible:ring-orange-500/50 dark:active:bg-orange-950/45",
+    },
+    {
+      variant: "glass",
+      theme: "red",
+      class:
+        "hover:bg-red-50/35 focus-visible:ring-4 focus-visible:ring-red-500/50 focus-visible:outline-hidden active:bg-red-50/45 dark:hover:bg-red-950/35 dark:focus-visible:ring-red-500/50 dark:active:bg-red-950/45",
+    },
+    {
+      variant: "glass",
+      theme: "purple",
+      class:
+        "hover:bg-purple-50/35 focus-visible:ring-4 focus-visible:ring-purple-500/50 focus-visible:outline-hidden active:bg-purple-50/45 dark:hover:bg-purple-950/35 dark:focus-visible:ring-purple-500/50 dark:active:bg-purple-950/45",
+    },
   ],
   defaultVariants: {
-    variant: 'outline',
-    theme: 'gray'
-  }
+    variant: "outline",
+    theme: "gray",
+  },
 });
 
 export { Card, CardAction, CardBody, CardButton, CardDescription, CardFooter, CardHeader, CardLink, CardTitle };

@@ -1,4 +1,4 @@
-import type { ValidationError } from './api-models';
+import type { ValidationError } from "./api-models";
 
 export function mapAPIErrorsToForm(validationErrors: ValidationError[] | undefined, formApi: any): boolean {
   if (!validationErrors || validationErrors.length === 0) {
@@ -19,7 +19,7 @@ export function mapAPIErrorsToForm(validationErrors: ValidationError[] | undefin
           ...fieldInstance.state.meta,
           isTouched: true,
           errors: [{ message: errorMessage }],
-          errorMap: { onSubmit: errorMessage }
+          errorMap: { onSubmit: errorMessage },
         };
         // re-render required
         fieldInstance.store.setState(() => fieldInstance.state);

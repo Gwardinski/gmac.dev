@@ -8,7 +8,10 @@
     "dev": "bun --watch src/index.ts",
     "build": "bun build src/index.ts --target bun --outdir ./dist",
     "start": "NODE_ENV=production bun dist/index.js",
-    "test": "bun test"
+    "test": "bun test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@elysiajs/cors": "^1.4.2",
@@ -22,12 +25,16 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@gmac/config": "file:gmac.config",
     "@types/bun": "^1.4.2",
     "@types/pg": "^8.23.1",
     "drizzle-kit": "^0.31.11",
+    "eslint": "^10.13.0",
+    "prettier": "^3.9.10",
     "tsx": "^4.23.15"
   },
   "peerDependencies": {
     "typescript": "^5"
-  }
+  },
+  "prettier": "@gmac/config/prettier"
 }

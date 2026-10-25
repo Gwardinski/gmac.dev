@@ -3,9 +3,7 @@ import { returnServiceResponse } from "../../../../responses.js";
 import type { ServiceResponse } from "../../../../types.js";
 import type { NoteResponse } from "../models/index.js";
 
-export const getNote = async (
-  code: string
-): Promise<ServiceResponse<NoteResponse>> => {
+export const getNote = async (code: string): Promise<ServiceResponse<NoteResponse>> => {
   try {
     const valid = code.toUpperCase() === CODE.toUpperCase();
     if (!valid) {

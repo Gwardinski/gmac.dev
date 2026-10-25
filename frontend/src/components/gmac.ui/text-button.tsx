@@ -1,8 +1,8 @@
-import { Link } from '@tanstack/react-router';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { forwardRef } from 'react';
-import { textVariants } from './typography';
-import { cn } from './utils';
+import { Link } from "@tanstack/react-router";
+import { cva, type VariantProps } from "class-variance-authority";
+import { forwardRef } from "react";
+import { textVariants } from "./typography";
+import { cn } from "./utils";
 
 // ------------------------------------------------------------
 // COMPONENTS
@@ -17,7 +17,7 @@ export const TextButton = forwardRef<HTMLButtonElement, React.ButtonHTMLAttribut
     </button>
   );
 });
-TextButton.displayName = 'TextButton';
+TextButton.displayName = "TextButton";
 
 export const TextAnchor = forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement> & VariantProps<typeof textButtonVariants>>((props, ref) => {
   const { className, theme, children, ...rest } = props;
@@ -28,7 +28,7 @@ export const TextAnchor = forwardRef<HTMLAnchorElement, React.AnchorHTMLAttribut
     </a>
   );
 });
-TextAnchor.displayName = 'TextAnchor';
+TextAnchor.displayName = "TextAnchor";
 
 export const TextLink = forwardRef<React.ComponentRef<typeof Link>, React.ComponentProps<typeof Link> & VariantProps<typeof textButtonVariants>>((props, ref) => {
   const { className, theme, children, ...rest } = props;
@@ -39,35 +39,33 @@ export const TextLink = forwardRef<React.ComponentRef<typeof Link>, React.Compon
     </Link>
   );
 });
-TextLink.displayName = 'TextLink';
+TextLink.displayName = "TextLink";
 
 // ------------------------------------------------------------
 // THEMING
 // ------------------------------------------------------------
 
-export const textButtonThemeOptions = ['gray', 'blue', 'green', 'yellow', 'orange', 'red', 'purple'] as const;
+export const textButtonThemeOptions = ["gray", "blue", "green", "yellow", "orange", "red", "purple"] as const;
 export type TextButtonTheme = (typeof textButtonThemeOptions)[number];
 
 const textButtonThemeClasses = {
-  gray: 'text-gray-800 dark:text-gray-100 focus-visible:ring-gray-800/50 dark:focus-visible:ring-gray-100/50',
-  blue: 'text-blue-600 dark:text-blue-400 focus-visible:ring-blue-600/50 dark:focus-visible:ring-blue-400/50',
-  green: 'text-green-600 dark:text-green-400 focus-visible:ring-green-600/50 dark:focus-visible:ring-green-400/50',
-  yellow: 'text-yellow-600 dark:text-yellow-400 focus-visible:ring-yellow-600/50 dark:focus-visible:ring-yellow-400/50',
-  orange: 'text-orange-600 dark:text-orange-400 focus-visible:ring-orange-600/50 dark:focus-visible:ring-orange-400/50',
-  red: 'text-red-600 dark:text-red-400 focus-visible:ring-red-600/50 dark:focus-visible:ring-red-400/50',
-  purple: 'text-purple-600 dark:text-purple-400 focus-visible:ring-purple-600/50 dark:focus-visible:ring-purple-400/50'
+  gray: "text-gray-800 dark:text-gray-100 focus-visible:ring-gray-800/50 dark:focus-visible:ring-gray-100/50",
+  blue: "text-blue-600 dark:text-blue-400 focus-visible:ring-blue-600/50 dark:focus-visible:ring-blue-400/50",
+  green: "text-green-600 dark:text-green-400 focus-visible:ring-green-600/50 dark:focus-visible:ring-green-400/50",
+  yellow: "text-yellow-600 dark:text-yellow-400 focus-visible:ring-yellow-600/50 dark:focus-visible:ring-yellow-400/50",
+  orange: "text-orange-600 dark:text-orange-400 focus-visible:ring-orange-600/50 dark:focus-visible:ring-orange-400/50",
+  red: "text-red-600 dark:text-red-400 focus-visible:ring-red-600/50 dark:focus-visible:ring-red-400/50",
+  purple: "text-purple-600 dark:text-purple-400 focus-visible:ring-purple-600/50 dark:focus-visible:ring-purple-400/50",
 } satisfies Record<TextButtonTheme, string>;
 
 export const textButtonVariants = cva(
-  `${textVariants({ size: 'md' })} gap-2 min-w-fit w-fit inline-flex items-center underline underline-offset-2 hover:underline-offset-4
-   whitespace-nowrap transition-colors cursor-pointer disabled:pointer-events-none disabled:opacity-50
-   outline-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:rounded-full`,
+  `${textVariants({ size: "md" })} inline-flex w-fit min-w-fit cursor-pointer items-center gap-2 whitespace-nowrap underline underline-offset-2 transition-colors outline-none hover:underline-offset-4 focus-visible:rounded-full focus-visible:ring-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50`,
   {
     variants: {
-      theme: textButtonThemeClasses
+      theme: textButtonThemeClasses,
     },
     defaultVariants: {
-      theme: 'gray'
-    }
-  }
+      theme: "gray",
+    },
+  },
 );

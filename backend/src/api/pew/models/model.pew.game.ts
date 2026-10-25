@@ -28,7 +28,7 @@ export class GameClass {
   constructor(
     public roomId: string,
     public level: LevelClass,
-    public systemEvent: SystemEventClass
+    public systemEvent: SystemEventClass,
   ) {
     this.roomId = roomId;
     this.level = level;
@@ -43,9 +43,7 @@ export class GameClass {
     return {
       roomId: this.roomId,
       bullets: this.bullets.map((bullet) => bullet.toJSON()),
-      players: this.players
-        .filter((player) => !player.isDeleted)
-        .map((player) => player.toJSON()),
+      players: this.players.filter((player) => !player.isDeleted).map((player) => player.toJSON()),
       items: this.items.map((item) => item.toJSON()),
     };
   }
@@ -111,16 +109,10 @@ export class GameClass {
     if (this.items.length >= this.level.maxItems) {
       return;
     }
-    if (
-      this.level.itemLastSpawnTimestamp + this.level.itemSpawnInterval >
-      Date.now()
-    ) {
+    if (this.level.itemLastSpawnTimestamp + this.level.itemSpawnInterval > Date.now()) {
       return;
     }
-    const itemSpawnPoint =
-      this.level.itemSpawnPoints[
-        Math.floor(Math.random() * this.level.itemSpawnPoints.length)
-      ];
+    const itemSpawnPoint = this.level.itemSpawnPoints[Math.floor(Math.random() * this.level.itemSpawnPoints.length)];
     if (!itemSpawnPoint) {
       return;
     }
@@ -133,19 +125,9 @@ export class GameClass {
     PLAYER MANAGEMENT 
   */
 
-  public spawnNewPlayer(
-    playerDeviceId: string,
-    playerName: string,
-    playerColour: Color
-  ): PlayerClass {
+  public spawnNewPlayer(playerDeviceId: string, playerName: string, playerColour: Color): PlayerClass {
     const { x, y } = this.getPlayerSpawnPoint();
-    const player = new PlayerClass(
-      playerDeviceId,
-      playerName,
-      playerColour,
-      x,
-      y
-    );
+    const player = new PlayerClass(playerDeviceId, playerName, playerColour, x, y);
 
     this.players.push(player);
     this.systemEvent.playerJoinEvent(player);
@@ -172,11 +154,7 @@ export class GameClass {
     this.players[playerIndex].restore();
   }
 
-  public updatePlayerNameAndColour(
-    playerId: string,
-    name: string,
-    colour: Color
-  ) {
+  public updatePlayerNameAndColour(playerId: string, name: string, colour: Color) {
     this.players.forEach((p) => {
       if (p.id === playerId) {
         p.updateName(name);
@@ -186,11 +164,7 @@ export class GameClass {
   }
 
   public getPlayerSpawnPoint() {
-    return (
-      this.level.playerSpawnPoints[
-        Math.floor(Math.random() * this.level.playerSpawnPoints.length)
-      ] ?? { x: 128, y: 128 }
-    );
+    return this.level.playerSpawnPoints[Math.floor(Math.random() * this.level.playerSpawnPoints.length)] ?? { x: 128, y: 128 };
   }
 
   /*
@@ -207,12 +181,7 @@ export class GameClass {
         continue;
       }
       for (const player of this.players) {
-        if (
-          player.isDestroyed ||
-          player.isSpawning ||
-          player.isInvincible ||
-          player.id === bullet.playerId
-        ) {
+        if (player.isDestroyed || player.isSpawning || player.isInvincible || player.id === bullet.playerId) {
           continue;
         }
 
@@ -257,9 +226,7 @@ export class GameClass {
     }
 
     if (itemsToRemove.length > 0) {
-      this.items = this.items.filter(
-        (item) => !itemsToRemove.includes(item.id)
-      );
+      this.items = this.items.filter((item) => !itemsToRemove.includes(item.id));
     }
   }
 

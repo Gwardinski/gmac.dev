@@ -11,9 +11,7 @@ import { generateRoomId } from "../utils";
 // REST Services
 
 export function roomServiceGetByName(roomName: ROOM_ID): ServiceResponse<Room> {
-  const existingRoom = ROOMS_DB.values().find(
-    (room) => room.roomName === roomName
-  );
+  const existingRoom = ROOMS_DB.values().find((room) => room.roomName === roomName);
   if (!existingRoom) {
     return returnServiceResponse<Room>("ROOM_NOT_FOUND");
   }
@@ -31,10 +29,7 @@ export function roomServiceGetAll(): ServiceResponse<RoomListModel[]> {
   return returnServiceResponse(roomList);
 }
 
-export function roomServiceCreate(
-  roomName: string,
-  roomCode: string
-): ServiceResponse<Room> {
+export function roomServiceCreate(roomName: string, roomCode: string): ServiceResponse<Room> {
   const roomId = generateRoomId();
   const room: Room = {
     roomId,

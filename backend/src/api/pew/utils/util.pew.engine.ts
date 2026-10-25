@@ -23,10 +23,7 @@ export function getActiveGameEngines(): ROOM_ID[] {
   return Array.from(gameLoops.keys());
 }
 
-export function startGameEngine(
-  roomId: ROOM_ID,
-  broadcastToRoom: BroadcastCallback
-) {
+export function startGameEngine(roomId: ROOM_ID, broadcastToRoom: BroadcastCallback) {
   // Don't start if already running
   if (isGameEngineRunning(roomId)) {
     console.log(`Game engine already running for room: ${roomId}`);
@@ -82,13 +79,7 @@ function gameEngineTick(roomId: ROOM_ID) {
     lastBroadcastTime.set(roomId, now);
     const broadcast = broadcastCallbacks.get(roomId);
     if (broadcast) {
-      broadcast(
-        roomId,
-        returnWSResponse<WSSendMessageType, GameSerialized>(
-          "game-state",
-          game.toJSON()
-        )
-      );
+      broadcast(roomId, returnWSResponse<WSSendMessageType, GameSerialized>("game-state", game.toJSON()));
     }
   }
 }
@@ -102,19 +93,12 @@ export function systemEventHandler(roomId: ROOM_ID) {
   };
 }
 
-function handleSystemEvent(
-  roomId: ROOM_ID,
-  systemChat: SystemChatParams,
-  broadcastToRoom: BroadcastCallback
-) {
+function handleSystemEvent(roomId: ROOM_ID, systemChat: SystemChatParams, broadcastToRoom: BroadcastCallback) {
   const chatResult = addSystemChat(roomId, systemChat);
   if (chatResult && broadcastToRoom) {
     const [newChat, chatError] = chatResult;
     if (newChat && !chatError) {
-      broadcastToRoom(
-        roomId,
-        returnWSResponse<WSSendMessageType, typeof newChat>("new-chat", newChat)
-      );
+      broadcastToRoom(roomId, returnWSResponse<WSSendMessageType, typeof newChat>("new-chat", newChat));
     }
   }
 }

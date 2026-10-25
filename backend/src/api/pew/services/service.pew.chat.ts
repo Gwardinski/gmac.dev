@@ -17,12 +17,7 @@ export function getGameChats(roomId: ROOM_ID): ServiceResponse<GameChat[]> {
 
 // REST + WebSocket Services
 
-export function addChat(
-  roomId: ROOM_ID,
-  playerId: string,
-  content: string,
-  isSystem: boolean
-): ServiceResponse<GameChat> {
+export function addChat(roomId: ROOM_ID, playerId: string, content: string, isSystem: boolean): ServiceResponse<GameChat> {
   const currentGame = GAMES_DB.get(roomId);
   if (!currentGame) {
     return returnServiceResponse<GameChat>("INVALID_ROOM_CODE");
@@ -59,10 +54,7 @@ export function addChat(
 
 // System Services
 
-export function addSystemChat(
-  roomId: ROOM_ID,
-  params: SystemChatParams
-): ServiceResponse<GameChat> {
+export function addSystemChat(roomId: ROOM_ID, params: SystemChatParams): ServiceResponse<GameChat> {
   const newChat: GameChat = {
     chatId: generateMessageId(),
     playerId: params.playerId,

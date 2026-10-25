@@ -1,12 +1,4 @@
-import {
-  ERROR_CODES_SET,
-  getStatusByErrorCode,
-  type APIResponse,
-  type ErrorCode,
-  type GuardResponse,
-  type ServiceResponse,
-  type ValidationError,
-} from "./types";
+import { ERROR_CODES_SET, getStatusByErrorCode, type APIResponse, type ErrorCode, type GuardResponse, type ServiceResponse, type ValidationError } from "./types";
 
 // Validation / Lookup Responses
 export function returnGuardResponse(error?: ErrorCode): GuardResponse {
@@ -19,10 +11,7 @@ export function returnGuardResponse(error?: ErrorCode): GuardResponse {
 // Service Responses (Overloaded)
 export function returnServiceResponse<T>(value: T): ServiceResponse<T>;
 export function returnServiceResponse<T>(error: ErrorCode): ServiceResponse<T>;
-export function returnServiceResponse<T>(
-  value?: T,
-  error?: ErrorCode
-): ServiceResponse<T> {
+export function returnServiceResponse<T>(value?: T, error?: ErrorCode): ServiceResponse<T> {
   if (error) {
     return [undefined, error];
   }
@@ -36,19 +25,12 @@ export function returnServiceResponse<T>(
 }
 
 // Controller Responses
-export function returnAPIResponse<T>(
-  value: T,
-  status: number = 200
-): APIResponse<T> {
+export function returnAPIResponse<T>(value: T, status: number = 200): APIResponse<T> {
   const response: APIResponse<T> = { status, value };
   return response;
 }
 
-export function returnAPIError<T>(
-  error: ErrorCode = "UNKNOWN",
-  statusCode?: number,
-  validationErrors?: ValidationError[]
-): APIResponse<T> {
+export function returnAPIError<T>(error: ErrorCode = "UNKNOWN", statusCode?: number, validationErrors?: ValidationError[]): APIResponse<T> {
   const status = statusCode || getStatusByErrorCode(error);
   const response: APIResponse<T> = {
     status,

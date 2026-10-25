@@ -3,25 +3,12 @@ import type { ServiceResponse } from "../../../types";
 import type { Bearing, ROOM_ID } from "../models";
 import type { GameSerialized } from "../models";
 
-import {
-  getGameAndPlayer,
-  updateGamePlayerFire,
-  updateGamePlayerPosition,
-  updateGamePlayerPositionFromClient,
-} from "./service.pew.game";
+import { getGameAndPlayer, updateGamePlayerFire, updateGamePlayerPosition, updateGamePlayerPositionFromClient } from "./service.pew.game";
 
 // WebSocket Services
 
-export function playerMove(
-  roomId: ROOM_ID,
-  playerId: string,
-  bearing: Bearing
-): ServiceResponse<GameSerialized> {
-  const [updatedGame, updatedGameErr] = updateGamePlayerPosition(
-    roomId,
-    playerId,
-    bearing
-  );
+export function playerMove(roomId: ROOM_ID, playerId: string, bearing: Bearing): ServiceResponse<GameSerialized> {
+  const [updatedGame, updatedGameErr] = updateGamePlayerPosition(roomId, playerId, bearing);
   if (updatedGameErr) {
     return returnServiceResponse<GameSerialized>(updatedGameErr);
   }
@@ -29,46 +16,23 @@ export function playerMove(
 }
 
 /** Apply client-sent position after server-side collision check. */
-export function playerSetPosition(
-  roomId: ROOM_ID,
-  playerId: string,
-  x: number,
-  y: number,
-  bearing: Bearing
-): ServiceResponse<GameSerialized> {
-  const [updatedGame, updatedGameErr] = updateGamePlayerPositionFromClient(
-    roomId,
-    playerId,
-    x,
-    y,
-    bearing
-  );
+export function playerSetPosition(roomId: ROOM_ID, playerId: string, x: number, y: number, bearing: Bearing): ServiceResponse<GameSerialized> {
+  const [updatedGame, updatedGameErr] = updateGamePlayerPositionFromClient(roomId, playerId, x, y, bearing);
   if (updatedGameErr) {
     return returnServiceResponse<GameSerialized>(updatedGameErr);
   }
   return returnServiceResponse<GameSerialized>(updatedGame);
 }
 
-export function playerFire(
-  roomId: ROOM_ID,
-  playerId: string,
-  bearing: Bearing
-): ServiceResponse<GameSerialized> {
-  const [updatedGame, updatedGameErr] = updateGamePlayerFire(
-    roomId,
-    playerId,
-    bearing
-  );
+export function playerFire(roomId: ROOM_ID, playerId: string, bearing: Bearing): ServiceResponse<GameSerialized> {
+  const [updatedGame, updatedGameErr] = updateGamePlayerFire(roomId, playerId, bearing);
   if (updatedGameErr) {
     return returnServiceResponse<GameSerialized>(updatedGameErr);
   }
   return returnServiceResponse<GameSerialized>(updatedGame);
 }
 
-export function markPlayerForDeletion(
-  roomId: ROOM_ID,
-  playerId: string
-): ServiceResponse<GameSerialized> {
+export function markPlayerForDeletion(roomId: ROOM_ID, playerId: string): ServiceResponse<GameSerialized> {
   const [gameAndPlayer, error] = getGameAndPlayer(roomId, playerId);
   if (error) {
     return returnServiceResponse<GameSerialized>(error);

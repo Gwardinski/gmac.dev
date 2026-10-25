@@ -1,12 +1,12 @@
-import { useForm } from '@tanstack/react-form';
-import z from 'zod';
-import { Card, CardBody, CardFooter, Input } from '../gmac.ui';
-import { useVariantState } from '../VariantToggle';
-import { colorToHex } from './client-copies';
-import { useGameActions, useLocalGameState } from './useGetGameState';
+import { useForm } from "@tanstack/react-form";
+import z from "zod";
+import { Card, CardBody, CardFooter, Input } from "../gmac.ui";
+import { useVariantState } from "../VariantToggle";
+import { colorToHex } from "./client-copies";
+import { useGameActions, useLocalGameState } from "./useGetGameState";
 
 const inputFormSchema = z.object({
-  chatContent: z.string().min(1, 'Message cannot be empty')
+  chatContent: z.string().min(1, "Message cannot be empty"),
 });
 
 export const GameChat = () => {
@@ -16,16 +16,16 @@ export const GameChat = () => {
 
   const form = useForm({
     defaultValues: {
-      chatContent: ''
+      chatContent: "",
     },
     validators: {
-      onSubmit: inputFormSchema
+      onSubmit: inputFormSchema,
     },
     onSubmit: async ({ value, formApi }) => {
       const message = value.chatContent;
       sendChat(message);
       formApi.reset();
-    }
+    },
   });
 
   return (
@@ -36,7 +36,7 @@ export const GameChat = () => {
           {chats
             .sort((a, b) => b.timestamp - a.timestamp)
             .map((chat) => (
-              <p key={chat.chatId} className={`text-sm ${chat.isSystem ? 'pl-[2px] uppercase' : ''}`} style={{ color: colorToHex(chat.playerColour) || 'gray' }}>
+              <p key={chat.chatId} className={`text-sm ${chat.isSystem ? "pl-[2px] uppercase" : ""}`} style={{ color: colorToHex(chat.playerColour) || "gray" }}>
                 {chat.isSystem ? chat.content : `[${chat.playerName}] ${chat.content}`}
               </p>
             ))}
@@ -48,7 +48,8 @@ export const GameChat = () => {
           onSubmit={(e) => {
             e.preventDefault();
             form.handleSubmit();
-          }}>
+          }}
+        >
           <form.Field name="chatContent">
             {(field) => (
               <Input

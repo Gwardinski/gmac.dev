@@ -1,8 +1,8 @@
-import { useEffect, useRef, type RefObject } from 'react';
-import backgroundImage from '../../assets/pew-background.png';
-import { colorToHex, TILE_SIZE, type Color } from './client-copies';
-import type { PlayerClient } from './client-copies/PlayerClient';
-import { useLocalGameState } from './useGetGameState';
+import { useEffect, useRef, type RefObject } from "react";
+import backgroundImage from "../../assets/pew-background.png";
+import { colorToHex, TILE_SIZE, type Color } from "./client-copies";
+import type { PlayerClient } from "./client-copies/PlayerClient";
+import { useLocalGameState } from "./useGetGameState";
 
 const invincibleFlashInterval = 100;
 
@@ -36,16 +36,16 @@ export const GameCanvas = ({ canvasRef }: GameCanvasProps) => {
         frameId = requestAnimationFrame(tick);
         return;
       }
-      const ctx = c.getContext('2d');
+      const ctx = c.getContext("2d");
       if (!ctx) {
         frameId = requestAnimationFrame(tick);
         return;
       }
 
       // Use monospaced font and built-in centering for consistent labels
-      ctx.font = '10px monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
+      ctx.font = "10px monospace";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "top";
 
       const { gameState, level: lvl, playerId: pid, playerClient, otherPlayers, serverPlayer, displayBullets, debugEnabled } = useLocalGameState.getState();
       const { items } = gameState;
@@ -131,7 +131,7 @@ function drawPlayerServerPosition(ctx: CanvasRenderingContext2D, serverPlayer: P
   ctx.globalAlpha = 0.5;
   ctx.fillStyle = colorToHex(serverPlayer.colour);
   ctx.fillRect(serverPlayer.x, serverPlayer.y, TILE_SIZE, TILE_SIZE);
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = "white";
   const textX = serverPlayer.x + TILE_SIZE / 2;
   ctx.fillText(serverPlayer.name, textX, serverPlayer.y + 32);
   ctx.restore();
@@ -144,7 +144,7 @@ function drawPlayerClient(ctx: CanvasRenderingContext2D, playerClient: PlayerCli
     playerName: playerClient.name,
     playerColour: playerClient.colour,
     x: playerClient.x,
-    y: playerClient.y
+    y: playerClient.y,
   };
 
   if (playerClient.isDestroyed) {
@@ -176,7 +176,7 @@ function drawOtherPlayers(ctx: CanvasRenderingContext2D, player: PlayerClient, p
     playerColour: player.colour,
     x: player.x,
     y: player.y,
-    health: 60
+    health: 60,
   };
 
   if (player.id === playerClientId) {
@@ -209,7 +209,7 @@ function drawOtherPlayers(ctx: CanvasRenderingContext2D, player: PlayerClient, p
 function drawNormalPlayer(ctx: CanvasRenderingContext2D, { playerName, playerColour, x, y }: DrawPlayerProps) {
   ctx.fillStyle = colorToHex(playerColour);
   ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = "white";
   const textX = x + TILE_SIZE / 2;
   ctx.fillText(playerName, textX, y + 24);
 }
@@ -236,7 +236,7 @@ function drawSpawningPlayer(ctx: CanvasRenderingContext2D, { playerName, playerC
   ctx.fillStyle = colorToHex(playerColour);
   ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
   ctx.globalAlpha = 1.0;
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = "white";
   const textX = x + TILE_SIZE / 2;
   ctx.fillText(playerName, textX, y + 24);
 }
@@ -247,36 +247,36 @@ function drawInvinciblePlayer(ctx: CanvasRenderingContext2D, { playerName, playe
   ctx.fillStyle = colorToHex(playerColour);
   ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
   ctx.globalAlpha = 1.0;
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = "white";
   const textX = x + TILE_SIZE / 2;
   ctx.fillText(playerName, textX, y + 24);
 }
 
 function drawSpawnPoint(ctx: CanvasRenderingContext2D, _x: number, _y: number) {
-  ctx.fillStyle = 'rgba(0, 255, 0, 0.1)';
+  ctx.fillStyle = "rgba(0, 255, 0, 0.1)";
   ctx.beginPath();
   ctx.arc(_x * TILE_SIZE + TILE_SIZE / 2, _y * TILE_SIZE + TILE_SIZE / 2, TILE_SIZE / 3, 0, 2 * Math.PI);
   ctx.fill();
 }
 
 function drawWall(ctx: CanvasRenderingContext2D, x: number, y: number) {
-  ctx.fillStyle = '#686868';
+  ctx.fillStyle = "#686868";
   ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 }
 
 function drawBullet(ctx: CanvasRenderingContext2D, x: number, y: number) {
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = "white";
   ctx.fillRect(x, y, 2, 2);
 }
 
 function drawItem(ctx: CanvasRenderingContext2D, x: number, y: number, itemName: string) {
   const isTransparent = Math.floor(Date.now() / invincibleFlashInterval) % 2 === 0;
   ctx.globalAlpha = isTransparent ? 0.3 : 1.0;
-  ctx.fillStyle = 'yellow';
+  ctx.fillStyle = "yellow";
   ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = "white";
   const textX = x + TILE_SIZE / 2;
-  ctx.font = '12px monospace';
+  ctx.font = "12px monospace";
   ctx.fillText(itemName.toUpperCase(), textX, y + 28);
   ctx.globalAlpha = 1.0;
 }
