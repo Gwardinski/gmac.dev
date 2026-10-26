@@ -45,17 +45,43 @@ TextLink.displayName = "TextLink";
 // THEMING
 // ------------------------------------------------------------
 
-export const textButtonThemeOptions = ["gray", "blue", "green", "yellow", "orange", "red", "purple"] as const;
+export const textButtonThemeOptions = [
+  "default",
+  "gray",
+  "blue",
+  "green",
+  "yellow",
+  "orange",
+  "red",
+  "purple",
+  "lime",
+  "teal",
+  "indigo",
+  "slate",
+  "neutral",
+  "mauve",
+  "mist",
+  "olive",
+] as const;
 export type TextButtonTheme = (typeof textButtonThemeOptions)[number];
 
 const textButtonThemeClasses = {
-  gray: "text-gray-800 dark:text-gray-100 focus-visible:ring-gray-800/50 dark:focus-visible:ring-gray-100/50",
+  default: "text-gray-800 dark:text-gray-100 focus-visible:ring-gray-800/50 dark:focus-visible:ring-gray-100/50",
+  gray: "text-gray-600 dark:text-gray-400 focus-visible:ring-gray-600/50 dark:focus-visible:ring-gray-400/50",
   blue: "text-blue-600 dark:text-blue-400 focus-visible:ring-blue-600/50 dark:focus-visible:ring-blue-400/50",
   green: "text-green-600 dark:text-green-400 focus-visible:ring-green-600/50 dark:focus-visible:ring-green-400/50",
   yellow: "text-yellow-600 dark:text-yellow-400 focus-visible:ring-yellow-600/50 dark:focus-visible:ring-yellow-400/50",
   orange: "text-orange-600 dark:text-orange-400 focus-visible:ring-orange-600/50 dark:focus-visible:ring-orange-400/50",
   red: "text-red-600 dark:text-red-400 focus-visible:ring-red-600/50 dark:focus-visible:ring-red-400/50",
   purple: "text-purple-600 dark:text-purple-400 focus-visible:ring-purple-600/50 dark:focus-visible:ring-purple-400/50",
+  lime: "text-lime-600 dark:text-lime-400 focus-visible:ring-lime-600/50 dark:focus-visible:ring-lime-400/50",
+  teal: "text-teal-600 dark:text-teal-400 focus-visible:ring-teal-600/50 dark:focus-visible:ring-teal-400/50",
+  indigo: "text-indigo-600 dark:text-indigo-400 focus-visible:ring-indigo-600/50 dark:focus-visible:ring-indigo-400/50",
+  slate: "text-slate-600 dark:text-slate-400 focus-visible:ring-slate-600/50 dark:focus-visible:ring-slate-400/50",
+  neutral: "text-neutral-600 dark:text-neutral-400 focus-visible:ring-neutral-600/50 dark:focus-visible:ring-neutral-400/50",
+  mauve: "text-mauve-600 dark:text-mauve-400 focus-visible:ring-mauve-600/50 dark:focus-visible:ring-mauve-400/50",
+  mist: "text-mist-600 dark:text-mist-400 focus-visible:ring-mist-600/50 dark:focus-visible:ring-mist-400/50",
+  olive: "text-olive-600 dark:text-olive-400 focus-visible:ring-olive-600/50 dark:focus-visible:ring-olive-400/50",
 } satisfies Record<TextButtonTheme, string>;
 
 export const textButtonVariants = cva(
@@ -65,7 +91,7 @@ export const textButtonVariants = cva(
       theme: textButtonThemeClasses,
     },
     defaultVariants: {
-      theme: "gray",
+      theme: "default",
     },
   },
 );

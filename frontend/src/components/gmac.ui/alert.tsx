@@ -22,7 +22,7 @@ export function Alert({
   onDismiss?: () => void;
   dismissAriaLabel?: string;
 } & VariantProps<typeof alertVariants>) {
-  const resolvedTheme = (theme ?? "gray") as ButtonTheme;
+  const resolvedTheme = (theme ?? "default") as ButtonTheme;
   return (
     <div role="alert" className={cn("relative", alertVariants({ variant, theme: resolvedTheme, width }), className)} {...props}>
       {onDismiss && (
@@ -69,6 +69,7 @@ const alertVariantClasses = {
 } satisfies Record<AlertVariantOption, string>;
 
 const alertThemeClasses = {
+  default: "",
   gray: "",
   blue: "",
   green: "",
@@ -76,6 +77,14 @@ const alertThemeClasses = {
   orange: "",
   red: "",
   purple: "",
+  lime: "",
+  teal: "",
+  indigo: "",
+  slate: "",
+  neutral: "",
+  mauve: "",
+  mist: "",
+  olive: "",
 } satisfies Record<ButtonTheme, string>;
 
 const alertWidthClasses = {
@@ -101,8 +110,13 @@ export const alertVariants = cva(
       // solid
       {
         variant: "solid",
-        theme: "gray",
+        theme: "default",
         class: "border-gray-500 bg-gray-500 text-white dark:border-gray-600 dark:bg-gray-600 [&_.alert-title]:text-white [&>.alert-header>svg]:text-white",
+      },
+      {
+        variant: "solid",
+        theme: "gray",
+        class: "border-gray-500 bg-gray-500 text-white dark:border-gray-600/80 dark:bg-gray-500/80 [&_.alert-title]:text-white [&>.alert-header>svg]:text-white",
       },
       {
         variant: "solid",
@@ -136,12 +150,60 @@ export const alertVariants = cva(
         theme: "purple",
         class: "border-purple-500 bg-purple-500 text-white dark:border-purple-600/80 dark:bg-purple-500/80 [&_.alert-title]:text-white [&>.alert-header>svg]:text-white",
       },
+      {
+        variant: "solid",
+        theme: "lime",
+        class:
+          "border-lime-500 bg-lime-500 text-gray-900 dark:border-lime-600/80 dark:bg-lime-500/80 [&_.alert-description]:text-gray-900 [&_.alert-title]:text-gray-900 [&>.alert-header>svg]:text-gray-900",
+      },
+      {
+        variant: "solid",
+        theme: "teal",
+        class:
+          "border-teal-500 bg-teal-500 text-gray-900 dark:border-teal-600/80 dark:bg-teal-500/80 [&_.alert-description]:text-gray-900 [&_.alert-title]:text-gray-900 [&>.alert-header>svg]:text-gray-900",
+      },
+      {
+        variant: "solid",
+        theme: "indigo",
+        class: "border-indigo-500 bg-indigo-500 text-white dark:border-indigo-600/80 dark:bg-indigo-500/80 [&_.alert-title]:text-white [&>.alert-header>svg]:text-white",
+      },
+      {
+        variant: "solid",
+        theme: "slate",
+        class: "border-slate-500 bg-slate-500 text-white dark:border-slate-600/80 dark:bg-slate-500/80 [&_.alert-title]:text-white [&>.alert-header>svg]:text-white",
+      },
+      {
+        variant: "solid",
+        theme: "neutral",
+        class: "border-neutral-500 bg-neutral-500 text-white dark:border-neutral-600/80 dark:bg-neutral-500/80 [&_.alert-title]:text-white [&>.alert-header>svg]:text-white",
+      },
+      {
+        variant: "solid",
+        theme: "mauve",
+        class: "border-mauve-500 bg-mauve-500 text-white dark:border-mauve-600/80 dark:bg-mauve-500/80 [&_.alert-title]:text-white [&>.alert-header>svg]:text-white",
+      },
+      {
+        variant: "solid",
+        theme: "mist",
+        class: "border-mist-500 bg-mist-500 text-white dark:border-mist-600/80 dark:bg-mist-500/80 [&_.alert-title]:text-white [&>.alert-header>svg]:text-white",
+      },
+      {
+        variant: "solid",
+        theme: "olive",
+        class: "border-olive-500 bg-olive-500 text-white dark:border-olive-600/80 dark:bg-olive-500/80 [&_.alert-title]:text-white [&>.alert-header>svg]:text-white",
+      },
       // secondary — solid at /40 with themed text
+      {
+        variant: "secondary",
+        theme: "default",
+        class:
+          "border-gray-500/40 bg-gray-500/40 text-gray-900 dark:border-gray-600/40 dark:bg-gray-600/40 dark:text-gray-50 [&_.alert-title]:text-gray-900 dark:[&_.alert-title]:text-gray-50 [&>.alert-header>svg]:text-gray-900 dark:[&>.alert-header>svg]:text-gray-50",
+      },
       {
         variant: "secondary",
         theme: "gray",
         class:
-          "border-gray-500/40 bg-gray-500/40 text-gray-900 dark:border-gray-600/40 dark:bg-gray-600/40 dark:text-gray-50 [&_.alert-title]:text-gray-900 dark:[&_.alert-title]:text-gray-50 [&>.alert-header>svg]:text-gray-900 dark:[&>.alert-header>svg]:text-gray-50",
+          "border-gray-500/40 bg-gray-500/40 text-gray-700 dark:border-gray-600/40 dark:bg-gray-600/40 dark:text-gray-50 [&_.alert-title]:text-gray-700 dark:[&_.alert-title]:text-gray-50 [&>.alert-header>svg]:text-gray-700 dark:[&>.alert-header>svg]:text-gray-50",
       },
       {
         variant: "secondary",
@@ -179,10 +241,58 @@ export const alertVariants = cva(
         class:
           "border-purple-500/40 bg-purple-500/40 text-purple-700 dark:border-purple-600/40 dark:bg-purple-600/40 dark:text-purple-50 [&_.alert-title]:text-purple-700 dark:[&_.alert-title]:text-purple-50 [&>.alert-header>svg]:text-purple-700 dark:[&>.alert-header>svg]:text-purple-50",
       },
+      {
+        variant: "secondary",
+        theme: "lime",
+        class:
+          "border-lime-500/40 bg-lime-500/40 text-lime-700 dark:border-lime-600/40 dark:bg-lime-600/40 dark:text-lime-50 [&_.alert-title]:text-lime-700 dark:[&_.alert-title]:text-lime-50 [&>.alert-header>svg]:text-lime-700 dark:[&>.alert-header>svg]:text-lime-50",
+      },
+      {
+        variant: "secondary",
+        theme: "teal",
+        class:
+          "border-teal-500/40 bg-teal-500/40 text-teal-700 dark:border-teal-600/40 dark:bg-teal-600/40 dark:text-teal-50 [&_.alert-title]:text-teal-700 dark:[&_.alert-title]:text-teal-50 [&>.alert-header>svg]:text-teal-700 dark:[&>.alert-header>svg]:text-teal-50",
+      },
+      {
+        variant: "secondary",
+        theme: "indigo",
+        class:
+          "border-indigo-500/40 bg-indigo-500/40 text-indigo-700 dark:border-indigo-600/40 dark:bg-indigo-600/40 dark:text-indigo-50 [&_.alert-title]:text-indigo-700 dark:[&_.alert-title]:text-indigo-50 [&>.alert-header>svg]:text-indigo-700 dark:[&>.alert-header>svg]:text-indigo-50",
+      },
+      {
+        variant: "secondary",
+        theme: "slate",
+        class:
+          "border-slate-500/40 bg-slate-500/40 text-slate-700 dark:border-slate-600/40 dark:bg-slate-600/40 dark:text-slate-50 [&_.alert-title]:text-slate-700 dark:[&_.alert-title]:text-slate-50 [&>.alert-header>svg]:text-slate-700 dark:[&>.alert-header>svg]:text-slate-50",
+      },
+      {
+        variant: "secondary",
+        theme: "neutral",
+        class:
+          "border-neutral-500/40 bg-neutral-500/40 text-neutral-700 dark:border-neutral-600/40 dark:bg-neutral-600/40 dark:text-neutral-50 [&_.alert-title]:text-neutral-700 dark:[&_.alert-title]:text-neutral-50 [&>.alert-header>svg]:text-neutral-700 dark:[&>.alert-header>svg]:text-neutral-50",
+      },
+      {
+        variant: "secondary",
+        theme: "mauve",
+        class:
+          "border-mauve-500/40 bg-mauve-500/40 text-mauve-700 dark:border-mauve-600/40 dark:bg-mauve-600/40 dark:text-mauve-50 [&_.alert-title]:text-mauve-700 dark:[&_.alert-title]:text-mauve-50 [&>.alert-header>svg]:text-mauve-700 dark:[&>.alert-header>svg]:text-mauve-50",
+      },
+      {
+        variant: "secondary",
+        theme: "mist",
+        class:
+          "border-mist-500/40 bg-mist-500/40 text-mist-700 dark:border-mist-600/40 dark:bg-mist-600/40 dark:text-mist-50 [&_.alert-title]:text-mist-700 dark:[&_.alert-title]:text-mist-50 [&>.alert-header>svg]:text-mist-700 dark:[&>.alert-header>svg]:text-mist-50",
+      },
+      {
+        variant: "secondary",
+        theme: "olive",
+        class:
+          "border-olive-500/40 bg-olive-500/40 text-olive-700 dark:border-olive-600/40 dark:bg-olive-600/40 dark:text-olive-50 [&_.alert-title]:text-olive-700 dark:[&_.alert-title]:text-olive-50 [&>.alert-header>svg]:text-olive-700 dark:[&>.alert-header>svg]:text-olive-50",
+      },
     ],
     defaultVariants: {
       variant: "secondary",
-      theme: "gray",
+      theme: "default",
       width: "fit",
     },
   },

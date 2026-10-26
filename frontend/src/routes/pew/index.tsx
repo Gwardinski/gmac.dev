@@ -21,7 +21,7 @@ function RouteComponent() {
   const { variant } = useVariantState();
   return (
     <Page>
-      <Card as="header" variant={variant} theme="gray">
+      <Card as="header" variant={variant} theme="default">
         <CardHeader column>
           <H1>Pew</H1>
           <H1Description>Has free access to professional game engines</H1Description>

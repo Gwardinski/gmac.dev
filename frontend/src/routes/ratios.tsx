@@ -31,7 +31,7 @@ function RatiosRoute() {
 
   return (
     <Page>
-      <Card as="header" variant={variant} theme="gray">
+      <Card as="header" variant={variant} theme="default">
         <CardHeader column>
           <H1>Ratios</H1>
           <H1Description>Because I needed some simple ratio sliders.</H1Description>

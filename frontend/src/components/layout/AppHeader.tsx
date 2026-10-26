@@ -9,7 +9,7 @@ export const AppHeader: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-10 flex w-full max-w-screen-2xl justify-center">
-      <Card variant={variant} theme="gray" as="div" className="flex-row rounded-none md:rounded-lg">
+      <Card variant={variant} theme="default" as="div" className="flex-row rounded-none md:rounded-lg">
         <ButtonLink to="/" variant={variant} className="hidden sm:flex">
           gmac.dev
         </ButtonLink>

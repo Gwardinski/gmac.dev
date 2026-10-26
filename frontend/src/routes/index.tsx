@@ -24,9 +24,9 @@ import {
 } from "@/components/gmac.ui";
 import { DocumentationLink, GithubLink, Page } from "@/components/layout";
 import { useVariantState } from "@/components/VariantToggle";
-import { PLAYGROUNDS, type Playground } from "@/data-core/playgrounds";
-import { PROJECTS, type Project } from "@/data-core/projects";
-import { TECH_TAGS, type TECH_TAG } from "@/data-core/types";
+import { PLAYGROUNDS, type Playground } from "@/data/playgrounds";
+import { PROJECTS, type Project } from "@/data/projects";
+import { TECH_TAGS, type TECH_TAG } from "@/data/types";
 import {
   IconApi,
   IconBrandCloudflare,
@@ -104,7 +104,7 @@ function App() {
         </CardBody>
       </Card>
 
-      <Card variant={variant} theme="gray">
+      <Card variant={variant} theme="default">
         <CardHeader>
           <H2>Buzzwords</H2>
         </CardHeader>
@@ -122,7 +122,7 @@ function App() {
       </Card>
 
       <section className="flex w-full flex-col gap-4">
-        <Card as="header" variant={variant} theme="gray">
+        <Card as="header" variant={variant} theme="default">
           <CardHeader column>
             <H2>Projects</H2>
             <H2Description>A collection of projects I've worked on.</H2Description>
@@ -137,7 +137,7 @@ function App() {
       </section>
 
       <section className="flex w-full flex-col gap-4">
-        <Card as="header" variant={variant} theme="gray">
+        <Card as="header" variant={variant} theme="default">
           <CardHeader column>
             <H2>Playgrounds</H2>
             <H2Description>Various bits & bobs I've been playing with.</H2Description>

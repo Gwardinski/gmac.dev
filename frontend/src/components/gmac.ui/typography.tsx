@@ -1,5 +1,7 @@
+import { Link } from "@tanstack/react-router";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
+import { forwardRef } from "react";
 import { cn } from "./utils";
 
 interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement>, VariantProps<typeof headingVariants> {
@@ -17,6 +19,20 @@ export function H2({ className, as = "h2", ...props }: HeadingProps) {
 
   return <Component className={cn(headingVariants({ type: "h2", className }))} {...props} />;
 }
+
+type HeadingLinkProps = React.ComponentProps<typeof Link>;
+
+// H1 and H2 as a TanStack Router Link (like ButtonLink), e.g. a card title that opens its page. Same styling, rendered
+// as an <a>, so put it inside an h1/h2 if the page needs the heading in its outline.
+export const H1Link = forwardRef<React.ComponentRef<typeof Link>, HeadingLinkProps>(({ className, ...props }, ref) => {
+  return <Link ref={ref} className={cn(headingVariants({ type: "h1" }), className)} {...props} />;
+});
+H1Link.displayName = "H1Link";
+
+export const H2Link = forwardRef<React.ComponentRef<typeof Link>, HeadingLinkProps>(({ className, ...props }, ref) => {
+  return <Link ref={ref} className={cn(headingVariants({ type: "h2" }), className)} {...props} />;
+});
+H2Link.displayName = "H2Link";
 
 export function H3({ className, as = "h3", ...props }: HeadingProps) {
   const Component = as;

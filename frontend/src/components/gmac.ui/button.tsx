@@ -50,7 +50,24 @@ export type ButtonSize = (typeof buttonSizeOptions)[number];
 export const buttonVariantOptions = ["solid", "outline", "ghost", "glass"] as const;
 export type ButtonVariantOption = (typeof buttonVariantOptions)[number];
 
-export const buttonThemeOptions = ["gray", "blue", "green", "yellow", "orange", "red", "purple"] as const;
+export const buttonThemeOptions = [
+  "default",
+  "gray",
+  "blue",
+  "green",
+  "yellow",
+  "orange",
+  "red",
+  "purple",
+  "lime",
+  "teal",
+  "indigo",
+  "slate",
+  "neutral",
+  "mauve",
+  "mist",
+  "olive",
+] as const;
 export type ButtonTheme = (typeof buttonThemeOptions)[number];
 
 const buttonSizeClasses = {
@@ -66,6 +83,7 @@ const buttonVariantClasses = {
 } satisfies Record<ButtonVariantOption, string>;
 
 const buttonThemeClasses = {
+  default: "",
   gray: "",
   blue: "",
   green: "",
@@ -73,6 +91,14 @@ const buttonThemeClasses = {
   orange: "",
   red: "",
   purple: "",
+  lime: "",
+  teal: "",
+  indigo: "",
+  slate: "",
+  neutral: "",
+  mauve: "",
+  mist: "",
+  olive: "",
 } satisfies Record<ButtonTheme, string>;
 
 export const buttonVariants = cva(
@@ -123,11 +149,56 @@ export const buttonVariants = cva(
         theme: "purple",
         class: `border-purple-500 bg-purple-500 hover:border-purple-600 hover:bg-purple-600 focus-visible:ring-purple-500/50 active:border-purple-700 active:bg-purple-700 dark:border-purple-600 dark:bg-purple-600 dark:hover:border-purple-700 dark:hover:bg-purple-700 dark:focus-visible:ring-purple-600/50 dark:active:border-purple-800 dark:active:bg-purple-800`,
       },
+      {
+        variant: "solid",
+        theme: "lime",
+        class: `border-lime-500 bg-lime-500 text-gray-950 hover:border-lime-600 hover:bg-lime-600 focus-visible:ring-lime-500/50 active:border-lime-700 active:bg-lime-700 dark:border-lime-600 dark:bg-lime-600 dark:text-gray-950 dark:hover:border-lime-700 dark:hover:bg-lime-700 dark:focus-visible:ring-lime-600/50 dark:active:border-lime-800 dark:active:bg-lime-800`,
+      },
+      {
+        variant: "solid",
+        theme: "teal",
+        class: `border-teal-500 bg-teal-500 text-gray-950 hover:border-teal-600 hover:bg-teal-600 focus-visible:ring-teal-500/50 active:border-teal-700 active:bg-teal-700 dark:border-teal-600 dark:bg-teal-600 dark:text-gray-950 dark:hover:border-teal-700 dark:hover:bg-teal-700 dark:focus-visible:ring-teal-600/50 dark:active:border-teal-800 dark:active:bg-teal-800`,
+      },
+      {
+        variant: "solid",
+        theme: "indigo",
+        class: `border-indigo-500 bg-indigo-500 hover:border-indigo-600 hover:bg-indigo-600 focus-visible:ring-indigo-500/50 active:border-indigo-700 active:bg-indigo-700 dark:border-indigo-600 dark:bg-indigo-600 dark:hover:border-indigo-700 dark:hover:bg-indigo-700 dark:focus-visible:ring-indigo-600/50 dark:active:border-indigo-800 dark:active:bg-indigo-800`,
+      },
+      {
+        variant: "solid",
+        theme: "slate",
+        class: `border-slate-500 bg-slate-500 hover:border-slate-600 hover:bg-slate-600 focus-visible:ring-slate-500/50 active:border-slate-700 active:bg-slate-700 dark:border-slate-600 dark:bg-slate-600 dark:hover:border-slate-700 dark:hover:bg-slate-700 dark:focus-visible:ring-slate-600/50 dark:active:border-slate-800 dark:active:bg-slate-800`,
+      },
+      {
+        variant: "solid",
+        theme: "neutral",
+        class: `border-neutral-500 bg-neutral-500 hover:border-neutral-600 hover:bg-neutral-600 focus-visible:ring-neutral-500/50 active:border-neutral-700 active:bg-neutral-700 dark:border-neutral-600 dark:bg-neutral-600 dark:hover:border-neutral-700 dark:hover:bg-neutral-700 dark:focus-visible:ring-neutral-600/50 dark:active:border-neutral-800 dark:active:bg-neutral-800`,
+      },
+      {
+        variant: "solid",
+        theme: "mauve",
+        class: `border-mauve-500 bg-mauve-500 hover:border-mauve-600 hover:bg-mauve-600 focus-visible:ring-mauve-500/50 active:border-mauve-700 active:bg-mauve-700 dark:border-mauve-600 dark:bg-mauve-600 dark:hover:border-mauve-700 dark:hover:bg-mauve-700 dark:focus-visible:ring-mauve-600/50 dark:active:border-mauve-800 dark:active:bg-mauve-800`,
+      },
+      {
+        variant: "solid",
+        theme: "mist",
+        class: `border-mist-500 bg-mist-500 hover:border-mist-600 hover:bg-mist-600 focus-visible:ring-mist-500/50 active:border-mist-700 active:bg-mist-700 dark:border-mist-600 dark:bg-mist-600 dark:hover:border-mist-700 dark:hover:bg-mist-700 dark:focus-visible:ring-mist-600/50 dark:active:border-mist-800 dark:active:bg-mist-800`,
+      },
+      {
+        variant: "solid",
+        theme: "olive",
+        class: `border-olive-500 bg-olive-500 hover:border-olive-600 hover:bg-olive-600 focus-visible:ring-olive-500/50 active:border-olive-700 active:bg-olive-700 dark:border-olive-600 dark:bg-olive-600 dark:hover:border-olive-700 dark:hover:bg-olive-700 dark:focus-visible:ring-olive-600/50 dark:active:border-olive-800 dark:active:bg-olive-800`,
+      },
       // Gray unique colors for "blank" use-case:
       {
         variant: "solid",
-        theme: "gray",
+        theme: "default",
         class: `border-gray-800 bg-gray-800 text-white hover:border-gray-950 hover:bg-gray-950 focus-visible:ring-gray-500/50 active:border-gray-950 active:bg-gray-950 dark:border-gray-300 dark:bg-gray-300 dark:text-gray-950 dark:hover:border-gray-400 dark:hover:bg-gray-400 dark:focus-visible:ring-gray-600/50 dark:active:border-gray-500 dark:active:bg-gray-500`,
+      },
+      {
+        variant: "solid",
+        theme: "gray",
+        class: `border-gray-500 bg-gray-500 hover:border-gray-600 hover:bg-gray-600 focus-visible:ring-gray-500/50 active:border-gray-700 active:bg-gray-700 dark:border-gray-600 dark:bg-gray-600 dark:hover:border-gray-700 dark:hover:bg-gray-700 dark:focus-visible:ring-gray-600/50 dark:active:border-gray-800 dark:active:bg-gray-800`,
       },
       // OUTLINE
       // Base => Hover => Active
@@ -171,8 +242,53 @@ export const buttonVariants = cva(
       },
       {
         variant: "outline",
-        theme: "gray",
+        theme: "lime",
+        class: `border-lime-600 text-lime-600 hover:bg-lime-600/10 focus-visible:ring-lime-600/50 active:bg-lime-600/20 dark:border-lime-400 dark:text-lime-400 dark:hover:bg-lime-600/10 dark:focus-visible:ring-lime-400/50 dark:active:bg-lime-600/20`,
+      },
+      {
+        variant: "outline",
+        theme: "teal",
+        class: `border-teal-600 text-teal-600 hover:bg-teal-600/10 focus-visible:ring-teal-600/50 active:bg-teal-600/20 dark:border-teal-400 dark:text-teal-400 dark:hover:bg-teal-600/10 dark:focus-visible:ring-teal-400/50 dark:active:bg-teal-600/20`,
+      },
+      {
+        variant: "outline",
+        theme: "indigo",
+        class: `border-indigo-600 text-indigo-600 hover:bg-indigo-600/10 focus-visible:ring-indigo-600/50 active:bg-indigo-600/20 dark:border-indigo-400 dark:text-indigo-400 dark:hover:bg-indigo-600/10 dark:focus-visible:ring-indigo-400/50 dark:active:bg-indigo-600/20`,
+      },
+      {
+        variant: "outline",
+        theme: "slate",
+        class: `border-slate-600 text-slate-600 hover:bg-slate-600/10 focus-visible:ring-slate-600/50 active:bg-slate-600/20 dark:border-slate-400 dark:text-slate-400 dark:hover:bg-slate-600/10 dark:focus-visible:ring-slate-400/50 dark:active:bg-slate-600/20`,
+      },
+      {
+        variant: "outline",
+        theme: "neutral",
+        class: `border-neutral-600 text-neutral-600 hover:bg-neutral-600/10 focus-visible:ring-neutral-600/50 active:bg-neutral-600/20 dark:border-neutral-400 dark:text-neutral-400 dark:hover:bg-neutral-600/10 dark:focus-visible:ring-neutral-400/50 dark:active:bg-neutral-600/20`,
+      },
+      {
+        variant: "outline",
+        theme: "mauve",
+        class: `border-mauve-600 text-mauve-600 hover:bg-mauve-600/10 focus-visible:ring-mauve-600/50 active:bg-mauve-600/20 dark:border-mauve-400 dark:text-mauve-400 dark:hover:bg-mauve-600/10 dark:focus-visible:ring-mauve-400/50 dark:active:bg-mauve-600/20`,
+      },
+      {
+        variant: "outline",
+        theme: "mist",
+        class: `border-mist-600 text-mist-600 hover:bg-mist-600/10 focus-visible:ring-mist-600/50 active:bg-mist-600/20 dark:border-mist-400 dark:text-mist-400 dark:hover:bg-mist-600/10 dark:focus-visible:ring-mist-400/50 dark:active:bg-mist-600/20`,
+      },
+      {
+        variant: "outline",
+        theme: "olive",
+        class: `border-olive-600 text-olive-600 hover:bg-olive-600/10 focus-visible:ring-olive-600/50 active:bg-olive-600/20 dark:border-olive-400 dark:text-olive-400 dark:hover:bg-olive-600/10 dark:focus-visible:ring-olive-400/50 dark:active:bg-olive-600/20`,
+      },
+      {
+        variant: "outline",
+        theme: "default",
         class: `border-gray-800 text-gray-800 hover:bg-gray-800/10 focus-visible:ring-gray-800/50 active:bg-gray-800/20 dark:border-gray-100 dark:text-gray-100 dark:hover:bg-gray-100/10 dark:focus-visible:ring-gray-100/50 dark:active:bg-gray-100/20`,
+      },
+      {
+        variant: "outline",
+        theme: "gray",
+        class: `border-gray-600 text-gray-600 hover:bg-gray-600/10 focus-visible:ring-gray-600/50 active:bg-gray-600/20 dark:border-gray-400 dark:text-gray-400 dark:hover:bg-gray-600/10 dark:focus-visible:ring-gray-400/50 dark:active:bg-gray-600/20`,
       },
       // GHOST
       // matches OUTLINE, without border
@@ -208,10 +324,61 @@ export const buttonVariants = cva(
       },
       {
         variant: "ghost",
-        theme: "gray",
+        theme: "lime",
+        class: `text-lime-600 hover:bg-lime-600/10 focus-visible:ring-lime-600/50 active:bg-lime-600/20 dark:text-lime-400 dark:hover:bg-lime-600/10 dark:focus-visible:ring-lime-400/50 dark:active:bg-lime-600/20`,
+      },
+      {
+        variant: "ghost",
+        theme: "teal",
+        class: `text-teal-600 hover:bg-teal-600/10 focus-visible:ring-teal-600/50 active:bg-teal-600/20 dark:text-teal-400 dark:hover:bg-teal-600/10 dark:focus-visible:ring-teal-400/50 dark:active:bg-teal-600/20`,
+      },
+      {
+        variant: "ghost",
+        theme: "indigo",
+        class: `text-indigo-600 hover:bg-indigo-600/10 focus-visible:ring-indigo-600/50 active:bg-indigo-600/20 dark:text-indigo-400 dark:hover:bg-indigo-600/10 dark:focus-visible:ring-indigo-400/50 dark:active:bg-indigo-600/20`,
+      },
+      {
+        variant: "ghost",
+        theme: "slate",
+        class: `text-slate-600 hover:bg-slate-600/10 focus-visible:ring-slate-600/50 active:bg-slate-600/20 dark:text-slate-400 dark:hover:bg-slate-600/10 dark:focus-visible:ring-slate-400/50 dark:active:bg-slate-600/20`,
+      },
+      {
+        variant: "ghost",
+        theme: "neutral",
+        class: `text-neutral-600 hover:bg-neutral-600/10 focus-visible:ring-neutral-600/50 active:bg-neutral-600/20 dark:text-neutral-400 dark:hover:bg-neutral-600/10 dark:focus-visible:ring-neutral-400/50 dark:active:bg-neutral-600/20`,
+      },
+      {
+        variant: "ghost",
+        theme: "mauve",
+        class: `text-mauve-600 hover:bg-mauve-600/10 focus-visible:ring-mauve-600/50 active:bg-mauve-600/20 dark:text-mauve-400 dark:hover:bg-mauve-600/10 dark:focus-visible:ring-mauve-400/50 dark:active:bg-mauve-600/20`,
+      },
+      {
+        variant: "ghost",
+        theme: "mist",
+        class: `text-mist-600 hover:bg-mist-600/10 focus-visible:ring-mist-600/50 active:bg-mist-600/20 dark:text-mist-400 dark:hover:bg-mist-600/10 dark:focus-visible:ring-mist-400/50 dark:active:bg-mist-600/20`,
+      },
+      {
+        variant: "ghost",
+        theme: "olive",
+        class: `text-olive-600 hover:bg-olive-600/10 focus-visible:ring-olive-600/50 active:bg-olive-600/20 dark:text-olive-400 dark:hover:bg-olive-600/10 dark:focus-visible:ring-olive-400/50 dark:active:bg-olive-600/20`,
+      },
+      {
+        variant: "ghost",
+        theme: "default",
         class: `text-gray-800 hover:bg-gray-800/10 focus-visible:ring-gray-800/50 active:bg-gray-800/20 dark:text-gray-100 dark:hover:bg-gray-600/10 dark:focus-visible:ring-gray-100/50 dark:active:bg-gray-600/20`,
       },
+      {
+        variant: "ghost",
+        theme: "gray",
+        class: `text-gray-600 hover:bg-gray-600/10 focus-visible:ring-gray-600/50 active:bg-gray-600/20 dark:text-gray-400 dark:hover:bg-gray-600/10 dark:focus-visible:ring-gray-400/50 dark:active:bg-gray-600/20`,
+      },
       // glass
+      {
+        variant: "glass",
+        theme: "default",
+        class:
+          "bg-gray-50/25 hover:bg-gray-50/35 focus-visible:ring-gray-500/50 active:bg-gray-50/45 dark:bg-gray-950/25 dark:hover:bg-gray-950/35 dark:focus-visible:ring-gray-500/50 dark:active:bg-gray-950/45",
+      },
       {
         variant: "glass",
         theme: "gray",
@@ -254,11 +421,59 @@ export const buttonVariants = cva(
         class:
           "bg-purple-50/25 hover:bg-purple-50/35 focus-visible:ring-purple-500/50 active:bg-purple-50/45 dark:bg-purple-950/25 dark:hover:bg-purple-950/35 dark:focus-visible:ring-purple-500/50 dark:active:bg-purple-950/45",
       },
+      {
+        variant: "glass",
+        theme: "lime",
+        class:
+          "bg-lime-50/25 hover:bg-lime-50/35 focus-visible:ring-lime-500/50 active:bg-lime-50/45 dark:bg-lime-950/25 dark:hover:bg-lime-950/35 dark:focus-visible:ring-lime-500/50 dark:active:bg-lime-950/45",
+      },
+      {
+        variant: "glass",
+        theme: "teal",
+        class:
+          "bg-teal-50/25 hover:bg-teal-50/35 focus-visible:ring-teal-500/50 active:bg-teal-50/45 dark:bg-teal-950/25 dark:hover:bg-teal-950/35 dark:focus-visible:ring-teal-500/50 dark:active:bg-teal-950/45",
+      },
+      {
+        variant: "glass",
+        theme: "indigo",
+        class:
+          "bg-indigo-50/25 hover:bg-indigo-50/35 focus-visible:ring-indigo-500/50 active:bg-indigo-50/45 dark:bg-indigo-950/25 dark:hover:bg-indigo-950/35 dark:focus-visible:ring-indigo-500/50 dark:active:bg-indigo-950/45",
+      },
+      {
+        variant: "glass",
+        theme: "slate",
+        class:
+          "bg-slate-50/25 hover:bg-slate-50/35 focus-visible:ring-slate-500/50 active:bg-slate-50/45 dark:bg-slate-950/25 dark:hover:bg-slate-950/35 dark:focus-visible:ring-slate-500/50 dark:active:bg-slate-950/45",
+      },
+      {
+        variant: "glass",
+        theme: "neutral",
+        class:
+          "bg-neutral-50/25 hover:bg-neutral-50/35 focus-visible:ring-neutral-500/50 active:bg-neutral-50/45 dark:bg-neutral-950/25 dark:hover:bg-neutral-950/35 dark:focus-visible:ring-neutral-500/50 dark:active:bg-neutral-950/45",
+      },
+      {
+        variant: "glass",
+        theme: "mauve",
+        class:
+          "bg-mauve-50/25 hover:bg-mauve-50/35 focus-visible:ring-mauve-500/50 active:bg-mauve-50/45 dark:bg-mauve-950/25 dark:hover:bg-mauve-950/35 dark:focus-visible:ring-mauve-500/50 dark:active:bg-mauve-950/45",
+      },
+      {
+        variant: "glass",
+        theme: "mist",
+        class:
+          "bg-mist-50/25 hover:bg-mist-50/35 focus-visible:ring-mist-500/50 active:bg-mist-50/45 dark:bg-mist-950/25 dark:hover:bg-mist-950/35 dark:focus-visible:ring-mist-500/50 dark:active:bg-mist-950/45",
+      },
+      {
+        variant: "glass",
+        theme: "olive",
+        class:
+          "bg-olive-50/25 hover:bg-olive-50/35 focus-visible:ring-olive-500/50 active:bg-olive-50/45 dark:bg-olive-950/25 dark:hover:bg-olive-950/35 dark:focus-visible:ring-olive-500/50 dark:active:bg-olive-950/45",
+      },
     ],
     defaultVariants: {
       size: "md",
       variant: "solid",
-      theme: "gray",
+      theme: "default",
     },
   },
 );

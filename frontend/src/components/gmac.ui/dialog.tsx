@@ -79,13 +79,22 @@ export { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader };
 
 /** Border colour. `gray` keeps the default subtle border; the rest match Card's `outline` borders. */
 const dialogContentThemeClasses = {
-  gray: "border-gray-300/50 dark:border-gray-600/50",
+  default: "border-gray-300/50 dark:border-gray-600/50",
+  gray: "border-gray-200 dark:border-gray-700",
   blue: "border-blue-200 dark:border-blue-700",
   green: "border-green-200 dark:border-green-700",
   yellow: "border-yellow-200 dark:border-yellow-700",
   orange: "border-orange-200 dark:border-orange-700",
   red: "border-red-200 dark:border-red-700",
   purple: "border-purple-200 dark:border-purple-700",
+  lime: "border-lime-200 dark:border-lime-700",
+  teal: "border-teal-200 dark:border-teal-700",
+  indigo: "border-indigo-200 dark:border-indigo-700",
+  slate: "border-slate-200 dark:border-slate-700",
+  neutral: "border-neutral-200 dark:border-neutral-700",
+  mauve: "border-mauve-200 dark:border-mauve-700",
+  mist: "border-mist-200 dark:border-mist-700",
+  olive: "border-olive-200 dark:border-olive-700",
 } satisfies Record<ButtonTheme, string>;
 
 const dialogContentVariants = cva(
@@ -97,7 +106,7 @@ const dialogContentVariants = cva(
       chonk: { true: "border-5", false: "" },
     },
     defaultVariants: {
-      theme: "gray",
+      theme: "default",
     },
   },
 );

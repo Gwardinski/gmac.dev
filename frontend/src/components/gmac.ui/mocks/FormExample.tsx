@@ -263,7 +263,7 @@ export const FormExample = ({ variant }: { variant: "solid" | "glass" }) => {
                     rows={2}
                   />
                   <TextareaBottom>
-                    <InputGroupIconButton type="button" theme="gray" variant="ghost" aria-label="Attach">
+                    <InputGroupIconButton type="button" theme="default" variant="ghost" aria-label="Attach">
                       <IconPlus />
                     </InputGroupIconButton>
                   </TextareaBottom>

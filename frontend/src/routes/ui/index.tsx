@@ -45,7 +45,7 @@ import { alertThemeOptions, alertVariantOptions } from "@/components/gmac.ui/ale
 import { AvatarButton, avatarSizeOptions, avatarThemeOptions, avatarVariantOptions } from "@/components/gmac.ui/avatar";
 import { badgeThemeOptions, badgeVariantOptions } from "@/components/gmac.ui/badge";
 import { buttonSizeOptions, buttonThemeOptions, buttonVariantOptions } from "@/components/gmac.ui/button";
-import { cardOutlineThemeOptions, cardThemeOptions, cardVariantOptions } from "@/components/gmac.ui/card";
+import { cardThemeOptions, cardVariantOptions } from "@/components/gmac.ui/card";
 import { IconButton, iconButtonSizeOptions, iconButtonThemeOptions, iconButtonVariantOptions } from "@/components/gmac.ui/icon-button";
 import { DialogExample, DrawerExample, FormExample } from "@/components/gmac.ui/mocks";
 import { textButtonThemeOptions } from "@/components/gmac.ui/text-button";
@@ -78,7 +78,7 @@ function UIRoute() {
 
       <Tabs>
         <span className="flex flex-wrap items-center justify-between gap-2">
-          <TabsList variant={variant} theme="gray">
+          <TabsList variant={variant} theme="default">
             <TabsTrigger value={1}>Typography</TabsTrigger>
             <TabsTrigger value={2}>Components</TabsTrigger>
             <TabsTrigger value={3}>Layout</TabsTrigger>
@@ -136,7 +136,7 @@ function UIRoute() {
                             {theme}
                           </Button>
                         ))}
-                        <Button variant={variant} theme="gray" size={size} type="button" disabled>
+                        <Button variant={variant} theme="default" size={size} type="button" disabled>
                           disabled
                         </Button>
                       </div>
@@ -153,7 +153,7 @@ function UIRoute() {
                 {theme}
               </TextButton>
             ))}
-            <TextButton theme="gray" type="button" disabled>
+            <TextButton theme="default" type="button" disabled>
               disabled
             </TextButton>
           </DemoCard>
@@ -172,7 +172,7 @@ function UIRoute() {
                             <IconPlus />
                           </IconButton>
                         ))}
-                        <IconButton variant={variant} theme="gray" size={size} type="button" disabled aria-label="disabled">
+                        <IconButton variant={variant} theme="default" size={size} type="button" disabled aria-label="disabled">
                           <IconPlus />
                         </IconButton>
                       </div>
@@ -216,7 +216,7 @@ function UIRoute() {
                         {theme}
                       </Badge>
                     ))}
-                    <Badge variant={variant} theme="gray" className="pointer-events-none opacity-50" aria-disabled>
+                    <Badge variant={variant} theme="default" className="pointer-events-none opacity-50" aria-disabled>
                       disabled
                     </Badge>
                   </div>
@@ -288,7 +288,7 @@ function UIRoute() {
               <div key={variant} className="flex flex-col gap-2">
                 <H4>{variant}</H4>
                 <div className="flex flex-col gap-4 lg:flex-row lg:flex-wrap">
-                  {(variant === "outline" ? cardOutlineThemeOptions : cardThemeOptions).map((theme) => (
+                  {cardThemeOptions.map((theme) => (
                     <Card key={theme} variant={variant} theme={theme} className="w-full max-w-sm">
                       <CardHeader>
                         <CardTitle>
@@ -376,7 +376,7 @@ function Controls() {
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
           render={
-            <IconButton variant="solid" theme="gray" className="fixed right-4 bottom-4 z-30 w-fit max-w-lg">
+            <IconButton variant="solid" theme="default" className="fixed right-4 bottom-4 z-30 w-fit max-w-lg">
               <IconSettings />
             </IconButton>
           }
