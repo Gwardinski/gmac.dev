@@ -62,6 +62,7 @@ export const textButtonThemeOptions = [
   "mauve",
   "mist",
   "olive",
+  "zinc",
 ] as const;
 export type TextButtonTheme = (typeof textButtonThemeOptions)[number];
 
@@ -82,6 +83,7 @@ const textButtonThemeClasses = {
   mauve: "text-mauve-600 dark:text-mauve-400 focus-visible:ring-mauve-600/50 dark:focus-visible:ring-mauve-400/50",
   mist: "text-mist-600 dark:text-mist-400 focus-visible:ring-mist-600/50 dark:focus-visible:ring-mist-400/50",
   olive: "text-olive-600 dark:text-olive-400 focus-visible:ring-olive-600/50 dark:focus-visible:ring-olive-400/50",
+  zinc: "text-zinc-600 dark:text-zinc-400 focus-visible:ring-zinc-600/50 dark:focus-visible:ring-zinc-400/50",
 } satisfies Record<TextButtonTheme, string>;
 
 export const textButtonVariants = cva(

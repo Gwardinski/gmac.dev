@@ -33,6 +33,13 @@ import {
   PopoverContent,
   PopoverTrigger,
   PS,
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
   Tabs,
   TabsContent,
   TabsList,
@@ -49,6 +56,7 @@ import { cardThemeOptions, cardVariantOptions } from "@/components/gmac.ui/card"
 import { IconButton, iconButtonSizeOptions, iconButtonThemeOptions, iconButtonVariantOptions } from "@/components/gmac.ui/icon-button";
 import { DialogExample, DrawerExample, FormExample } from "@/components/gmac.ui/mocks";
 import { textButtonThemeOptions } from "@/components/gmac.ui/text-button";
+import { tableThemeOptions } from "@/components/gmac.ui/table";
 import { PL } from "@/components/gmac.ui/typography";
 import { Page } from "@/components/layout";
 import { useTheme } from "@/components/theme-provider";
@@ -335,6 +343,34 @@ function UIRoute() {
                 </div>
               </div>
             ))}
+          </DemoCard>
+
+          <DemoCard title="Table">
+            <div className="flex flex-col gap-4 lg:flex-row lg:flex-wrap">
+              {tableThemeOptions.map((theme) => (
+                <div key={theme} className="w-full max-w-sm">
+                  <Table theme={theme}>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Value</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>First</TableCell>
+                        <TableCell>1</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Second</TableCell>
+                        <TableCell>2</TableCell>
+                      </TableRow>
+                    </TableBody>
+                    <TableCaption>{theme}</TableCaption>
+                  </Table>
+                </div>
+              ))}
+            </div>
           </DemoCard>
         </TabsContent>
         <TabsContent value={4}>

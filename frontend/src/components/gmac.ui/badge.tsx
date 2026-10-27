@@ -50,10 +50,11 @@ const badgeThemeClasses = {
   mauve: "",
   mist: "",
   olive: "",
+  zinc: "",
 } satisfies Record<ButtonTheme, string>;
 
 export const badgeVariants = cva(
-  "inline-flex h-6 max-h-6 max-w-fit min-w-fit flex-row items-center gap-1 rounded-lg px-2 text-sm font-medium uppercase transition-colors [&_svg]:shrink-0",
+  "inline-flex h-6 max-h-6 max-w-fit min-w-fit flex-row items-center gap-1 rounded-md px-2 text-sm font-medium uppercase transition-colors [&_svg]:shrink-0",
   {
     variants: {
       variant: badgeVariantClasses,
@@ -138,6 +139,11 @@ export const badgeVariants = cva(
       },
       {
         variant: "solid",
+        theme: "zinc",
+        class: "border-zinc-500 bg-zinc-500 dark:border-zinc-600 dark:bg-zinc-600 [&_svg]:text-inherit",
+      },
+      {
+        variant: "solid",
         theme: "gray",
         class: "border-gray-500 bg-gray-500 dark:border-gray-600 dark:bg-gray-600 [&_svg]:text-inherit",
       },
@@ -216,6 +222,11 @@ export const badgeVariants = cva(
         variant: "outline",
         theme: "default",
         class: "border-gray-800 text-gray-800 dark:border-gray-100 dark:text-gray-100 [&_svg]:text-inherit",
+      },
+      {
+        variant: "outline",
+        theme: "zinc",
+        class: "border-zinc-600 text-zinc-600 dark:border-zinc-400 dark:text-zinc-400 [&_svg]:text-inherit",
       },
       {
         variant: "outline",
@@ -302,6 +313,11 @@ export const badgeVariants = cva(
         variant: "glass",
         theme: "olive",
         class: "bg-olive-50/25 text-olive-600 dark:bg-olive-950/25 dark:text-olive-400 [&_svg]:text-inherit",
+      },
+      {
+        variant: "glass",
+        theme: "zinc",
+        class: "bg-zinc-50/25 text-zinc-600 dark:bg-zinc-950/25 dark:text-zinc-400 [&_svg]:text-inherit",
       },
     ],
     defaultVariants: {

@@ -67,6 +67,7 @@ export const buttonThemeOptions = [
   "mauve",
   "mist",
   "olive",
+  "zinc",
 ] as const;
 export type ButtonTheme = (typeof buttonThemeOptions)[number];
 
@@ -99,10 +100,11 @@ const buttonThemeClasses = {
   mauve: "",
   mist: "",
   olive: "",
+  zinc: "",
 } satisfies Record<ButtonTheme, string>;
 
 export const buttonVariants = cva(
-  `flex inline-flex max-w-md cursor-pointer items-center justify-center font-normal whitespace-nowrap transition-colors focus-visible:ring-4 focus-visible:outline-hidden disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40 dark:disabled:text-gray-600`,
+  `flex inline-flex max-w-xl cursor-pointer items-center justify-center font-normal whitespace-nowrap transition-colors focus-visible:ring-4 focus-visible:outline-hidden disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40 dark:disabled:text-gray-600`,
   {
     variants: {
       size: buttonSizeClasses,
@@ -197,6 +199,11 @@ export const buttonVariants = cva(
       },
       {
         variant: "solid",
+        theme: "zinc",
+        class: `border-zinc-500 bg-zinc-500 hover:border-zinc-600 hover:bg-zinc-600 focus-visible:ring-zinc-500/50 active:border-zinc-700 active:bg-zinc-700 dark:border-zinc-600 dark:bg-zinc-600 dark:hover:border-zinc-700 dark:hover:bg-zinc-700 dark:focus-visible:ring-zinc-600/50 dark:active:border-zinc-800 dark:active:bg-zinc-800`,
+      },
+      {
+        variant: "solid",
         theme: "gray",
         class: `border-gray-500 bg-gray-500 hover:border-gray-600 hover:bg-gray-600 focus-visible:ring-gray-500/50 active:border-gray-700 active:bg-gray-700 dark:border-gray-600 dark:bg-gray-600 dark:hover:border-gray-700 dark:hover:bg-gray-700 dark:focus-visible:ring-gray-600/50 dark:active:border-gray-800 dark:active:bg-gray-800`,
       },
@@ -287,6 +294,11 @@ export const buttonVariants = cva(
       },
       {
         variant: "outline",
+        theme: "zinc",
+        class: `border-zinc-600 text-zinc-600 hover:bg-zinc-600/10 focus-visible:ring-zinc-600/50 active:bg-zinc-600/20 dark:border-zinc-400 dark:text-zinc-400 dark:hover:bg-zinc-600/10 dark:focus-visible:ring-zinc-400/50 dark:active:bg-zinc-600/20`,
+      },
+      {
+        variant: "outline",
         theme: "gray",
         class: `border-gray-600 text-gray-600 hover:bg-gray-600/10 focus-visible:ring-gray-600/50 active:bg-gray-600/20 dark:border-gray-400 dark:text-gray-400 dark:hover:bg-gray-600/10 dark:focus-visible:ring-gray-400/50 dark:active:bg-gray-600/20`,
       },
@@ -366,6 +378,11 @@ export const buttonVariants = cva(
         variant: "ghost",
         theme: "default",
         class: `text-gray-800 hover:bg-gray-800/10 focus-visible:ring-gray-800/50 active:bg-gray-800/20 dark:text-gray-100 dark:hover:bg-gray-600/10 dark:focus-visible:ring-gray-100/50 dark:active:bg-gray-600/20`,
+      },
+      {
+        variant: "ghost",
+        theme: "zinc",
+        class: `text-zinc-600 hover:bg-zinc-600/10 focus-visible:ring-zinc-600/50 active:bg-zinc-600/20 dark:text-zinc-400 dark:hover:bg-zinc-600/10 dark:focus-visible:ring-zinc-400/50 dark:active:bg-zinc-600/20`,
       },
       {
         variant: "ghost",
@@ -468,6 +485,12 @@ export const buttonVariants = cva(
         theme: "olive",
         class:
           "bg-olive-50/25 hover:bg-olive-50/35 focus-visible:ring-olive-500/50 active:bg-olive-50/45 dark:bg-olive-950/25 dark:hover:bg-olive-950/35 dark:focus-visible:ring-olive-500/50 dark:active:bg-olive-950/45",
+      },
+      {
+        variant: "glass",
+        theme: "zinc",
+        class:
+          "bg-zinc-50/25 hover:bg-zinc-50/35 focus-visible:ring-zinc-500/50 active:bg-zinc-50/45 dark:bg-zinc-950/25 dark:hover:bg-zinc-950/35 dark:focus-visible:ring-zinc-500/50 dark:active:bg-zinc-950/45",
       },
     ],
     defaultVariants: {

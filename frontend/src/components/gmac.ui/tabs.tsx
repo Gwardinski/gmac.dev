@@ -74,6 +74,7 @@ const tabsThemeClasses = {
   mauve: "",
   mist: "",
   olive: "",
+  zinc: "",
 } satisfies Record<ButtonTheme, string>;
 
 const tabsVariantClasses = {
@@ -171,6 +172,11 @@ export const tabsListVariants = cva(
         theme: "olive",
         class: "gap-0.5 bg-olive-100 dark:bg-olive-950",
       },
+      {
+        variant: "solid",
+        theme: "zinc",
+        class: "gap-0.5 bg-zinc-100 dark:bg-zinc-950",
+      },
       // outline — themed container border; accent on active tab
       {
         variant: "outline",
@@ -252,6 +258,11 @@ export const tabsListVariants = cva(
         theme: "olive",
         class: "gap-0.5 border border-olive-600 bg-transparent dark:border-olive-400",
       },
+      {
+        variant: "outline",
+        theme: "zinc",
+        class: "gap-0.5 border border-zinc-600 bg-transparent dark:border-zinc-400",
+      },
       // glass
       {
         variant: "glass",
@@ -332,6 +343,11 @@ export const tabsListVariants = cva(
         variant: "glass",
         theme: "olive",
         class: "gap-0.5 bg-olive-500/8 backdrop-blur-sm glass-border dark:bg-olive-950/30 dark:dark-glass-border",
+      },
+      {
+        variant: "glass",
+        theme: "zinc",
+        class: "gap-0.5 bg-zinc-500/8 backdrop-blur-sm glass-border dark:bg-zinc-950/30 dark:dark-glass-border",
       },
     ],
     defaultVariants: {
@@ -446,6 +462,12 @@ const tabsTriggerVariants = cva(
         class:
           "text-olive-900 hover:text-olive-950 not-data-active:hover:bg-olive-200 focus-visible:text-olive-950 focus-visible:ring-olive-500/50 not-data-active:focus-visible:bg-olive-200 active:text-olive-950 not-data-active:active:bg-olive-200 data-active:border-olive-500 data-active:bg-olive-500 data-active:text-white dark:text-olive-200 dark:hover:text-olive-50 dark:not-data-active:hover:bg-olive-900 dark:focus-visible:text-olive-50 dark:focus-visible:ring-olive-500/50 dark:not-data-active:focus-visible:bg-olive-900 dark:active:text-olive-50 dark:not-data-active:active:bg-olive-900 dark:data-active:bg-olive-600",
       },
+      {
+        variant: "solid",
+        theme: "zinc",
+        class:
+          "text-zinc-900 hover:text-zinc-950 not-data-active:hover:bg-zinc-200 focus-visible:text-zinc-950 focus-visible:ring-zinc-500/50 not-data-active:focus-visible:bg-zinc-200 active:text-zinc-950 not-data-active:active:bg-zinc-200 data-active:border-zinc-500 data-active:bg-zinc-500 data-active:text-white dark:text-zinc-200 dark:hover:text-zinc-50 dark:not-data-active:hover:bg-zinc-900 dark:focus-visible:text-zinc-50 dark:focus-visible:ring-zinc-500/50 dark:not-data-active:focus-visible:bg-zinc-900 dark:active:text-zinc-50 dark:not-data-active:active:bg-zinc-900 dark:data-active:bg-zinc-600",
+      },
       // outline
       {
         variant: "outline",
@@ -543,6 +565,12 @@ const tabsTriggerVariants = cva(
         class:
           "text-olive-600 hover:text-olive-800 not-data-active:hover:border-olive-600/40 focus-visible:text-olive-800 focus-visible:ring-olive-600/50 not-data-active:focus-visible:border-olive-600/40 active:text-olive-800 not-data-active:active:border-olive-600/40 data-active:border-olive-600 data-active:shadow-sm dark:text-olive-400 dark:hover:text-olive-200 dark:not-data-active:hover:border-olive-400/40 dark:focus-visible:text-olive-200 dark:focus-visible:ring-olive-400/50 dark:not-data-active:focus-visible:border-olive-400/40 dark:active:text-olive-200 dark:not-data-active:active:border-olive-400/40 dark:data-active:border-olive-400",
       },
+      {
+        variant: "outline",
+        theme: "zinc",
+        class:
+          "text-zinc-600 hover:text-zinc-800 not-data-active:hover:border-zinc-600/40 focus-visible:text-zinc-800 focus-visible:ring-zinc-600/50 not-data-active:focus-visible:border-zinc-600/40 active:text-zinc-800 not-data-active:active:border-zinc-600/40 data-active:border-zinc-600 data-active:shadow-sm dark:text-zinc-400 dark:hover:text-zinc-200 dark:not-data-active:hover:border-zinc-400/40 dark:focus-visible:text-zinc-200 dark:focus-visible:ring-zinc-400/50 dark:not-data-active:focus-visible:border-zinc-400/40 dark:active:text-zinc-200 dark:not-data-active:active:border-zinc-400/40 dark:data-active:border-zinc-400",
+      },
       // glass
       {
         variant: "glass",
@@ -639,6 +667,12 @@ const tabsTriggerVariants = cva(
         theme: "olive",
         class:
           "text-olive-900 hover:bg-olive-500/15 hover:text-olive-950 focus-visible:bg-olive-500/15 focus-visible:text-olive-950 focus-visible:ring-olive-500/50 active:bg-olive-500/15 active:text-olive-950 data-active:bg-olive-500/30 data-active:text-olive-950 dark:text-olive-200 dark:hover:bg-olive-500/20 dark:hover:text-olive-50 dark:focus-visible:bg-olive-500/20 dark:focus-visible:text-olive-50 dark:focus-visible:ring-olive-500/50 dark:active:bg-olive-500/20 dark:active:text-olive-50 dark:data-active:bg-olive-800/50 dark:data-active:text-olive-50",
+      },
+      {
+        variant: "glass",
+        theme: "zinc",
+        class:
+          "text-zinc-900 hover:bg-zinc-500/15 hover:text-zinc-950 focus-visible:bg-zinc-500/15 focus-visible:text-zinc-950 focus-visible:ring-zinc-500/50 active:bg-zinc-500/15 active:text-zinc-950 data-active:bg-zinc-500/30 data-active:text-zinc-950 dark:text-zinc-200 dark:hover:bg-zinc-500/20 dark:hover:text-zinc-50 dark:focus-visible:bg-zinc-500/20 dark:focus-visible:text-zinc-50 dark:focus-visible:ring-zinc-500/50 dark:active:bg-zinc-500/20 dark:active:text-zinc-50 dark:data-active:bg-zinc-800/50 dark:data-active:text-zinc-50",
       },
     ],
     defaultVariants: {

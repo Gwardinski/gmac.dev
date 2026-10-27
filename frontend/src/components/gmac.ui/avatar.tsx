@@ -136,6 +136,7 @@ const avatarThemeClasses = {
   mauve: "",
   mist: "",
   olive: "",
+  zinc: "",
 } satisfies Record<ButtonTheme, string>;
 
 const avatarShellFocusRingSolid = {
@@ -155,6 +156,7 @@ const avatarShellFocusRingSolid = {
   mauve: "focus-visible:ring-mauve-500/50 dark:focus-visible:ring-mauve-600/50",
   mist: "focus-visible:ring-mist-500/50 dark:focus-visible:ring-mist-600/50",
   olive: "focus-visible:ring-olive-500/50 dark:focus-visible:ring-olive-600/50",
+  zinc: "focus-visible:ring-zinc-500/50 dark:focus-visible:ring-zinc-600/50",
 } satisfies Record<ButtonTheme, string>;
 
 const avatarShellFocusRingOutline = {
@@ -174,6 +176,7 @@ const avatarShellFocusRingOutline = {
   mauve: "focus-visible:ring-mauve-600/50 dark:focus-visible:ring-mauve-400/50",
   mist: "focus-visible:ring-mist-600/50 dark:focus-visible:ring-mist-400/50",
   olive: "focus-visible:ring-olive-600/50 dark:focus-visible:ring-olive-400/50",
+  zinc: "focus-visible:ring-zinc-600/50 dark:focus-visible:ring-zinc-400/50",
 } satisfies Record<ButtonTheme, string>;
 
 function avatarShellFocusRingClasses(variant: "solid" | "outline" | null | undefined, theme: ButtonTheme | null | undefined) {
@@ -268,6 +271,11 @@ export const avatarVariants = cva(
       },
       {
         variant: "solid",
+        theme: "zinc",
+        class: `border-zinc-500 bg-zinc-500 text-white hover:border-zinc-600 hover:bg-zinc-600 focus-visible:ring-zinc-500/50 active:border-zinc-700 active:bg-zinc-700 dark:border-zinc-600 dark:bg-zinc-600 dark:hover:border-zinc-700 dark:hover:bg-zinc-700 dark:focus-visible:ring-zinc-600/50 dark:active:border-zinc-800 dark:active:bg-zinc-800 [&_[data-slot=avatar-image]]:mix-blend-normal`,
+      },
+      {
+        variant: "solid",
         theme: "gray",
         class: `border-gray-500 bg-gray-500 text-white hover:border-gray-600 hover:bg-gray-600 focus-visible:ring-gray-500/50 active:border-gray-700 active:bg-gray-700 dark:border-gray-600 dark:bg-gray-600 dark:hover:border-gray-700 dark:hover:bg-gray-700 dark:focus-visible:ring-gray-600/50 dark:active:border-gray-800 dark:active:bg-gray-800 [&_[data-slot=avatar-image]]:mix-blend-normal`,
       },
@@ -346,6 +354,11 @@ export const avatarVariants = cva(
         variant: "outline",
         theme: "default",
         class: `border-gray-800 text-gray-800 hover:bg-gray-800/10 focus-visible:ring-gray-800/50 active:bg-gray-800/20 dark:border-gray-100 dark:text-gray-100 dark:hover:bg-gray-100/10 dark:focus-visible:ring-gray-100/50 dark:active:bg-gray-100/20`,
+      },
+      {
+        variant: "outline",
+        theme: "zinc",
+        class: `border-zinc-600 text-zinc-600 hover:bg-zinc-600/10 focus-visible:ring-zinc-600/50 active:bg-zinc-600/20 dark:border-zinc-400 dark:text-zinc-400 dark:hover:bg-zinc-600/10 dark:focus-visible:ring-zinc-400/50 dark:active:bg-zinc-600/20`,
       },
       {
         variant: "outline",

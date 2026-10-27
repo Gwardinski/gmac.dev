@@ -17,7 +17,7 @@ export const PROJECTS: Project[] = [
   {
     title: "gmac.dev",
     subTitle: "You're looking at it.",
-    tags: ["React", "Vite", "TanStack Router", "TanStack Query", "TypeScript", "Railway", "Cloudflare", "TailwindCSS", "Shadcn/UI", "Zustand", "Bun", "Elysia", "Zod"],
+    tags: ["React", "Vite", "TanStack Router", "TanStack Query", "TypeScript", "Railway", "Base UI", "Cloudflare", "TailwindCSS", "Shadcn/UI", "Zustand", "Bun", "Elysia", "Zod"],
     deprecated_tags: ["Remix", "NextJS", "NodeJS", "Express"],
     description: "My portfolio website. Come click around.",
     link: "https://gmac.dev",
@@ -30,6 +30,15 @@ export const PROJECTS: Project[] = [
     description: "Write once, copy & paste everywhere.",
     link: "/ui",
     code: "https://github.com/Gwardinski/gmac.dev",
+  },
+  {
+    title: "KillTeamz",
+    subTitle: "Kill Team Companion",
+    tags: ["React", "Vite", "TanStack Router", "TanStack Query", "TypeScript", "Railway", "Base UI", "TailwindCSS", "Shadcn/UI", "Zustand", "Bun", "Elysia", "Zod"],
+    description: "Creator, editor, reference sheet and a battle tracker for Warhammer 40k KillTeam.",
+    link: "https://killteamz-production.up.railway.app/",
+    code: "https://github.com/Gwardinski/killteamz",
+    codeLocked: true,
   },
   {
     title: "BitzOfCoinz",
@@ -65,15 +74,6 @@ export const PROJECTS: Project[] = [
     description: "The essential travel app for packing enough underwear.",
     link: "https://www.pantiepacker.com",
     code: "https://github.com/Gwardinski/pantie-packer",
-  },
-  {
-    title: "KillTeamz",
-    subTitle: "Kill Team Companion",
-    tags: ["React", "Vite", "TypeScript", "TailwindCSS", "Base UI", "TanStack Router", "Zustand", "Railway"],
-    description: "Squad reference sheets and a battle tracker for Warhammer 40k Kill Team.",
-    link: "https://killteamz-production.up.railway.app/",
-    code: "https://github.com/Gwardinski/killteamz",
-    codeLocked: true,
   },
   {
     title: "Pixel Board",

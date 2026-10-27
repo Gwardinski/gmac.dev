@@ -63,7 +63,7 @@ function CardHeader({
   right?: React.ReactNode;
 }) {
   return (
-    <header data-slot="card-header" className={cn("flex w-full gap-2 px-4 pb-4 group-has-data-[slot=card-body]:pb-5 [&_svg]:text-purple-500", className)} {...props}>
+    <header data-slot="card-header" className={cn("flex w-full items-center gap-2 px-4 pb-4 group-has-data-[slot=card-body]:pb-5", className)} {...props}>
       {left && <span className="flex h-fit shrink-0 gap-2">{left}</span>}
       <span className={cn("flex w-full gap-2", column ? "flex-col" : "flex-row flex-wrap items-center")}>{children}</span>
       {right && <span className="flex h-fit shrink-0 gap-2">{right}</span>}
@@ -129,6 +129,7 @@ const cardThemeClasses = {
   mauve: "",
   mist: "",
   olive: "",
+  zinc: "",
 } satisfies Record<ButtonTheme, string>;
 
 /** Static surface (border / background / text). Used by `Card`; no hover or focus affordances. */
@@ -223,6 +224,11 @@ export const cardVariants = cva(
         theme: "olive",
         class: "border-olive-500 bg-olive-500 text-white dark:border-olive-900 dark:bg-olive-950",
       },
+      {
+        variant: "solid",
+        theme: "zinc",
+        class: "border-zinc-500 bg-zinc-500 text-white dark:border-zinc-900 dark:bg-zinc-950",
+      },
       // outline
       {
         variant: "outline",
@@ -304,6 +310,11 @@ export const cardVariants = cva(
         theme: "olive",
         class: "border-olive-200 bg-transparent text-olive-800 dark:border-olive-700 dark:text-olive-200",
       },
+      {
+        variant: "outline",
+        theme: "zinc",
+        class: "border-zinc-200 bg-transparent text-zinc-800 dark:border-zinc-700 dark:text-zinc-200",
+      },
       // glass
       {
         variant: "glass",
@@ -384,6 +395,11 @@ export const cardVariants = cva(
         variant: "glass",
         theme: "olive",
         class: "bg-olive-50/25 text-olive-950 dark:bg-olive-950/25 dark:text-olive-50",
+      },
+      {
+        variant: "glass",
+        theme: "zinc",
+        class: "bg-zinc-50/25 text-zinc-950 dark:bg-zinc-950/25 dark:text-zinc-50",
       },
     ],
     defaultVariants: {
@@ -497,6 +513,12 @@ const cardInteractiveVariants = cva("transition-colors", {
         "hover:border-olive-700 hover:bg-olive-700 focus-visible:ring-4 focus-visible:ring-olive-200 focus-visible:outline-hidden active:border-olive-700 active:bg-olive-700 disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:hover:border-olive-700/40 dark:hover:bg-olive-700/40 dark:focus-visible:ring-olive-700/40 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40",
     },
     {
+      variant: "solid",
+      theme: "zinc",
+      class:
+        "hover:border-zinc-700 hover:bg-zinc-700 focus-visible:ring-4 focus-visible:ring-zinc-200 focus-visible:outline-hidden active:border-zinc-700 active:bg-zinc-700 disabled:cursor-default disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500 dark:hover:border-zinc-700/40 dark:hover:bg-zinc-700/40 dark:focus-visible:ring-zinc-700/40 dark:disabled:border-gray-700/40 dark:disabled:bg-gray-700/40",
+    },
+    {
       variant: "outline",
       theme: "default",
       class:
@@ -593,6 +615,12 @@ const cardInteractiveVariants = cva("transition-colors", {
         "hover:border-olive-400 focus-visible:border-olive-500 focus-visible:ring-4 focus-visible:ring-olive-200 focus-visible:outline-hidden active:border-olive-700 disabled:cursor-default disabled:border-gray-300 disabled:text-gray-500 dark:hover:border-olive-500 dark:focus-visible:ring-olive-700/40 dark:active:border-olive-500 dark:disabled:border-gray-700/40 dark:disabled:bg-transparent dark:disabled:text-gray-500",
     },
     {
+      variant: "outline",
+      theme: "zinc",
+      class:
+        "hover:border-zinc-400 focus-visible:border-zinc-500 focus-visible:ring-4 focus-visible:ring-zinc-200 focus-visible:outline-hidden active:border-zinc-700 disabled:cursor-default disabled:border-gray-300 disabled:text-gray-500 dark:hover:border-zinc-500 dark:focus-visible:ring-zinc-700/40 dark:active:border-zinc-500 dark:disabled:border-gray-700/40 dark:disabled:bg-transparent dark:disabled:text-gray-500",
+    },
+    {
       variant: "glass",
       theme: "default",
       class:
@@ -687,6 +715,12 @@ const cardInteractiveVariants = cva("transition-colors", {
       theme: "olive",
       class:
         "hover:bg-olive-50/35 focus-visible:ring-4 focus-visible:ring-olive-500/50 focus-visible:outline-hidden active:bg-olive-50/45 dark:hover:bg-olive-950/35 dark:focus-visible:ring-olive-500/50 dark:active:bg-olive-950/45",
+    },
+    {
+      variant: "glass",
+      theme: "zinc",
+      class:
+        "hover:bg-zinc-50/35 focus-visible:ring-4 focus-visible:ring-zinc-500/50 focus-visible:outline-hidden active:bg-zinc-50/45 dark:hover:bg-zinc-950/35 dark:focus-visible:ring-zinc-500/50 dark:active:bg-zinc-950/45",
     },
   ],
   defaultVariants: {

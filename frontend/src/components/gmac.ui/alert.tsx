@@ -85,6 +85,7 @@ const alertThemeClasses = {
   mauve: "",
   mist: "",
   olive: "",
+  zinc: "",
 } satisfies Record<ButtonTheme, string>;
 
 const alertWidthClasses = {
@@ -192,6 +193,11 @@ export const alertVariants = cva(
         theme: "olive",
         class: "border-olive-500 bg-olive-500 text-white dark:border-olive-600/80 dark:bg-olive-500/80 [&_.alert-title]:text-white [&>.alert-header>svg]:text-white",
       },
+      {
+        variant: "solid",
+        theme: "zinc",
+        class: "border-zinc-500 bg-zinc-500 text-white dark:border-zinc-600/80 dark:bg-zinc-500/80 [&_.alert-title]:text-white [&>.alert-header>svg]:text-white",
+      },
       // secondary — solid at /40 with themed text
       {
         variant: "secondary",
@@ -288,6 +294,12 @@ export const alertVariants = cva(
         theme: "olive",
         class:
           "border-olive-500/40 bg-olive-500/40 text-olive-700 dark:border-olive-600/40 dark:bg-olive-600/40 dark:text-olive-50 [&_.alert-title]:text-olive-700 dark:[&_.alert-title]:text-olive-50 [&>.alert-header>svg]:text-olive-700 dark:[&>.alert-header>svg]:text-olive-50",
+      },
+      {
+        variant: "secondary",
+        theme: "zinc",
+        class:
+          "border-zinc-500/40 bg-zinc-500/40 text-zinc-700 dark:border-zinc-600/40 dark:bg-zinc-600/40 dark:text-zinc-50 [&_.alert-title]:text-zinc-700 dark:[&_.alert-title]:text-zinc-50 [&>.alert-header>svg]:text-zinc-700 dark:[&>.alert-header>svg]:text-zinc-50",
       },
     ],
     defaultVariants: {

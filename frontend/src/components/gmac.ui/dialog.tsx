@@ -77,28 +77,34 @@ export { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader };
 // THEMING
 // ------------------------------------------------------------
 
-/** Border colour. `gray` keeps the default subtle border; the rest match Card's `outline` borders. */
+export { buttonThemeOptions as dialogThemeOptions, type ButtonTheme as DialogTheme } from "./button";
+
+/**
+ * Surface colour (border / background / text). The neutral palettes (gray, slate, neutral, mauve, mist, olive, zinc) are full app bases,
+ * so an app built on `zinc` gets a zinc dialog. The colours are a tinted surface, matching Card's `outline` borders and `solid` dark backgrounds.
+ */
 const dialogContentThemeClasses = {
-  default: "border-gray-300/50 dark:border-gray-600/50",
-  gray: "border-gray-200 dark:border-gray-700",
-  blue: "border-blue-200 dark:border-blue-700",
-  green: "border-green-200 dark:border-green-700",
-  yellow: "border-yellow-200 dark:border-yellow-700",
-  orange: "border-orange-200 dark:border-orange-700",
-  red: "border-red-200 dark:border-red-700",
-  purple: "border-purple-200 dark:border-purple-700",
-  lime: "border-lime-200 dark:border-lime-700",
-  teal: "border-teal-200 dark:border-teal-700",
-  indigo: "border-indigo-200 dark:border-indigo-700",
-  slate: "border-slate-200 dark:border-slate-700",
-  neutral: "border-neutral-200 dark:border-neutral-700",
-  mauve: "border-mauve-200 dark:border-mauve-700",
-  mist: "border-mist-200 dark:border-mist-700",
-  olive: "border-olive-200 dark:border-olive-700",
+  default: "border-gray-300/50 bg-white text-gray-900 dark:border-gray-600/50 dark:bg-gray-900 dark:text-gray-50",
+  gray: "border-gray-200 bg-white text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-50",
+  blue: "border-blue-200 bg-blue-50 text-blue-950 dark:border-blue-700 dark:bg-blue-950 dark:text-blue-50",
+  green: "border-green-200 bg-green-50 text-green-950 dark:border-green-700 dark:bg-green-950 dark:text-green-50",
+  yellow: "border-yellow-200 bg-yellow-50 text-yellow-950 dark:border-yellow-700 dark:bg-yellow-950 dark:text-yellow-50",
+  orange: "border-orange-200 bg-orange-50 text-orange-950 dark:border-orange-700 dark:bg-orange-950 dark:text-orange-50",
+  red: "border-red-200 bg-red-50 text-red-950 dark:border-red-700 dark:bg-red-950 dark:text-red-50",
+  purple: "border-purple-200 bg-purple-50 text-purple-950 dark:border-purple-700 dark:bg-purple-950 dark:text-purple-50",
+  lime: "border-lime-200 bg-lime-50 text-lime-950 dark:border-lime-700 dark:bg-lime-950 dark:text-lime-50",
+  teal: "border-teal-200 bg-teal-50 text-teal-950 dark:border-teal-700 dark:bg-teal-950 dark:text-teal-50",
+  indigo: "border-indigo-200 bg-indigo-50 text-indigo-950 dark:border-indigo-700 dark:bg-indigo-950 dark:text-indigo-50",
+  slate: "border-slate-200 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50",
+  neutral: "border-neutral-200 bg-white text-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50",
+  mauve: "border-mauve-200 bg-white text-mauve-900 dark:border-mauve-700 dark:bg-mauve-900 dark:text-mauve-50",
+  mist: "border-mist-200 bg-white text-mist-900 dark:border-mist-700 dark:bg-mist-900 dark:text-mist-50",
+  olive: "border-olive-200 bg-white text-olive-900 dark:border-olive-700 dark:bg-olive-900 dark:text-olive-50",
+  zinc: "border-zinc-200 bg-white text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50",
 } satisfies Record<ButtonTheme, string>;
 
 const dialogContentVariants = cva(
-  "fixed top-1/2 left-1/2 z-50 flex max-h-[calc(100%-12rem)] w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col gap-4 overflow-hidden rounded-lg border bg-white p-4 text-gray-900 duration-100 outline-none data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 sm:max-w-lg dark:bg-gray-900 dark:text-gray-50",
+  "fixed top-1/2 left-1/2 z-50 flex max-h-[calc(100%-12rem)] w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col gap-4 overflow-hidden rounded-lg border p-4 duration-100 outline-none data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 sm:max-w-lg",
   {
     variants: {
       theme: dialogContentThemeClasses,
