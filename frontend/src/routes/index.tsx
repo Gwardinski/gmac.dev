@@ -46,6 +46,7 @@ import {
 } from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import wordGif from "@/assets/word.gif";
 
 export const Route = createFileRoute("/")({
   component: App,
@@ -153,7 +154,7 @@ function App() {
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="p-0">
-          <img src="/src/assets/word.gif" className="h-full w-full object-contain" />
+          <img src={wordGif} className="h-full w-full object-contain" />
         </DialogContent>
       </Dialog>
     </Page>
